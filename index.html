@@ -232,52 +232,11 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
 .btn-edit:hover{background:rgba(0,245,255,.12);}
 .btn-del{padding:7px 16px;font-family:var(--mono);font-size:10px;letter-spacing:2px;background:rgba(255,34,68,.06);border:1px solid rgba(255,34,68,.25);color:var(--red);cursor:pointer;transition:var(--tr);}
 .btn-del:hover{background:rgba(255,34,68,.12);}
-.page-content{font-size:14px;color:var(--text2);line-height:1.85;word-wrap:break-word;}
-.page-content p{margin-bottom:12px;}
-.page-content h2{font-family:var(--display);font-size:13px;font-weight:700;color:var(--neon);letter-spacing:2px;margin:28px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border);}
-.page-content h3{font-family:var(--display);font-size:11px;color:var(--white);letter-spacing:2px;margin:20px 0 8px;}
-.page-content h4{font-family:var(--mono);font-size:11px;color:var(--text);letter-spacing:2px;margin:14px 0 6px;text-transform:uppercase;}
+.page-content{font-size:14px;color:var(--text2);line-height:1.85;white-space:pre-wrap;word-wrap:break-word;}
+.page-content h2{font-family:var(--display);font-size:13px;font-weight:700;color:var(--neon);letter-spacing:2px;margin:22px 0 8px;padding-bottom:5px;border-bottom:1px solid var(--border);}
+.page-content h3{font-family:var(--display);font-size:11px;color:var(--white);letter-spacing:2px;margin:16px 0 6px;}
 .page-content strong{color:var(--white);font-weight:700;}
 .page-content em{color:var(--neon);font-style:normal;}
-.page-content ul,.page-content ol{margin:8px 0 14px 20px;display:flex;flex-direction:column;gap:4px;}
-.page-content li{color:var(--text2);font-size:13px;line-height:1.7;}
-.page-content li::marker{color:var(--neon);}
-
-/* Rich blocks inside page-content */
-.pc-sep{height:1px;background:linear-gradient(90deg,var(--neon),rgba(0,245,255,.1),transparent);margin:24px 0;box-shadow:0 0 8px rgba(0,245,255,.2);}
-.pc-sep-label{display:flex;align-items:center;gap:12px;margin:24px 0;font-family:var(--mono);font-size:9px;letter-spacing:4px;color:var(--neon);text-transform:uppercase;}
-.pc-sep-label::before,.pc-sep-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border2),transparent);}
-.pc-sep-label::after{background:linear-gradient(90deg,transparent,var(--border2));}
-
-.pc-callout{padding:14px 18px;margin:14px 0;border-left:3px solid var(--neon);background:rgba(0,245,255,.04);font-family:var(--mono);font-size:12px;color:var(--text);letter-spacing:1px;line-height:1.7;}
-.pc-callout.warn{border-left-color:var(--warn2);background:rgba(255,140,0,.04);color:var(--warn2);}
-.pc-callout.danger{border-left-color:var(--red);background:rgba(255,34,68,.04);color:var(--red);}
-.pc-callout.success{border-left-color:var(--green);background:rgba(0,255,204,.04);color:var(--green);}
-
-.pc-table{width:100%;border-collapse:collapse;margin:14px 0;border:1px solid var(--border);}
-.pc-table th{background:rgba(0,245,255,.06);padding:9px 14px;font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--neon);text-align:left;border-bottom:1px solid var(--border2);text-transform:uppercase;}
-.pc-table td{padding:10px 14px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:11px;color:var(--text2);}
-.pc-table tr:last-child td{border:none;}
-.pc-table tr:hover td{background:rgba(0,245,255,.02);color:var(--text);}
-
-.pc-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin:14px 0;}
-.pc-card{background:var(--panel);border:1px solid var(--border);padding:18px;position:relative;transition:var(--tr);}
-.pc-card:hover{border-color:var(--border2);}
-.pc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--pcc,var(--neon));box-shadow:0 0 8px var(--pcc,var(--neon));}
-.pc-card-name{font-family:var(--display);font-size:12px;font-weight:700;color:var(--white);letter-spacing:1px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
-.pc-card-row{display:flex;gap:6px;margin-bottom:7px;font-size:12px;}
-.pc-card-lbl{font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:1px;min-width:90px;padding-top:2px;}
-.pc-card-val{color:var(--text2);line-height:1.6;}
-.pc-card-link{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;color:var(--neon);letter-spacing:1px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
-.pc-card-status{font-family:var(--mono);font-size:9px;padding:1px 7px;letter-spacing:1px;float:right;}
-
-.pc-tabs-wrap{margin:14px 0;}
-.pc-tabs-nav{display:flex;border-bottom:1px solid var(--border);margin-bottom:0;}
-.pc-tab-btn{padding:9px 20px;font-family:var(--mono);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;transition:var(--tr);background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap;}
-.pc-tab-btn:hover{color:var(--text2);}
-.pc-tab-btn.active{color:var(--neon);border-bottom-color:var(--neon);}
-.pc-tab-content{display:none;padding-top:18px;}
-.pc-tab-content.active{display:block;}
 
 /* DETAIL BLOCKS */
 .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
@@ -1012,190 +971,12 @@ function renderPageContent(id) {
   <div class="page-content">${html}</div>`;
 }
 
-function renderMd(raw) {
-  // Process block-level special syntax first (before escaping)
-  const lines = raw.split('\n');
-  let html = '';
-  let i = 0;
-  let tabGroupId = 0;
-
-  while (i < lines.length) {
-    const line = lines[i];
-
-    // ===== TABS block: [tabs] ... [tab:Name] content [/tabs]
-    if (line.trim().toLowerCase() === '[tabs]') {
-      const gid = 'pctab-' + (tabGroupId++);
-      let tabNames = [], tabContents = [], currentTab = null, currentContent = [];
-      i++;
-      while (i < lines.length && lines[i].trim().toLowerCase() !== '[/tabs]') {
-        const m = lines[i].trim().match(/^\[tab:(.+)\]$/i);
-        if (m) {
-          if (currentTab !== null) { tabContents.push(currentContent.join('\n')); currentContent = []; }
-          tabNames.push(m[1]); currentTab = m[1];
-        } else { currentContent.push(lines[i]); }
-        i++;
-      }
-      if (currentContent.length) tabContents.push(currentContent.join('\n'));
-      const btns = tabNames.map((n,idx)=>`<button class="pc-tab-btn${idx===0?' active':''}" onclick="pcSwitchTab(this,'${gid}-${idx}')">${esc(n)}</button>`).join('');
-      const contents = tabContents.map((c,idx)=>`<div class="pc-tab-content${idx===0?' active':''}" id="${gid}-${idx}">${renderMd(c)}</div>`).join('');
-      html += `<div class="pc-tabs-wrap"><div class="pc-tabs-nav">${btns}</div>${contents}</div>`;
-      i++; continue;
-    }
-
-    // ===== CARDS block: [cards] [card:Titre|Responsable:Nom|Desc:...|Lien:...|Statut:...|Couleur:#hex] [/cards]
-    if (line.trim().toLowerCase() === '[cards]') {
-      let cardsHtml = '<div class="pc-cards">';
-      i++;
-      while (i < lines.length && lines[i].trim().toLowerCase() !== '[/cards]') {
-        const cl = lines[i].trim();
-        if (cl.startsWith('[card:') && cl.endsWith(']')) {
-          const inner = cl.slice(6, -1);
-          const parts = inner.split('|');
-          const name = parts[0] || '';
-          const fields = {};
-          parts.slice(1).forEach(p => {
-            const sep = p.indexOf(':');
-            if (sep > -1) fields[p.slice(0,sep).trim().toLowerCase()] = p.slice(sep+1).trim();
-          });
-          const color = fields['couleur'] || fields['color'] || 'var(--neon)';
-          const status = fields['statut'] || fields['status'] || '';
-          const statusCls = status.toLowerCase().includes('attente') ? 'ss-pend' : 'ss-ok';
-          const rows = Object.entries(fields).filter(([k])=>!['couleur','color','lien','link','statut','status'].includes(k))
-            .map(([k,v])=>`<div class="pc-card-row"><span class="pc-card-lbl">${esc(k)} :</span><span class="pc-card-val">${esc(v)}</span></div>`).join('');
-          const lienKey = fields['lien'] || fields['link'] || '';
-          const lienHtml = lienKey ? `<div class="pc-card-link">⊕ ${esc(lienKey)}</div>` : '';
-          const statusHtml = status ? `<span class="pc-card-status ${statusCls}">${esc(status)}</span>` : '';
-          cardsHtml += `<div class="pc-card" style="--pcc:${color}">${statusHtml}<div class="pc-card-name">${esc(name)}</div>${rows}${lienHtml}</div>`;
-        }
-        i++;
-      }
-      cardsHtml += '</div>';
-      html += cardsHtml;
-      i++; continue;
-    }
-
-    // ===== TABLE: | col1 | col2 | col3 |
-    if (line.trim().startsWith('|') && line.trim().endsWith('|')) {
-      let tableHtml = '<table class="pc-table">';
-      let isHeader = true;
-      while (i < lines.length && lines[i].trim().startsWith('|') && lines[i].trim().endsWith('|')) {
-        const cells = lines[i].trim().slice(1,-1).split('|').map(c=>c.trim());
-        if (cells.every(c => /^[-:]+$/.test(c))) { i++; continue; } // skip separator row
-        const tag = isHeader ? 'th' : 'td';
-        tableHtml += `<tr>${cells.map(c=>`<${tag}>${esc(c)}</${tag}>`).join('')}</tr>`;
-        isHeader = false;
-        i++;
-      }
-      tableHtml += '</table>';
-      html += tableHtml;
-      continue;
-    }
-
-    // ===== SEPARATOR with label: --- Titre section ---
-    const sepMatch = line.match(/^---\s*(.+?)\s*---$/);
-    if (sepMatch) {
-      html += `<div class="pc-sep-label">${esc(sepMatch[1])}</div>`;
-      i++; continue;
-    }
-    // Plain separator: ---
-    if (line.trim() === '---') {
-      html += `<div class="pc-sep"></div>`;
-      i++; continue;
-    }
-
-    // ===== CALLOUT: > text, >warn text, >danger text, >success text
-    const calloutMatch = line.match(/^>(warn|danger|success)?\s+(.+)$/);
-    if (calloutMatch) {
-      const type = calloutMatch[1] || '';
-      html += `<div class="pc-callout ${type}">${inlineMd(calloutMatch[2])}</div>`;
-      i++; continue;
-    }
-
-    // ===== LISTS: - item or 1. item
-    if (/^\s*[-*]\s+/.test(line)) {
-      html += '<ul class="pc-list">';
-      while (i < lines.length && /^\s*[-*]\s+/.test(lines[i])) {
-        html += `<li>${inlineMd(lines[i].replace(/^\s*[-*]\s+/,''))}</li>`;
-        i++;
-      }
-      html += '</ul>';
-      continue;
-    }
-    if (/^\s*\d+\.\s+/.test(line)) {
-      html += '<ol class="pc-list">';
-      while (i < lines.length && /^\s*\d+\.\s+/.test(lines[i])) {
-        html += `<li>${inlineMd(lines[i].replace(/^\s*\d+\.\s+/,''))}</li>`;
-        i++;
-      }
-      html += '</ol>';
-      continue;
-    }
-
-    // ===== HEADINGS
-    if (line.startsWith('#### ')) { html += `<h4>${inlineMd(line.slice(5))}</h4>`; i++; continue; }
-    if (line.startsWith('### '))  { html += `<h3>${inlineMd(line.slice(4))}</h3>`; i++; continue; }
-    if (line.startsWith('## '))   { html += `<h2>${inlineMd(line.slice(3))}</h2>`; i++; continue; }
-    if (line.startsWith('# '))    { html += `<h2>${inlineMd(line.slice(2))}</h2>`; i++; continue; }
-
-    // ===== BLANK LINE
-    if (line.trim() === '') { html += '<br>'; i++; continue; }
-
-    // ===== PARAGRAPH
-    html += `<p>${inlineMd(line)}</p>`;
-    i++;
-  }
-
-  return html;
-}
-
-// Inline markdown: bold, italic, code, color
-function inlineMd(txt) {
+function renderMd(txt) {
   return esc(txt)
+    .replace(/^## (.+)$/gm,'<h2>$1</h2>')
+    .replace(/^### (.+)$/gm,'<h3>$1</h3>')
     .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g,'<em>$1</em>')
-    .replace(/`(.+?)`/g,'<code style="font-family:var(--mono);font-size:11px;color:var(--neon);background:rgba(0,245,255,.08);padding:1px 6px">$1</code>')
-    .replace(/\[color:([^\]]+)\](.+?)\[\/color\]/g,'<span style="color:$1">$2</span>');
-}
-
-// Tab switch for page content tabs
-function pcSwitchTab(btn, targetId) {
-  const wrap = btn.closest('.pc-tabs-wrap');
-  wrap.querySelectorAll('.pc-tab-btn').forEach(b=>b.classList.remove('active'));
-  wrap.querySelectorAll('.pc-tab-content').forEach(c=>c.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById(targetId)?.classList.add('active');
-}
-
-function getSyntaxPlaceholder() {
-  return `## Titre de section\n### Sous-titre\n\nTexte normal avec **gras** et *italique en neon*\n\n---\n\n--- Séparateur avec titre ---\n\n> Note importante\n> warn Avertissement\n> danger Alerte critique\n\n- Élément liste\n- Autre élément\n\n| Colonne 1 | Colonne 2 | Colonne 3 |\n| --- | --- | --- |\n| Valeur | Valeur | Valeur |\n\n[tabs]\n[tab:Onglet 1]\nContenu onglet 1\n[tab:Onglet 2]\nContenu onglet 2\n[/tabs]\n\n[cards]\n[card:Nom Section|Responsable:Prénom Nom|Description:Texte...|Lien:Centre Section A|Statut:Actif|Couleur:#00f5ff]\n[/cards]`;
-}
-
-function getSyntaxGuide() {
-  const items = [
-    ['## Titre', 'Grand titre de section'],
-    ['### Sous-titre', 'Titre secondaire'],
-    ['**texte**', 'Texte en gras'],
-    ['*texte*', 'Texte en couleur néon'],
-    ['`code`', 'Texte monospace'],
-    ['---', 'Séparateur horizontal'],
-    ['--- Titre ---', 'Séparateur avec label'],
-    ['> texte', 'Note (bleue)'],
-    ['>warn texte', 'Avertissement (orange)'],
-    ['>danger texte', 'Alerte (rouge)'],
-    ['>success texte', 'Succès (vert)'],
-    ['- item', 'Liste à puces'],
-    ['1. item', 'Liste numérotée'],
-    ['| Col1 | Col2 |', 'Tableau (ligne header)'],
-    ['| --- | --- |', 'Séparateur tableau'],
-    ['[tabs] ... [/tabs]', 'Bloc d\'onglets'],
-    ['[tab:Nom]', 'Déclarer un onglet dans [tabs]'],
-    ['[cards] ... [/cards]', 'Grille de cartes'],
-    ['[card:Nom|Responsable:X|Description:Y|Lien:Z|Statut:Actif|Couleur:#hex]', 'Carte individuelle'],
-  ];
-  return items.map(([syn,desc])=>`<div style="display:flex;gap:12px;margin-bottom:5px;font-family:var(--mono);font-size:10px;">
-    <span style="color:var(--neon);min-width:200px;flex-shrink:0">${esc(syn)}</span>
-    <span style="color:var(--text3)">${esc(desc)}</span>
-  </div>`).join('');
+    .replace(/\*(.+?)\*/g,'<em>$1</em>');
 }
 
 /* =====================================================
@@ -1264,8 +1045,6 @@ function openModal(type, id) {
   const t=document.getElementById('mTitle'), s=document.getElementById('mSub');
   const b=document.getElementById('mBody'), f=document.getElementById('mFoot');
 
-  const isPageModal = type==='addPage'||type==='editPage';
-  document.getElementById('modalBox').style.maxWidth = isPageModal ? '860px' : '680px';
   const tpls = {
     addSection: () => {
       t.textContent='Nouvelle Section Admin'; s.textContent='SECTION D\'ADMINISTRATION';
@@ -1418,14 +1197,7 @@ function openModal(type, id) {
           <div class="form-row"><label class="form-label">Titre</label><input class="form-input" id="np-t" placeholder="Titre..."></div>
           <div class="form-row"><label class="form-label">Catégorie</label><input class="form-input" id="np-c" placeholder="Général, Procédures..."></div>
         </div>
-        <div class="form-row">
-          <label class="form-label">Contenu</label>
-          <textarea class="form-textarea" id="np-content" style="min-height:280px;font-size:11px" placeholder="${getSyntaxPlaceholder()}"></textarea>
-        </div>
-        <div style="background:var(--bg3);border:1px solid var(--border);padding:14px;margin-top:4px;">
-          <div style="font-family:var(--mono);font-size:9px;color:var(--neon);letter-spacing:3px;margin-bottom:10px">GUIDE DE SYNTAXE</div>
-          ${getSyntaxGuide()}
-        </div>`;
+        <div class="form-row"><label class="form-label">Contenu (## Titre, **gras**, *italique*)</label><textarea class="form-textarea" id="np-content" style="min-height:180px" placeholder="## Titre\n\nContenu..."></textarea></div>`;
       f.innerHTML=`<button class="btn-cancel" onclick="closeModal()">Annuler</button><button class="btn-save" onclick="savePage()">Créer</button>`;
     },
     editPage: () => {
@@ -1436,14 +1208,7 @@ function openModal(type, id) {
           <div class="form-row"><label class="form-label">Titre</label><input class="form-input" id="ep2-t" value="${esc(p.title)}"></div>
           <div class="form-row"><label class="form-label">Catégorie</label><input class="form-input" id="ep2-c" value="${esc(p.category)}"></div>
         </div>
-        <div class="form-row">
-          <label class="form-label">Contenu</label>
-          <textarea class="form-textarea" id="ep2-content" style="min-height:280px;font-size:11px">${esc(p.content||'')}</textarea>
-        </div>
-        <div style="background:var(--bg3);border:1px solid var(--border);padding:14px;margin-top:4px;">
-          <div style="font-family:var(--mono);font-size:9px;color:var(--neon);letter-spacing:3px;margin-bottom:10px">GUIDE DE SYNTAXE</div>
-          ${getSyntaxGuide()}
-        </div>`;
+        <div class="form-row"><label class="form-label">Contenu</label><textarea class="form-textarea" id="ep2-content" style="min-height:180px">${esc(p.content||'')}</textarea></div>`;
       f.innerHTML=`<button class="btn-cancel" onclick="closeModal()">Annuler</button><button class="btn-save" onclick="updatePage()">Enregistrer</button>`;
     }
   };
