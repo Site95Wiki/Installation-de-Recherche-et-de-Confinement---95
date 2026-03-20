@@ -1307,6 +1307,7 @@ function openModal(type, id) {
         <div class="form-row"><label class="form-label">Couleur</label><input class="form-input" id="es-color" value="${esc(sec.color||'#00f5ff')}"></div>`;
       f.innerHTML=`<button class="btn-cancel" onclick="closeModal()">Annuler</button><button class="btn-save" onclick="updateSection()">Enregistrer</button>`;
     },
+    addUser: () => {
       t.textContent='Ajouter un Admin'; s.textContent='NOUVEAU COMPTE ADMINISTRATEUR';
       b.innerHTML=`<div class="form-row"><label class="form-label">Pseudo</label><input class="form-input" id="nu-p" placeholder="pseudo" autocomplete="off"></div>
         <div class="form-row"><label class="form-label">Mot de passe</label><input class="form-input" type="password" id="nu-pw" placeholder="••••••••" autocomplete="off"></div>
