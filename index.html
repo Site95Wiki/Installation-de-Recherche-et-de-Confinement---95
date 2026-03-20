@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Installation-95 | Zone Tsade</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c0f;
+    --bg2: #0d1117;
+    --bg3: #111722;
+    --panel: #131a24;
+    --border: #1e2d3d;
+    --border2: #243447;
+    --accent: #00b4d8;
+    --accent2: #0077a8;
+    --accent3: #48cae4;
+    --warn: #ff6b35;
+    --green: #2ecc71;
+    --red: #e74c3c;
+    --text: #c8d6e5;
+    --text2: #8fa3b8;
+    --text3: #4a6278;
+    --white: #e8f4f8;
+    --mono: 'Share Tech Mono', monospace;
+    --sans: 'Rajdhani', sans-serif;
+    --display: 'Orbitron', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  ::selection { background: var(--accent2); color: var(--white); }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Scanline overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.03) 2px,
+      rgba(0,0,0,0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ===== HEADER ===== */
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    background: rgba(10,12,15,0.95);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(10px);
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    height: 60px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header-alert {
+    background: linear-gradient(90deg, var(--warn), #ff8c5a, var(--warn));
+    background-size: 200%;
+    animation: scrollBg 3s linear infinite;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #fff;
+    padding: 5px 0;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  @keyframes scrollBg { 0% { background-position: 0%; } 100% { background-position: 200%; } }
+
+  .alert-ticker {
+    display: inline-block;
+    animation: ticker 30s linear infinite;
+    white-space: nowrap;
+  }
+
+  @keyframes ticker {
+    0% { transform: translateX(100vw); }
+    100% { transform: translateX(-100%); }
+  }
+
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-decoration: none;
+  }
+
+  .logo-icon {
+    width: 42px; height: 42px;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    background: radial-gradient(circle, rgba(0,180,216,0.15), transparent);
+    box-shadow: 0 0 20px rgba(0,180,216,0.3);
+    animation: pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(0,180,216,0.3); }
+    50% { box-shadow: 0 0 35px rgba(0,180,216,0.6); }
+  }
+
+  .logo-icon svg { width: 22px; height: 22px; fill: var(--accent); }
+
+  .logo-text { display: flex; flex-direction: column; }
+  .logo-title {
+    font-family: var(--display);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 2px;
+  }
+  .logo-sub {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 3px;
+  }
+
+  nav { display: flex; align-items: center; gap: 0; }
+
+  .nav-item {
+    position: relative;
+    padding: 0 20px;
+    height: 60px;
+    display: flex; align-items: center;
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text2);
+    cursor: pointer;
+    transition: color 0.2s;
+    text-decoration: none;
+    border-right: 1px solid transparent;
+  }
+
+  .nav-item:hover, .nav-item.active {
+    color: var(--accent);
+    background: rgba(0,180,216,0.05);
+  }
+
+  .nav-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 20px; right: 20px;
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transition: transform 0.2s;
+  }
+
+  .nav-item:hover::after, .nav-item.active::after { transform: scaleX(1); }
+
+  .dropdown { position: relative; }
+
+  .dropdown-menu {
+    position: absolute;
+    top: 60px; left: 0;
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    min-width: 220px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-8px);
+    transition: all 0.2s;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  }
+
+  .dropdown:hover .dropdown-menu {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0);
+  }
+
+  .dropdown-menu a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text2);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    transition: all 0.15s;
+    letter-spacing: 1px;
+  }
+
+  .dropdown-menu a:hover {
+    color: var(--accent);
+    background: rgba(0,180,216,0.08);
+    padding-left: 28px;
+  }
+
+  .dropdown-menu a::before { content: '→'; color: var(--accent); font-size: 12px; }
+
+  .header-actions { display: flex; align-items: center; gap: 12px; }
+
+  .btn-search {
+    background: none;
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    padding: 7px 14px;
+    font-family: var(--mono);
+    font-size: 12px;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+  }
+
+  .btn-search:hover { border-color: var(--accent); color: var(--accent); }
+
+  .clearance-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    background: rgba(255,107,53,0.15);
+    border: 1px solid rgba(255,107,53,0.4);
+    color: var(--warn);
+    padding: 4px 10px;
+    letter-spacing: 2px;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    margin-top: 60px;
+    position: relative;
+    height: 85vh;
+    min-height: 600px;
+    overflow: hidden;
+    display: flex; align-items: flex-end;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 40%, rgba(0,180,216,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at 70% 60%, rgba(0,119,168,0.06) 0%, transparent 50%),
+      linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+  }
+
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,180,216,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,180,216,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.5) 40%, transparent 100%);
+  }
+
+  .hero-image-area {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  .hero-theater {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #0d1a2a 0%, #0a1520 50%, #061015 100%);
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* Decorative theatre shape */
+  .theater-visual {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 700px; height: 450px;
+    border: 1px solid rgba(0,180,216,0.1);
+    border-radius: 50% 50% 0 0 / 30% 30% 0 0;
+    box-shadow:
+      inset 0 0 100px rgba(0,180,216,0.04),
+      0 0 60px rgba(0,180,216,0.06);
+    opacity: 0.4;
+  }
+
+  .theater-stage {
+    position: absolute;
+    bottom: 30%; left: 50%;
+    transform: translateX(-50%);
+    width: 200px; height: 4px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    box-shadow: 0 0 30px rgba(0,180,216,0.8);
+  }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg,
+      rgba(10,12,15,0.2) 0%,
+      rgba(10,12,15,0.4) 60%,
+      rgba(10,12,15,0.95) 100%
+    );
+  }
+
+  /* Animated corner brackets */
+  .corner { position: absolute; width: 40px; height: 40px; }
+  .corner-tl { top: 20px; left: 20px; border-top: 2px solid var(--accent); border-left: 2px solid var(--accent); }
+  .corner-tr { top: 20px; right: 20px; border-top: 2px solid var(--accent); border-right: 2px solid var(--accent); }
+  .corner-bl { bottom: 120px; left: 20px; border-bottom: 2px solid var(--accent); border-left: 2px solid var(--accent); }
+  .corner-br { bottom: 120px; right: 20px; border-bottom: 2px solid var(--accent); border-right: 2px solid var(--accent); }
+
+  .hero-content {
+    position: relative;
+    z-index: 10;
+    padding: 0 4rem 4rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .hero-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .hero-tag::before {
+    content: '';
+    width: 30px; height: 1px;
+    background: var(--accent);
+  }
+
+  .hero-title {
+    font-family: var(--display);
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 8px;
+    letter-spacing: 2px;
+  }
+
+  .hero-title span {
+    color: var(--accent);
+    text-shadow: 0 0 40px rgba(0,180,216,0.5);
+  }
+
+  .hero-subtitle {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--text2);
+    letter-spacing: 3px;
+    margin-bottom: 32px;
+  }
+
+  .hero-meta {
+    display: flex; gap: 32px; flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+
+  .hero-stat {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+
+  .hero-stat-val {
+    font-family: var(--display);
+    font-size: 22px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .hero-stat-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .stat-divider {
+    width: 1px;
+    background: var(--border2);
+    align-self: stretch;
+  }
+
+  .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+
+  .btn-primary {
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    padding: 12px 28px;
+    font-family: var(--display);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: rgba(255,255,255,0.2);
+    transform: skewX(-20deg);
+    transition: left 0.3s;
+  }
+
+  .btn-primary:hover::before { left: 100%; }
+  .btn-primary:hover { box-shadow: 0 0 30px rgba(0,180,216,0.5); }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border2);
+    padding: 12px 28px;
+    font-family: var(--display);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(0,180,216,0.05);
+  }
+
+  /* ===== MAIN CONTENT ===== */
+  main { max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
+
+  /* ===== SECTION HEADER ===== */
+  .section-header {
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--accent);
+    background: rgba(0,180,216,0.1);
+    border: 1px solid rgba(0,180,216,0.2);
+    padding: 4px 10px;
+    text-transform: uppercase;
+  }
+
+  .section-title {
+    font-family: var(--display);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 2px;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border2), transparent);
+  }
+
+  /* ===== STATUS BAR ===== */
+  .status-bar {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--warn);
+    padding: 16px 24px;
+    display: flex; align-items: center; gap: 20px;
+    margin: 48px 0 0;
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+
+  .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--warn);
+    box-shadow: 0 0 10px var(--warn);
+    animation: blink 1.2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  .status-label { color: var(--warn); letter-spacing: 2px; }
+  .status-text { color: var(--text2); }
+  .status-code { color: var(--accent); margin-left: auto; }
+
+  /* ===== DEPARTMENTS GRID ===== */
+  .section { padding: 64px 0; }
+
+  .dept-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .dept-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 28px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    display: block;
+  }
+
+  .dept-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 0%;
+    background: var(--card-accent, var(--accent));
+    transition: height 0.3s;
+  }
+
+  .dept-card:hover::before { height: 100%; }
+
+  .dept-card:hover {
+    background: var(--bg3);
+    border-color: var(--border2);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  }
+
+  .dept-card-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .dept-icon {
+    width: 44px; height: 44px;
+    border: 1px solid var(--card-accent, var(--accent));
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(0,180,216,0.05);
+    font-size: 18px;
+  }
+
+  .dept-code {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 2px;
+  }
+
+  .dept-name {
+    font-family: var(--display);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+
+  .dept-desc {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+    margin-bottom: 20px;
+    font-weight: 400;
+  }
+
+  .dept-footer {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .dept-director {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 1px;
+  }
+
+  .dept-status {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 8px;
+    letter-spacing: 1px;
+  }
+
+  .status-operational { color: var(--green); border: 1px solid rgba(46,204,113,0.3); background: rgba(46,204,113,0.05); }
+  .status-pending { color: var(--warn); border: 1px solid rgba(255,107,53,0.3); background: rgba(255,107,53,0.05); }
+  .status-classified { color: var(--red); border: 1px solid rgba(231,76,60,0.3); background: rgba(231,76,60,0.05); }
+
+  /* ===== INFO PANELS ===== */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+  }
+
+  .info-panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 32px;
+  }
+
+  .info-panel-title {
+    font-family: var(--display);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .info-text {
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.8;
+    font-weight: 400;
+    margin-bottom: 16px;
+  }
+
+  /* ===== DATA LIST ===== */
+  .data-list { list-style: none; }
+
+  .data-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+
+  .data-list li:last-child { border: none; }
+
+  .data-key { color: var(--text3); letter-spacing: 1px; }
+  .data-val { color: var(--text); }
+  .data-val.highlight { color: var(--accent); }
+  .data-val.warn { color: var(--warn); }
+  .data-val.danger { color: var(--red); }
+
+  /* ===== ANOMALY FEED ===== */
+  .anomaly-feed { display: flex; flex-direction: column; gap: 2px; }
+
+  .anomaly-item {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--item-color, var(--text3));
+    padding: 14px 16px;
+    display: flex; align-items: center; gap: 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-decoration: none;
+  }
+
+  .anomaly-item:hover { background: var(--panel); transform: translateX(4px); }
+
+  .anomaly-class {
+    font-family: var(--display);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--item-color, var(--text3));
+    letter-spacing: 1px;
+    min-width: 80px;
+  }
+
+  .anomaly-id {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text2);
+    min-width: 80px;
+  }
+
+  .anomaly-name {
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--white);
+    flex: 1;
+  }
+
+  .anomaly-status {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 1px;
+  }
+
+  /* ===== TABS ===== */
+  .tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+    gap: 0;
+  }
+
+  .tab {
+    padding: 12px 24px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text3);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+
+  .tab:hover { color: var(--text2); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* ===== PERSONNEL TABLE ===== */
+  .personnel-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .personnel-table th {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text3);
+    padding: 10px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+  }
+
+  .personnel-table td {
+    padding: 12px 16px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text2);
+  }
+
+  .personnel-table tr:hover td { background: rgba(0,180,216,0.03); }
+
+  .clearance-lvl {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 8px;
+    letter-spacing: 1px;
+  }
+
+  .lvl-5 { background: rgba(231,76,60,0.15); color: var(--red); border: 1px solid rgba(231,76,60,0.3); }
+  .lvl-4 { background: rgba(255,107,53,0.15); color: var(--warn); border: 1px solid rgba(255,107,53,0.3); }
+  .lvl-3 { background: rgba(241,196,15,0.1); color: #f1c40f; border: 1px solid rgba(241,196,15,0.2); }
+  .lvl-2 { background: rgba(46,204,113,0.1); color: var(--green); border: 1px solid rgba(46,204,113,0.2); }
+  .lvl-1 { background: rgba(0,180,216,0.1); color: var(--accent); border: 1px solid rgba(0,180,216,0.2); }
+
+  /* ===== FOOTER ===== */
+  footer {
+    border-top: 1px solid var(--border);
+    background: var(--bg2);
+    padding: 48px 2rem 24px;
+    margin-top: 80px;
+  }
+
+  .footer-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 40px;
+  }
+
+  .footer-brand .logo-title { font-size: 18px; margin-bottom: 12px; display: block; }
+
+  .footer-desc {
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--text3);
+    line-height: 1.7;
+    font-weight: 400;
+    margin-bottom: 16px;
+  }
+
+  .footer-class {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--warn);
+    letter-spacing: 2px;
+    background: rgba(255,107,53,0.08);
+    border: 1px solid rgba(255,107,53,0.2);
+    padding: 6px 12px;
+    display: inline-block;
+  }
+
+  .footer-col-title {
+    font-family: var(--display);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .footer-links { list-style: none; }
+
+  .footer-links li {
+    margin-bottom: 8px;
+  }
+
+  .footer-links a {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text3);
+    text-decoration: none;
+    letter-spacing: 1px;
+    transition: color 0.15s;
+  }
+
+  .footer-links a:hover { color: var(--accent); }
+
+  .footer-bottom {
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 1px;
+  }
+
+  /* ===== SEARCH OVERLAY ===== */
+  .search-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10,12,15,0.95);
+    z-index: 2000;
+    display: flex; align-items: flex-start; justify-content: center;
+    padding-top: 120px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+
+  .search-overlay.open { opacity: 1; pointer-events: all; }
+
+  .search-box {
+    width: 100%; max-width: 640px;
+    padding: 0 2rem;
+  }
+
+  .search-input-wrap {
+    border: 1px solid var(--accent);
+    background: var(--panel);
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px 20px;
+    box-shadow: 0 0 60px rgba(0,180,216,0.2);
+  }
+
+  .search-input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    font-family: var(--mono);
+    font-size: 16px;
+    color: var(--white);
+    letter-spacing: 2px;
+  }
+
+  .search-input::placeholder { color: var(--text3); }
+
+  .search-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 2px;
+    margin-top: 12px;
+  }
+
+  /* ===== MISC ===== */
+  .redacted {
+    background: var(--text);
+    color: transparent;
+    user-select: none;
+    display: inline-block;
+    padding: 0 4px;
+    cursor: not-allowed;
+  }
+
+  .redacted:hover {
+    background: var(--red);
+    animation: shake 0.2s;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-3px); }
+    75% { transform: translateX(3px); }
+  }
+
+  .classified-banner {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-align: center;
+    padding: 8px;
+    background: repeating-linear-gradient(
+      -45deg,
+      rgba(231,76,60,0.08),
+      rgba(231,76,60,0.08) 10px,
+      transparent 10px,
+      transparent 20px
+    );
+    border: 1px solid rgba(231,76,60,0.3);
+    color: var(--red);
+    margin-bottom: 24px;
+  }
+
+  /* Mobile hamburger */
+  .menu-toggle {
+    display: none;
+    background: none;
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    padding: 8px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  @media (max-width: 900px) {
+    .menu-toggle { display: flex; align-items: center; justify-content: center; }
+    nav { display: none; }
+    .dept-grid { grid-template-columns: 1fr; }
+    .info-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .hero-content { padding: 0 1.5rem 3rem; }
+    .hero-meta { gap: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SEARCH OVERLAY -->
+<div class="search-overlay" id="searchOverlay" onclick="toggleSearch()">
+  <div class="search-box" onclick="event.stopPropagation()">
+    <div class="search-input-wrap">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent);flex-shrink:0"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input class="search-input" placeholder="RECHERCHER..." id="searchInput" autofocus>
+      <span style="font-family:var(--mono);font-size:11px;color:var(--text3);cursor:pointer" onclick="toggleSearch()">ESC</span>
+    </div>
+    <p class="search-label">RECHERCHER DANS LES ARCHIVES DE L'INSTALLATION-95</p>
+  </div>
+</div>
+
+<!-- HEADER ALERT -->
+<div class="header-alert">
+  <span class="alert-ticker">⚠ ALERTE NIVEAU 3 EN COURS — ZONE DELTA SOUS CONFINEMENT — ACCÈS RESTREINT AU SECTEUR 7 — NIVEAU D'HABILITATION 3 REQUIS — RAPPORT D'INCIDENT EN ATTENTE — PROTOCOLE OMÉGA EN VEILLE ⚠</span>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-top">
+    <a href="#" class="logo-area">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      </div>
+      <div class="logo-text">
+        <span class="logo-title">ZONE TSADE</span>
+        <span class="logo-sub">INSTALLATION · 95</span>
+      </div>
+    </a>
+
+    <nav id="mainNav">
+      <a href="#" class="nav-item active">Accueil</a>
+
+      <div class="nav-item dropdown">
+        Informations
+        <div class="dropdown-menu">
+          <a href="#">Membres du personnel</a>
+          <a href="#">La Zone Tsade</a>
+          <a href="#">Carte Interactive</a>
+          <a href="#">Anomalies répertoriées</a>
+        </div>
+      </div>
+
+      <div class="nav-item dropdown">
+        Départements
+        <div class="dropdown-menu">
+          <a href="#">Administratif</a>
+          <a href="#">Maintenance</a>
+          <a href="#">Scientifique</a>
+          <a href="#">Sécurité</a>
+          <a href="#">Médical</a>
+          <a href="#">Commandement</a>
+        </div>
+      </div>
+
+      <a href="#about" class="nav-item">À propos</a>
+      <a href="#" class="nav-item">Outils</a>
+    </nav>
+
+    <div class="header-actions">
+      <button class="btn-search" onclick="toggleSearch()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Rechercher
+      </button>
+      <div class="clearance-badge">HABILITATION 2</div>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-image-area">
+    <div class="hero-theater">
+      <div class="theater-visual"></div>
+      <div class="theater-stage"></div>
+    </div>
+  </div>
+  <div class="hero-overlay"></div>
+
+  <!-- Corner brackets -->
+  <div class="corner corner-tl"></div>
+  <div class="corner corner-tr"></div>
+  <div class="corner corner-bl"></div>
+  <div class="corner corner-br"></div>
+
+  <div class="hero-content">
+    <div class="hero-tag">WIKI OFFICIEL · ACCÈS INTRANET</div>
+    <h1 class="hero-title">INSTALLATION<br><span>-95</span></h1>
+    <p class="hero-subtitle">ZONE TSADE · CAFÉ & PRODUCTIVITÉ</p>
+
+    <div class="hero-meta">
+      <div class="hero-stat">
+        <span class="hero-stat-val">247</span>
+        <span class="hero-stat-label">Membres actifs</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-val">6</span>
+        <span class="hero-stat-label">Départements</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-val">31</span>
+        <span class="hero-stat-label">Anomalies confinées</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-val warn" style="color:var(--warn)">ACTIF</span>
+        <span class="hero-stat-label">Statut installation</span>
+      </div>
+    </div>
+
+    <div class="hero-actions">
+      <a href="#departments" class="btn-primary">Accéder aux départements →</a>
+      <a href="#anomalies" class="btn-secondary">Anomalies répertoriées</a>
+    </div>
+  </div>
+</section>
+
+<!-- STATUS BAR -->
+<main>
+  <div class="status-bar">
+    <div class="status-dot"></div>
+    <span class="status-label">ALERTE ACTIVE</span>
+    <span class="status-text">Incident en cours dans le Secteur 7 — Protocole de confinement standard appliqué — MTF Epsilon-12 déployée</span>
+    <span class="status-code">// REF: INC-95-2841</span>
+  </div>
+
+  <!-- ABOUT SECTION -->
+  <section class="section" id="about">
+    <div class="section-header">
+      <div class="section-label">01</div>
+      <h2 class="section-title">À PROPOS</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-panel">
+        <div class="info-panel-title">Administration de la Zone</div>
+        <p class="info-text">L'administration de la Zone désigne l'ensemble des sections auxquelles le directeur de l'installation délègue son autorité. Chacune de ces sections disposent de prérogatives spéciales dans le but de mener à bien les missions qui leurs sont confiées.</p>
+        <p class="info-text">La Zone Tsade est une installation de niveau moyen opérant sous juridiction directe du Conseil des Directeurs. Son mandat premier est le confinement sécurisé, l'étude et, le cas échéant, la neutralisation des entités et phénomènes classifiés comme anormaux.</p>
+        <p class="info-text">Le personnel est réparti en deux branches principales : les <strong style="color:var(--text)">Services Directoriaux</strong>, directement rattachés à la direction, et les <strong style="color:var(--text)">Services Administratifs</strong>, qui gèrent les opérations courantes de l'installation.</p>
+
+        <!-- TABS -->
+        <div class="tabs">
+          <div class="tab active" onclick="switchTab(this,'tab-directorial')">Services Directoriaux</div>
+          <div class="tab" onclick="switchTab(this,'tab-admin')">Services Administratifs</div>
+        </div>
+
+        <div class="tab-content active" id="tab-directorial">
+          <div class="classified-banner">⬛ NIVEAU D'HABILITATION 4 REQUIS POUR CERTAINES INFORMATIONS ⬛</div>
+          <div class="anomaly-feed">
+            <div class="anomaly-item" style="--item-color:var(--accent)">
+              <span class="anomaly-class">DIR-01</span>
+              <span class="anomaly-id">SEC. A</span>
+              <span class="anomaly-name">Sécurité des Informations et des Archives</span>
+              <span class="anomaly-status status-operational">OPÉRATIONNEL</span>
+            </div>
+            <div class="anomaly-item" style="--item-color:#f1c40f">
+              <span class="anomaly-class">DIR-02</span>
+              <span class="anomaly-id">SEC. B</span>
+              <span class="anomaly-name">Ressources Humaines</span>
+              <span class="anomaly-status status-pending">EN ATTENTE</span>
+            </div>
+            <div class="anomaly-item" style="--item-color:var(--warn)">
+              <span class="anomaly-class">DIR-03</span>
+              <span class="anomaly-id">SEC. C</span>
+              <span class="anomaly-name">Justice Interne</span>
+              <span class="anomaly-status status-operational">OPÉRATIONNEL</span>
+            </div>
+            <div class="anomaly-item" style="--item-color:var(--red)">
+              <span class="anomaly-class">DIR-04</span>
+              <span class="anomaly-id">SEC. D</span>
+              <span class="anomaly-name">Surveillance des Individus Anormaux</span>
+              <span class="anomaly-status status-classified">CLASSIFIÉ</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-content" id="tab-admin">
+          <div class="anomaly-feed">
+            <div class="anomaly-item" style="--item-color:var(--green)">
+              <span class="anomaly-class">ADM-01</span>
+              <span class="anomaly-id">ADM. A</span>
+              <span class="anomaly-name">Département Scientifique</span>
+              <span class="anomaly-status status-operational">OPÉRATIONNEL</span>
+            </div>
+            <div class="anomaly-item" style="--item-color:var(--accent)">
+              <span class="anomaly-class">ADM-02</span>
+              <span class="anomaly-id">ADM. B</span>
+              <span class="anomaly-name">Département Médical</span>
+              <span class="anomaly-status status-operational">OPÉRATIONNEL</span>
+            </div>
+            <div class="anomaly-item" style="--item-color:var(--warn)">
+              <span class="anomaly-class">ADM-03</span>
+              <span class="anomaly-id">ADM. C</span>
+              <span class="anomaly-name">Département Sécurité</span>
+              <span class="anomaly-status status-operational">OPÉRATIONNEL</span>
+            </div>
+            <div class="anomaly-item" style="--item-color:var(--text3)">
+              <span class="anomaly-class">ADM-04</span>
+              <span class="anomaly-id">ADM. D</span>
+              <span class="anomaly-name">Département Maintenance</span>
+              <span class="anomaly-status status-pending">PARTIEL</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="info-panel" style="margin-bottom:16px">
+          <div class="info-panel-title">Données Installation</div>
+          <ul class="data-list">
+            <li><span class="data-key">DÉSIGNATION</span><span class="data-val highlight">Installation-95</span></li>
+            <li><span class="data-key">CODE</span><span class="data-val highlight">ZONE-TSADE</span></li>
+            <li><span class="data-key">CLASSE</span><span class="data-val">Niveau II — Moyen</span></li>
+            <li><span class="data-key">STATUT</span><span class="data-val warn">Alerte Active</span></li>
+            <li><span class="data-key">PERSONNEL</span><span class="data-val">247 individus</span></li>
+            <li><span class="data-key">DIRECTEUR</span><span class="data-val"><span class="redacted">████████████</span></span></li>
+            <li><span class="data-key">FONDATION</span><span class="data-val">████</span></li>
+            <li><span class="data-key">SECTEURS</span><span class="data-val">12 actifs</span></li>
+          </ul>
+        </div>
+
+        <div class="info-panel">
+          <div class="info-panel-title">Niveau de Confinement</div>
+          <ul class="data-list">
+            <li><span class="data-key">SÉCURISÉ</span><span class="data-val highlight">18</span></li>
+            <li><span class="data-key">EUCLIDE</span><span class="data-val" style="color:#f1c40f">9</span></li>
+            <li><span class="data-key">KETER</span><span class="data-val danger">3</span></li>
+            <li><span class="data-key">THAUMIEL</span><span class="data-val">1</span></li>
+            <li><span class="data-key">NEUTRALISÉ</span><span class="data-val" style="color:var(--text3)">███</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEPARTMENTS -->
+  <section class="section" id="departments">
+    <div class="section-header">
+      <div class="section-label">02</div>
+      <h2 class="section-title">DÉPARTEMENTS</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="dept-grid">
+      <a href="#" class="dept-card" style="--card-accent:#00b4d8">
+        <div class="dept-card-header">
+          <div class="dept-icon">🛡️</div>
+          <span class="dept-code">DEPT-01</span>
+        </div>
+        <div class="dept-name">Administratif</div>
+        <p class="dept-desc">Gestion des opérations courantes de l'installation, coordination inter-départementale, archivage et maintien des protocoles administratifs.</p>
+        <div class="dept-footer">
+          <span class="dept-director">DIR: Oukama Chimaldav</span>
+          <span class="dept-status status-operational">ACTIF</span>
+        </div>
+      </a>
+
+      <a href="#" class="dept-card" style="--card-accent:#e67e22">
+        <div class="dept-card-header">
+          <div class="dept-icon" style="border-color:#e67e22">🔧</div>
+          <span class="dept-code">DEPT-02</span>
+        </div>
+        <div class="dept-name">Maintenance</div>
+        <p class="dept-desc">Entretien des infrastructures, réparation des systèmes de confinement, gestion des ressources énergétiques et maintenance des équipements.</p>
+        <div class="dept-footer">
+          <span class="dept-director">DIR: <span class="redacted">████████</span></span>
+          <span class="dept-status status-pending">PARTIEL</span>
+        </div>
+      </a>
+
+      <a href="#" class="dept-card" style="--card-accent:#2ecc71">
+        <div class="dept-card-header">
+          <div class="dept-icon" style="border-color:#2ecc71">🔬</div>
+          <span class="dept-code">DEPT-03</span>
+        </div>
+        <div class="dept-name">Scientifique</div>
+        <p class="dept-desc">Recherche et étude des entités anormales confinées, développement de protocoles d'interaction et analyse des phénomènes paranormaux recensés.</p>
+        <div class="dept-footer">
+          <span class="dept-director">DIR: Dr. Isadora Vance</span>
+          <span class="dept-status status-operational">ACTIF</span>
+        </div>
+      </a>
+
+      <a href="#" class="dept-card" style="--card-accent:#e74c3c">
+        <div class="dept-card-header">
+          <div class="dept-icon" style="border-color:#e74c3c">⚠️</div>
+          <span class="dept-code">DEPT-04</span>
+        </div>
+        <div class="dept-name">Sécurité</div>
+        <p class="dept-desc">Protection du périmètre, gestion des incidents de confinement, déploiement des Forces d'Intervention Mobile et maintien de l'ordre interne.</p>
+        <div class="dept-footer">
+          <span class="dept-director">DIR: Cmdt. Arès Volkov</span>
+          <span class="dept-status status-operational">ACTIF</span>
+        </div>
+      </a>
+
+      <a href="#" class="dept-card" style="--card-accent:#9b59b6">
+        <div class="dept-card-header">
+          <div class="dept-icon" style="border-color:#9b59b6">🏥</div>
+          <span class="dept-code">DEPT-05</span>
+        </div>
+        <div class="dept-name">Médical</div>
+        <p class="dept-desc">Soins du personnel, traitement des cas d'exposition anomalique, suivi psychologique des agents de terrain et gestion des urgences biologiques.</p>
+        <div class="dept-footer">
+          <span class="dept-director">DIR: Dr. Selin Aydın</span>
+          <span class="dept-status status-operational">ACTIF</span>
+        </div>
+      </a>
+
+      <a href="#" class="dept-card" style="--card-accent:#f1c40f">
+        <div class="dept-card-header">
+          <div class="dept-icon" style="border-color:#f1c40f">⭐</div>
+          <span class="dept-code">DEPT-06</span>
+        </div>
+        <div class="dept-name">Commandement</div>
+        <p class="dept-desc">Direction stratégique de l'installation, coordination des opérations de haut niveau, liaison avec les instances supérieures et gestion des situations critiques.</p>
+        <div class="dept-footer">
+          <span class="dept-director">DIR: <span class="redacted">████████████████</span></span>
+          <span class="dept-status status-classified">CLASSIFIÉ</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ANOMALIES -->
+  <section class="section" id="anomalies">
+    <div class="section-header">
+      <div class="section-label">03</div>
+      <h2 class="section-title">ANOMALIES RÉPERTORIÉES</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="info-panel">
+      <div class="info-panel-title">Registre des Confinements Actifs</div>
+      <div class="anomaly-feed">
+
+        <div class="anomaly-item" style="--item-color:var(--accent)">
+          <span class="anomaly-class">SÉCURISÉ</span>
+          <span class="anomaly-id">ANO-95-001</span>
+          <span class="anomaly-name">Entité dite "Le Veilleur" — Humanoid, statique, non-hostile</span>
+          <span class="anomaly-status status-operational">CONFINÉ</span>
+        </div>
+
+        <div class="anomaly-item" style="--item-color:#f1c40f">
+          <span class="anomaly-class">EUCLIDE</span>
+          <span class="anomaly-id">ANO-95-007</span>
+          <span class="anomaly-name">Artefact acoustique — Génère des résonances memétiques à 40Hz</span>
+          <span class="anomaly-status status-operational">CONFINÉ</span>
+        </div>
+
+        <div class="anomaly-item" style="--item-color:#f1c40f">
+          <span class="anomaly-class">EUCLIDE</span>
+          <span class="anomaly-id">ANO-95-012</span>
+          <span class="anomaly-name">Salle de théâtre anomalique — Modification spatiale non-euclidienne</span>
+          <span class="anomaly-status status-pending">SOUS ÉTUDE</span>
+        </div>
+
+        <div class="anomaly-item" style="--item-color:var(--warn)">
+          <span class="anomaly-class">EUCLIDE</span>
+          <span class="anomaly-id">ANO-95-018</span>
+          <span class="anomaly-name">Entité mimétique — Réplication comportementale des individus</span>
+          <span class="anomaly-status status-pending">SURVEILLANCE</span>
+        </div>
+
+        <div class="anomaly-item" style="--item-color:var(--red)">
+          <span class="anomaly-class">KETER</span>
+          <span class="anomaly-id">ANO-95-024</span>
+          <span class="anomaly-name"><span class="redacted">████████████████████████████</span></span>
+          <span class="anomaly-status status-classified">CLASSIFIÉ</span>
+        </div>
+
+        <div class="anomaly-item" style="--item-color:var(--red)">
+          <span class="anomaly-class">KETER</span>
+          <span class="anomaly-id">ANO-95-031</span>
+          <span class="anomaly-name">Phénomène de dégradation temporelle — Secteur 7</span>
+          <span class="anomaly-status status-classified">INCIDENT ACTIF</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- PERSONNEL -->
+  <section class="section" id="personnel">
+    <div class="section-header">
+      <div class="section-label">04</div>
+      <h2 class="section-title">PERSONNEL NOTABLE</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="info-panel">
+      <div class="info-panel-title">Registre du Personnel — Accès Niveau 2</div>
+      <table class="personnel-table">
+        <thead>
+          <tr>
+            <th>NOM</th>
+            <th>POSTE</th>
+            <th>DÉPARTEMENT</th>
+            <th>HABILITATION</th>
+            <th>STATUT</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="color:var(--white);font-weight:600">Oukama Chimaldav</td>
+            <td>Directeur délégué — Sect. A</td>
+            <td>Administratif</td>
+            <td><span class="clearance-lvl lvl-4">NIV. 4</span></td>
+            <td><span style="color:var(--green);font-family:var(--mono);font-size:11px">● ACTIF</span></td>
+          </tr>
+          <tr>
+            <td style="color:var(--white);font-weight:600">Taison McKallewey</td>
+            <td>Directeur délégué — Sect. B</td>
+            <td>Ressources Humaines</td>
+            <td><span class="clearance-lvl lvl-4">NIV. 4</span></td>
+            <td><span style="color:var(--warn);font-family:var(--mono);font-size:11px">● EN ATTENTE</span></td>
+          </tr>
+          <tr>
+            <td style="color:var(--white);font-weight:600">M. Adrien Lanlier</td>
+            <td>Directeur Délégué — Sect. C</td>
+            <td>Justice Interne</td>
+            <td><span class="clearance-lvl lvl-4">NIV. 4</span></td>
+            <td><span style="color:var(--green);font-family:var(--mono);font-size:11px">● ACTIF</span></td>
+          </tr>
+          <tr>
+            <td style="color:var(--white);font-weight:600">Gaspard Sandsto</td>
+            <td>Sous-Secrétaire — Sect. D</td>
+            <td>Surveillance Anomalique</td>
+            <td><span class="clearance-lvl lvl-3">NIV. 3</span></td>
+            <td><span style="color:var(--green);font-family:var(--mono);font-size:11px">● ACTIF</span></td>
+          </tr>
+          <tr>
+            <td style="color:var(--white);font-weight:600">Dr. Isadora Vance</td>
+            <td>Chercheuse Principale</td>
+            <td>Scientifique</td>
+            <td><span class="clearance-lvl lvl-3">NIV. 3</span></td>
+            <td><span style="color:var(--green);font-family:var(--mono);font-size:11px">● ACTIF</span></td>
+          </tr>
+          <tr>
+            <td style="color:var(--white);font-weight:600">Cmdt. Arès Volkov</td>
+            <td>Commandant de la Sécurité</td>
+            <td>Sécurité</td>
+            <td><span class="clearance-lvl lvl-4">NIV. 4</span></td>
+            <td><span style="color:var(--green);font-family:var(--mono);font-size:11px">● ACTIF</span></td>
+          </tr>
+          <tr>
+            <td><span class="redacted">████████████████</span></td>
+            <td><span class="redacted">██████████████</span></td>
+            <td>Commandement</td>
+            <td><span class="clearance-lvl lvl-5">NIV. 5</span></td>
+            <td><span style="color:var(--red);font-family:var(--mono);font-size:11px">● CLASSIFIÉ</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="logo-title" style="font-family:var(--display);font-size:18px;color:var(--white);display:block;margin-bottom:12px">ZONE TSADE</span>
+        <p class="footer-desc">Wiki interne officiel de l'Installation-95. Les informations contenues dans ce système sont classifiées et soumises aux protocoles de confidentialité en vigueur. Tout accès non autorisé sera signalé et poursuivi.</p>
+        <div class="footer-class">⬛ USAGE INTERNE EXCLUSIVEMENT ⬛</div>
+      </div>
+
+      <div>
+        <div class="footer-col-title">Navigation</div>
+        <ul class="footer-links">
+          <li><a href="#">Accueil</a></li>
+          <li><a href="#">À propos</a></li>
+          <li><a href="#">Carte Interactive</a></li>
+          <li><a href="#">Anomalies</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="footer-col-title">Départements</div>
+        <ul class="footer-links">
+          <li><a href="#">Administratif</a></li>
+          <li><a href="#">Scientifique</a></li>
+          <li><a href="#">Sécurité</a></li>
+          <li><a href="#">Médical</a></li>
+          <li><a href="#">Commandement</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="footer-col-title">Ressources</div>
+        <ul class="footer-links">
+          <li><a href="#">Protocoles</a></li>
+          <li><a href="#">Formulaires</a></li>
+          <li><a href="#">Archives</a></li>
+          <li><a href="#">Contacts</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© INSTALLATION-95 · ZONE TSADE · TOUS DROITS RÉSERVÉS</span>
+      <span style="font-family:var(--mono);color:var(--text3)">SÉCURISÉ · CONTENIR · PROTÉGER</span>
+      <span>v2.4.1 · INTRANET CLASSIFIÉ</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function toggleSearch() {
+    const overlay = document.getElementById('searchOverlay');
+    const input = document.getElementById('searchInput');
+    overlay.classList.toggle('open');
+    if (overlay.classList.contains('open')) {
+      setTimeout(() => input.focus(), 100);
+    }
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.getElementById('searchOverlay').classList.remove('open');
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      toggleSearch();
+    }
+  });
+
+  function switchTab(el, targetId) {
+    // Remove active from all tabs in same container
+    const tabs = el.parentElement.querySelectorAll('.tab');
+    tabs.forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+
+    // Hide all tab contents in same section
+    const section = el.closest('.info-panel');
+    section.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    section.querySelector('#' + targetId).classList.add('active');
+  }
+
+  // Redacted text shake
+  document.querySelectorAll('.redacted').forEach(el => {
+    el.addEventListener('click', () => {
+      el.style.background = 'var(--red)';
+      setTimeout(() => el.style.background = 'var(--text)', 300);
+    });
+  });
+</script>
+</body>
+</html>
