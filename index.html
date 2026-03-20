@@ -6,1644 +6,1279 @@
 <title>Zone Tsade — Wiki Intranet</title>
 <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@200;300;400;600;700;800;900&family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-/* ===== VARIABLES ===== */
 :root {
-  --bg:#020608; --bg2:#030d14; --bg3:#040f18;
-  --panel:#071520; --panel2:#0a1e2e; --panel3:#0d2338;
-  --border:rgba(0,245,255,0.1); --border2:rgba(0,245,255,0.2); --border3:rgba(0,245,255,0.35);
-  --neon:#00f5ff; --neon2:#0080ff; --neon3:#00ffcc;
-  --warn:#ff4f00; --warn2:#ff8c00; --red:#ff2244; --gold:#ffd700; --green:#00ffcc; --purple:#7b2dff;
-  --text:#8ecde0; --text2:#4a8fa3; --text3:#1f4a5c; --white:#e0f7ff;
-  --mono:'Share Tech Mono',monospace; --sans:'Exo 2',sans-serif; --display:'Orbitron',sans-serif;
+  --bg:#020608;--bg2:#030d14;--bg3:#040f18;
+  --panel:#071520;--panel2:#0a1e2e;
+  --border:rgba(0,245,255,0.1);--border2:rgba(0,245,255,0.2);
+  --neon:#00f5ff;--neon2:#0080ff;--neon3:#00ffcc;
+  --warn:#ff4f00;--warn2:#ff8c00;--red:#ff2244;--gold:#ffd700;--green:#00ffcc;--purple:#7b2dff;
+  --text:#8ecde0;--text2:#4a8fa3;--text3:#1f4a5c;--white:#e0f7ff;
+  --mono:'Share Tech Mono',monospace;--sans:'Exo 2',sans-serif;--display:'Orbitron',sans-serif;
   --glow:0 0 20px rgba(0,245,255,0.5),0 0 60px rgba(0,245,255,0.2);
   --glow-sm:0 0 8px rgba(0,245,255,0.4);
-  --glow-warn:0 0 15px rgba(255,79,0,0.4);
-  --transition:all 0.2s cubic-bezier(0.16,1,0.3,1);
+  --tr:all 0.2s cubic-bezier(0.16,1,0.3,1);
 }
-
-/* ===== RESET ===== */
 *{margin:0;padding:0;box-sizing:border-box;}
 ::selection{background:rgba(0,245,255,0.25);color:var(--white);}
-html{scroll-behavior:smooth;}
-body{background:var(--bg);color:var(--text);font-family:var(--sans);overflow-x:hidden;cursor:none;min-height:100vh;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);cursor:none;}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,245,255,0.005) 3px,rgba(0,245,255,0.005) 4px);pointer-events:none;z-index:9990;}
 
 /* ===== CURSOR ===== */
-#cursor{position:fixed;width:18px;height:18px;border:1px solid var(--neon);border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:width 0.15s,height 0.15s,opacity 0.15s;box-shadow:var(--glow-sm);}
-#cursorDot{position:fixed;width:3px;height:3px;background:var(--neon);border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);}
+#cur{position:fixed;width:18px;height:18px;border:1px solid var(--neon);border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:width .15s,height .15s;box-shadow:var(--glow-sm);}
+#curD{position:fixed;width:3px;height:3px;background:var(--neon);border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);}
 
-/* ===== SCANLINES ===== */
-body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,245,255,0.006) 3px,rgba(0,245,255,0.006) 4px);pointer-events:none;z-index:9990;}
+/* ===== SCREENS — teleport, NO scroll ===== */
+.screen{
+  position:fixed;inset:0;
+  display:flex;flex-direction:column;
+  opacity:0;pointer-events:none;
+  transition:opacity 0.25s ease;
+  overflow:hidden;
+}
+.screen.active{opacity:1;pointer-events:all;}
 
-/* ===== VIEWS ===== */
-.view{display:none;}
-.view.active{display:block;}
-
-/* ===========================
-   LOGIN VIEW
-   =========================== */
-#view-login{
-  height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center;
-  background:radial-gradient(ellipse at 30% 40%,rgba(0,128,255,0.05) 0%,transparent 60%),
-             radial-gradient(ellipse at 70% 60%,rgba(0,245,255,0.04) 0%,transparent 60%);
-  position:relative;
+/* ===== SCREEN: LOGIN ===== */
+#s-login{
+  align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at 30% 40%,rgba(0,128,255,0.06) 0%,transparent 60%),
+             radial-gradient(ellipse at 70% 60%,rgba(0,245,255,0.04) 0%,transparent 60%),
+             var(--bg);
 }
 #loginCanvas{position:absolute;inset:0;z-index:0;}
 
-.login-box{
-  position:relative;z-index:10;width:420px;
-  animation:slideUp 0.7s cubic-bezier(0.16,1,0.3,1) both;
-}
-@keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.login-wrap{position:relative;z-index:10;width:440px;max-width:calc(100vw - 2rem);}
+.login-logo{text-align:center;margin-bottom:32px;}
+.l-diamond{width:70px;height:70px;margin:0 auto 14px;position:relative;display:flex;align-items:center;justify-content:center;}
+.l-diamond::before{content:'';position:absolute;inset:0;border:2px solid var(--neon);transform:rotate(45deg);box-shadow:var(--glow),inset 0 0 20px rgba(0,245,255,0.08);animation:gPulse 3s ease-in-out infinite;}
+@keyframes gPulse{0%,100%{box-shadow:var(--glow),inset 0 0 20px rgba(0,245,255,0.08)}50%{box-shadow:0 0 30px rgba(0,245,255,0.7),0 0 80px rgba(0,245,255,0.3),inset 0 0 30px rgba(0,245,255,0.15)}}
+.l-diamond-t{font-family:var(--display);font-size:18px;font-weight:900;color:var(--neon);position:relative;z-index:1;}
+.l-title{font-family:var(--display);font-size:20px;font-weight:900;color:var(--white);letter-spacing:5px;margin-bottom:4px;}
+.l-sub{font-family:var(--mono);font-size:10px;color:var(--neon);letter-spacing:4px;opacity:.7;}
 
-.login-logo{text-align:center;margin-bottom:36px;}
-.login-diamond{
-  width:72px;height:72px;margin:0 auto 16px;position:relative;
-  display:flex;align-items:center;justify-content:center;
-}
-.login-diamond::before{
-  content:'';position:absolute;inset:0;
-  border:2px solid var(--neon);transform:rotate(45deg);
-  box-shadow:var(--glow),inset 0 0 20px rgba(0,245,255,0.08);
-  animation:glowPulse 3s ease-in-out infinite;
-}
-@keyframes glowPulse{0%,100%{box-shadow:var(--glow),inset 0 0 20px rgba(0,245,255,0.08)}50%{box-shadow:0 0 30px rgba(0,245,255,0.7),0 0 80px rgba(0,245,255,0.3),inset 0 0 30px rgba(0,245,255,0.15)}}
-.login-diamond-text{font-family:var(--display);font-size:18px;font-weight:900;color:var(--neon);position:relative;z-index:1;}
-.login-title{font-family:var(--display);font-size:20px;font-weight:900;color:var(--white);letter-spacing:5px;margin-bottom:4px;}
-.login-sub{font-family:var(--mono);font-size:10px;color:var(--neon);letter-spacing:4px;opacity:0.7;}
+.l-card{background:linear-gradient(135deg,rgba(0,245,255,0.04),rgba(0,128,255,0.02));border:1px solid var(--border2);padding:32px;position:relative;backdrop-filter:blur(12px);}
+.l-card::before{content:'';position:absolute;top:-1px;left:-1px;width:14px;height:14px;border-top:2px solid var(--neon);border-left:2px solid var(--neon);}
+.l-card::after{content:'';position:absolute;bottom:-1px;right:-1px;width:14px;height:14px;border-bottom:2px solid var(--neon);border-right:2px solid var(--neon);}
 
-.login-card{
-  background:linear-gradient(135deg,rgba(0,245,255,0.04),rgba(0,128,255,0.02));
-  border:1px solid var(--border2);padding:36px;position:relative;backdrop-filter:blur(12px);
-}
-.login-card::before{content:'';position:absolute;top:-1px;left:-1px;width:14px;height:14px;border-top:2px solid var(--neon);border-left:2px solid var(--neon);}
-.login-card::after{content:'';position:absolute;bottom:-1px;right:-1px;width:14px;height:14px;border-bottom:2px solid var(--neon);border-right:2px solid var(--neon);}
+.l-desc{font-family:var(--mono);font-size:11px;color:var(--text2);letter-spacing:2px;line-height:1.9;text-align:center;margin-bottom:24px;}
+.l-desc span{color:var(--text3);}
 
-.field{margin-bottom:20px;}
-.field-label{font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--text3);text-transform:uppercase;margin-bottom:7px;display:flex;align-items:center;gap:7px;}
-.field-label::before{content:'';width:3px;height:3px;background:var(--neon);border-radius:50%;box-shadow:var(--glow-sm);}
+.btn-main{width:100%;background:transparent;border:1px solid var(--neon);color:var(--neon);padding:13px;font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:4px;text-transform:uppercase;cursor:pointer;position:relative;overflow:hidden;transition:var(--tr);box-shadow:0 0 15px rgba(0,245,255,0.08);}
+.btn-main::before{content:'';position:absolute;inset:0;background:var(--neon);transform:translateX(-102%);transition:transform .3s cubic-bezier(.16,1,.3,1);z-index:0;}
+.btn-main:hover::before{transform:translateX(0);}
+.btn-main:hover{color:var(--bg);box-shadow:var(--glow);}
+.btn-main span{position:relative;z-index:1;}
+
+.l-loader{height:2px;background:rgba(0,245,255,0.08);margin-top:10px;overflow:hidden;display:none;}
+.l-loader.on{display:block;}
+.l-loader-bar{height:100%;width:30%;background:linear-gradient(90deg,transparent,var(--neon),transparent);animation:scanL 1s ease-in-out infinite;box-shadow:0 0 8px var(--neon);}
+@keyframes scanL{0%{transform:translateX(-200%)}100%{transform:translateX(500%)}}
+
+.admin-toggle{text-align:center;margin-top:16px;}
+.admin-toggle-btn{font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:2px;cursor:pointer;opacity:.35;transition:opacity .2s;background:none;border:none;}
+.admin-toggle-btn:hover{opacity:.75;}
+
+.admin-form{display:none;margin-top:10px;}
+.admin-form .l-card{padding:24px;}
+.field{margin-bottom:16px;}
+.field-label{font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--text3);text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:7px;}
+.field-label::before{content:'';width:3px;height:3px;background:var(--neon);border-radius:50%;}
 .field-wrap{position:relative;}
-.field-input{
-  width:100%;background:rgba(0,245,255,0.03);border:1px solid rgba(0,245,255,0.12);
-  border-bottom:1px solid rgba(0,245,255,0.35);padding:11px 14px 11px 38px;
-  font-family:var(--mono);font-size:13px;color:var(--white);outline:none;
-  transition:var(--transition);letter-spacing:1px;
-}
+.field-input{width:100%;background:rgba(0,245,255,0.03);border:1px solid rgba(0,245,255,0.12);border-bottom:1px solid rgba(0,245,255,0.35);padding:10px 14px 10px 36px;font-family:var(--mono);font-size:13px;color:var(--white);outline:none;transition:var(--tr);letter-spacing:1px;}
 .field-input::placeholder{color:var(--text3);}
-.field-input:focus{border-color:var(--neon);background:rgba(0,245,255,0.05);box-shadow:0 0 15px rgba(0,245,255,0.08);}
-.field-ico{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:13px;transition:color 0.2s;pointer-events:none;}
-.field-input:focus~.field-ico{color:var(--neon);}
-.field-bar{position:absolute;bottom:0;left:0;width:0;height:2px;background:var(--neon);box-shadow:0 0 8px var(--neon);transition:width 0.3s;}
+.field-input:focus{border-color:var(--neon);background:rgba(0,245,255,0.05);}
+.field-ico{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:13px;pointer-events:none;}
+.field-bar{position:absolute;bottom:0;left:0;width:0;height:2px;background:var(--neon);box-shadow:0 0 8px var(--neon);transition:width .3s;}
 .field-input:focus~.field-bar{width:100%;}
-
-.btn-primary{
-  width:100%;background:transparent;border:1px solid var(--neon);color:var(--neon);
-  padding:13px;font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:4px;
-  text-transform:uppercase;cursor:pointer;position:relative;overflow:hidden;transition:var(--transition);
-  box-shadow:0 0 15px rgba(0,245,255,0.08);
-}
-.btn-primary::before{content:'';position:absolute;inset:0;background:var(--neon);transform:translateX(-102%);transition:transform 0.3s cubic-bezier(0.16,1,0.3,1);z-index:0;}
-.btn-primary:hover::before{transform:translateX(0);}
-.btn-primary:hover{color:var(--bg);box-shadow:var(--glow);}
-.btn-primary span{position:relative;z-index:1;}
-
-.login-msg{font-family:var(--mono);font-size:11px;text-align:center;margin-top:14px;min-height:18px;letter-spacing:1px;transition:color 0.2s;}
+.login-msg{font-family:var(--mono);font-size:11px;text-align:center;margin-top:10px;min-height:16px;letter-spacing:1px;}
 .login-msg.err{color:var(--red);}
 .login-msg.ok{color:var(--neon3);}
 .login-msg.info{color:var(--text3);}
 
-.login-loading{height:2px;background:rgba(0,245,255,0.08);margin-top:12px;overflow:hidden;display:none;}
-.login-loading.on{display:block;}
-.login-loading-bar{height:100%;width:30%;background:linear-gradient(90deg,transparent,var(--neon),transparent);animation:scanLoad 1s ease-in-out infinite;box-shadow:0 0 8px var(--neon);}
-@keyframes scanLoad{0%{transform:translateX(-200%)}100%{transform:translateX(500%)}}
+/* ===== SCREEN: WIKI ===== */
+#s-wiki{flex-direction:column;}
 
-/* ===========================
-   HEADER
-   =========================== */
-#main-header{
-  position:sticky;top:0;z-index:1000;
-  background:rgba(2,6,8,0.93);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);
-}
-.hdr-inner{
-  max-width:1440px;margin:0 auto;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 1.5rem;height:60px;gap:16px;
-}
-.hdr-logo{display:flex;align-items:center;gap:12px;text-decoration:none;cursor:pointer;}
-.hdr-diamond{width:34px;height:34px;border:2px solid var(--neon);transform:rotate(45deg);display:flex;align-items:center;justify-content:center;box-shadow:var(--glow-sm);animation:glowPulse 4s ease-in-out infinite;flex-shrink:0;}
-.hdr-diamond-t{transform:rotate(-45deg);font-family:var(--display);font-size:10px;font-weight:900;color:var(--neon);}
-.hdr-logo-text{display:flex;flex-direction:column;}
-.hdr-logo-name{font-family:var(--display);font-size:14px;font-weight:900;color:var(--white);letter-spacing:3px;line-height:1;}
-.hdr-logo-sub{font-family:var(--mono);font-size:8px;color:var(--neon);letter-spacing:3px;opacity:0.7;}
+/* TICKER */
+.ticker-bar{background:linear-gradient(90deg,rgba(255,79,0,0.12),rgba(255,79,0,0.04),rgba(255,79,0,0.12));border-bottom:1px solid rgba(255,79,0,0.25);padding:6px 0;overflow:hidden;flex-shrink:0;}
+.ticker-bar.off{display:none;}
+.ticker-track{display:inline-flex;align-items:center;gap:48px;white-space:nowrap;font-family:var(--mono);font-size:10px;letter-spacing:3px;color:var(--warn2);animation:tickAnim 35s linear infinite;}
+@keyframes tickAnim{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.t-sep{color:var(--warn);opacity:.4;}
 
+/* HEADER */
+.wiki-header{flex-shrink:0;background:rgba(2,6,8,0.95);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);z-index:100;}
+.hdr{max-width:1440px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;height:58px;gap:12px;}
+.hdr-logo{display:flex;align-items:center;gap:12px;cursor:pointer;}
+.hdr-dia{width:32px;height:32px;border:2px solid var(--neon);transform:rotate(45deg);display:flex;align-items:center;justify-content:center;box-shadow:var(--glow-sm);animation:gPulse 4s ease-in-out infinite;flex-shrink:0;}
+.hdr-dia-t{transform:rotate(-45deg);font-family:var(--display);font-size:10px;font-weight:900;color:var(--neon);}
+.hdr-name{font-family:var(--display);font-size:13px;font-weight:900;color:var(--white);letter-spacing:3px;}
+.hdr-sub{font-family:var(--mono);font-size:8px;color:var(--neon);letter-spacing:3px;opacity:.7;}
 .hdr-nav{display:flex;align-items:center;gap:2px;flex:1;justify-content:center;}
-.nav-btn{
-  padding:0 14px;height:60px;display:flex;align-items:center;
-  font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:2px;
-  text-transform:uppercase;color:var(--text2);cursor:pointer;
-  border:none;background:none;position:relative;transition:color 0.2s;
-  white-space:nowrap;
-}
+.nav-btn{padding:0 14px;height:58px;display:flex;align-items:center;font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text2);cursor:pointer;border:none;background:none;position:relative;transition:color .2s;white-space:nowrap;}
 .nav-btn:hover,.nav-btn.active{color:var(--neon);}
-.nav-btn::after{content:'';position:absolute;bottom:0;left:14px;right:14px;height:2px;background:var(--neon);box-shadow:0 0 8px var(--neon);transform:scaleX(0);transition:transform 0.2s;}
+.nav-btn::after{content:'';position:absolute;bottom:0;left:14px;right:14px;height:2px;background:var(--neon);box-shadow:0 0 8px var(--neon);transform:scaleX(0);transition:transform .2s;}
 .nav-btn:hover::after,.nav-btn.active::after{transform:scaleX(1);}
-
-.hdr-right{display:flex;align-items:center;gap:10px;}
-.hdr-user{font-family:var(--mono);font-size:10px;color:var(--text2);letter-spacing:2px;padding:5px 12px;border:1px solid var(--border);background:rgba(0,245,255,0.03);}
-.hdr-badge{font-family:var(--mono);font-size:9px;padding:3px 9px;letter-spacing:2px;border:1px solid;}
-.badge-creator{color:var(--gold);border-color:rgba(255,215,0,0.3);background:rgba(255,215,0,0.06);}
-.badge-admin{color:var(--warn2);border-color:rgba(255,140,0,0.3);background:rgba(255,140,0,0.06);}
-.btn-sm{
-  padding:6px 14px;font-family:var(--mono);font-size:10px;letter-spacing:2px;
-  border:1px solid var(--border2);color:var(--text2);background:transparent;
-  cursor:pointer;transition:var(--transition);
-}
+.hdr-right{display:flex;align-items:center;gap:8px;}
+.hdr-user{font-family:var(--mono);font-size:10px;color:var(--text2);letter-spacing:2px;padding:4px 10px;border:1px solid var(--border);}
+.hdr-badge{font-family:var(--mono);font-size:9px;padding:2px 8px;letter-spacing:2px;border:1px solid;}
+.badge-creator{color:var(--gold);border-color:rgba(255,215,0,.3);background:rgba(255,215,0,.06);}
+.badge-cocreator{color:var(--purple);border-color:rgba(123,45,255,.3);background:rgba(123,45,255,.06);}
+.badge-admin{color:var(--warn2);border-color:rgba(255,140,0,.3);background:rgba(255,140,0,.06);}
+.btn-sm{padding:5px 12px;font-family:var(--mono);font-size:10px;letter-spacing:2px;border:1px solid var(--border2);color:var(--text2);background:transparent;cursor:pointer;transition:var(--tr);}
 .btn-sm:hover{border-color:var(--neon);color:var(--neon);}
-.btn-sm.danger:hover{border-color:var(--red);color:var(--red);}
+.btn-sm.red:hover{border-color:var(--red);color:var(--red);}
+.btn-sm.ghost{opacity:.3;border-color:var(--border);font-size:9px;}
+.btn-sm.ghost:hover{opacity:.8;}
 
-/* ===========================
-   TICKER
-   =========================== */
-.alert-ticker{
-  background:linear-gradient(90deg,rgba(255,79,0,0.12),rgba(255,79,0,0.04),rgba(255,79,0,0.12));
-  border-bottom:1px solid rgba(255,79,0,0.25);padding:6px 0;overflow:hidden;position:relative;z-index:999;
-}
-.alert-ticker.hidden{display:none;}
-.ticker-track{display:inline-flex;align-items:center;gap:48px;white-space:nowrap;font-family:var(--mono);font-size:10px;letter-spacing:3px;color:var(--warn2);}
-.ticker-track.anim{animation:ticker 35s linear infinite;}
-@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.t-sep{color:var(--warn);opacity:0.4;}
-
-/* ===========================
-   WIKI LAYOUT
-   =========================== */
-#view-wiki{display:none;}
-#view-wiki.active{display:flex;flex-direction:column;min-height:100vh;}
-
-.wiki-body{flex:1;display:flex;max-width:1440px;margin:0 auto;width:100%;padding:0 1.5rem;gap:0;}
+/* WIKI BODY = sidebar + main, fills remaining height */
+.wiki-body{flex:1;display:flex;overflow:hidden;min-height:0;}
 
 /* SIDEBAR */
-.wiki-sidebar{
-  width:260px;flex-shrink:0;padding:24px 16px 24px 0;
-  border-right:1px solid var(--border);
-  position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;
-}
-.sidebar-section{margin-bottom:24px;}
-.sidebar-cat{font-family:var(--mono);font-size:9px;letter-spacing:4px;color:var(--text3);text-transform:uppercase;padding:0 8px;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
-.sidebar-cat::after{content:'';flex:1;height:1px;background:var(--border);}
-.sidebar-link{
-  display:flex;align-items:center;gap:8px;
-  padding:8px 10px;font-family:var(--mono);font-size:11px;
-  color:var(--text2);cursor:pointer;transition:var(--transition);
-  border-left:2px solid transparent;letter-spacing:1px;
-  border-radius:0;
-}
-.sidebar-link:hover{color:var(--text);background:rgba(0,245,255,0.04);border-left-color:var(--border2);}
-.sidebar-link.active{color:var(--neon);background:rgba(0,245,255,0.06);border-left-color:var(--neon);}
-.sidebar-link-dot{width:5px;height:5px;border-radius:50%;background:var(--text3);flex-shrink:0;}
-.sidebar-link.active .sidebar-link-dot{background:var(--neon);box-shadow:var(--glow-sm);}
+.wiki-sidebar{width:250px;flex-shrink:0;border-right:1px solid var(--border);overflow-y:auto;padding:20px 12px;}
+.wiki-sidebar::-webkit-scrollbar{width:3px;}
+.wiki-sidebar::-webkit-scrollbar-track{background:transparent;}
+.wiki-sidebar::-webkit-scrollbar-thumb{background:rgba(0,245,255,0.2);}
+.sb-section{margin-bottom:20px;}
+.sb-cat{font-family:var(--mono);font-size:9px;letter-spacing:4px;color:var(--text3);text-transform:uppercase;padding:0 8px;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.sb-cat::after{content:'';flex:1;height:1px;background:var(--border);}
+.sb-link{display:flex;align-items:center;gap:8px;padding:7px 10px;font-family:var(--mono);font-size:11px;color:var(--text2);cursor:pointer;transition:var(--tr);border-left:2px solid transparent;letter-spacing:1px;}
+.sb-link:hover{color:var(--text);background:rgba(0,245,255,0.04);border-left-color:var(--border2);}
+.sb-link.active{color:var(--neon);background:rgba(0,245,255,0.06);border-left-color:var(--neon);}
+.sb-dot{width:5px;height:5px;border-radius:50%;background:var(--text3);flex-shrink:0;}
+.sb-link.active .sb-dot{background:var(--neon);box-shadow:var(--glow-sm);}
 
-/* MAIN CONTENT */
-.wiki-main{flex:1;padding:32px 32px 80px;min-width:0;}
+/* WIKI MAIN — scrollable independently */
+.wiki-main{flex:1;overflow-y:auto;padding:32px 36px 60px;min-width:0;}
+.wiki-main::-webkit-scrollbar{width:4px;}
+.wiki-main::-webkit-scrollbar-track{background:transparent;}
+.wiki-main::-webkit-scrollbar-thumb{background:rgba(0,245,255,0.15);border-radius:2px;}
 
-/* ===========================
-   HOME PAGE
-   =========================== */
-.home-hero{
-  padding:48px 0 40px;margin-bottom:40px;
-  border-bottom:1px solid var(--border);position:relative;overflow:hidden;
-}
-.home-hero::before{
-  content:'';position:absolute;inset:0;
-  background-image:linear-gradient(rgba(0,245,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,245,255,0.025) 1px,transparent 1px);
-  background-size:50px 50px;
-  mask-image:linear-gradient(180deg,transparent,rgba(0,0,0,0.5) 50%,transparent);
-  pointer-events:none;
-}
-.home-eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:5px;color:var(--neon);margin-bottom:12px;opacity:0.7;display:flex;align-items:center;gap:10px;}
-.home-eyebrow::before{content:'';width:30px;height:1px;background:var(--neon);box-shadow:0 0 6px var(--neon);}
-.home-title{font-family:var(--display);font-size:clamp(2rem,4vw,3.2rem);font-weight:900;color:var(--white);letter-spacing:2px;margin-bottom:6px;line-height:1.1;}
-.home-title .ht-accent{color:var(--neon);text-shadow:0 0 30px rgba(0,245,255,0.5);}
-.home-desc{font-size:14px;color:var(--text2);line-height:1.8;max-width:600px;font-weight:300;margin-bottom:28px;}
+/* HOME */
+.home-hero{padding-bottom:32px;margin-bottom:32px;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.home-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(0,245,255,0.022) 1px,transparent 1px),linear-gradient(90deg,rgba(0,245,255,0.022) 1px,transparent 1px);background-size:50px 50px;mask-image:radial-gradient(ellipse at 50% 0%,rgba(0,0,0,.5) 0%,transparent 70%);pointer-events:none;}
+.eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:5px;color:var(--neon);margin-bottom:10px;opacity:.7;display:flex;align-items:center;gap:10px;}
+.eyebrow::before{content:'';width:28px;height:1px;background:var(--neon);box-shadow:0 0 6px var(--neon);}
+.home-title{font-family:var(--display);font-size:clamp(1.8rem,3.5vw,3rem);font-weight:900;color:var(--white);letter-spacing:2px;margin-bottom:6px;line-height:1.1;}
+.home-title .acc{color:var(--neon);text-shadow:0 0 25px rgba(0,245,255,.5);}
+.home-desc{font-size:13px;color:var(--text2);line-height:1.8;max-width:560px;font-weight:300;margin-bottom:24px;}
+.home-stats{display:flex;gap:28px;flex-wrap:wrap;}
+.hs{text-align:center;}
+.hs-n{font-family:var(--display);font-size:22px;font-weight:900;color:var(--neon);display:block;text-shadow:0 0 12px rgba(0,245,255,.4);}
+.hs-l{font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:2px;}
 
-.home-stats{display:flex;gap:32px;flex-wrap:wrap;}
-.home-stat{text-align:center;}
-.hs-num{font-family:var(--display);font-size:24px;font-weight:900;color:var(--neon);display:block;text-shadow:0 0 15px rgba(0,245,255,0.4);}
-.hs-label{font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:3px;text-transform:uppercase;}
+/* SECTION TITLE */
+.sec-title{font-family:var(--display);font-size:12px;font-weight:900;color:var(--white);letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.sec-title .sn{font-family:var(--mono);font-size:10px;color:var(--neon);background:rgba(0,245,255,.08);border:1px solid var(--border2);padding:1px 8px;letter-spacing:2px;}
+.sec-line{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
 
-/* ANNOUNCEMENTS */
-.announcements{margin-bottom:40px;}
-.section-title{font-family:var(--display);font-size:13px;font-weight:900;color:var(--white);letter-spacing:3px;text-transform:uppercase;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
-.section-title .st-num{font-family:var(--mono);font-size:10px;color:var(--neon);background:rgba(0,245,255,0.08);border:1px solid var(--border2);padding:2px 8px;letter-spacing:2px;}
-.section-title .st-line{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
-
-.announce-card{
-  background:var(--panel);border:1px solid var(--border);padding:20px;margin-bottom:12px;
-  position:relative;transition:var(--transition);
-}
-.announce-card:hover{border-color:var(--border2);}
-.announce-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--ac,var(--neon));box-shadow:0 0 8px var(--ac,var(--neon));}
-.ac-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px;}
+/* ANNOUNCE CARDS */
+.ac{background:var(--panel);border:1px solid var(--border);padding:18px;margin-bottom:10px;position:relative;transition:var(--tr);}
+.ac:hover{border-color:var(--border2);}
+.ac::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--aclr,var(--neon));box-shadow:0 0 8px var(--aclr,var(--neon));}
+.ac-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px;}
 .ac-title{font-family:var(--sans);font-size:14px;font-weight:700;color:var(--white);}
-.ac-level{font-family:var(--mono);font-size:9px;padding:2px 8px;letter-spacing:2px;border:1px solid;}
-.level-info{color:var(--neon);border-color:rgba(0,245,255,0.3);}
-.level-warn{color:var(--warn2);border-color:rgba(255,140,0,0.3);}
-.level-danger{color:var(--red);border-color:rgba(255,34,68,0.3);}
+.ac-lvl{font-family:var(--mono);font-size:9px;padding:2px 8px;letter-spacing:2px;border:1px solid;}
+.lvl-info{color:var(--neon);border-color:rgba(0,245,255,.3);}
+.lvl-warn{color:var(--warn2);border-color:rgba(255,140,0,.3);}
+.lvl-danger{color:var(--red);border-color:rgba(255,34,68,.3);}
 .ac-body{font-size:13px;color:var(--text2);line-height:1.7;font-weight:300;}
-.ac-footer{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:1px;margin-top:10px;}
-.no-content{font-family:var(--mono);font-size:11px;color:var(--text3);letter-spacing:2px;padding:20px;border:1px dashed var(--border);text-align:center;}
+.ac-foot{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:1px;margin-top:8px;}
 
-/* QUICK NAV CARDS */
-.quick-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:40px;}
-.quick-card{
-  background:var(--panel);border:1px solid var(--border);padding:20px;
-  cursor:pointer;transition:var(--transition);text-align:center;
-}
-.quick-card:hover{border-color:var(--neon);box-shadow:0 0 20px rgba(0,245,255,0.06);transform:translateY(-2px);}
-.qc-icon{font-size:24px;margin-bottom:10px;display:block;}
-.qc-title{font-family:var(--display);font-size:11px;font-weight:700;color:var(--white);letter-spacing:2px;margin-bottom:4px;}
+/* QUICK GRID */
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:32px;}
+.qcard{background:var(--panel);border:1px solid var(--border);padding:18px;cursor:pointer;transition:var(--tr);text-align:center;}
+.qcard:hover{border-color:var(--neon);box-shadow:0 0 16px rgba(0,245,255,.06);transform:translateY(-2px);}
+.qc-icon{font-size:22px;margin-bottom:8px;display:block;}
+.qc-title{font-family:var(--display);font-size:10px;font-weight:700;color:var(--white);letter-spacing:2px;margin-bottom:4px;}
 .qc-desc{font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:1px;}
 
-/* ===========================
-   WIKI PAGE CONTENT
-   =========================== */
-.page-header{margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border);}
-.page-breadcrumb{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:2px;margin-bottom:12px;}
-.page-breadcrumb span{color:var(--text2);}
-.page-title{font-family:var(--display);font-size:clamp(1.4rem,3vw,2.2rem);font-weight:900;color:var(--white);letter-spacing:2px;margin-bottom:8px;}
-.page-title .pt-cat{color:var(--neon);text-shadow:0 0 15px rgba(0,245,255,0.4);}
-.page-meta{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:1px;display:flex;gap:20px;flex-wrap:wrap;}
+/* PAGE HEADER */
+.ph{margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid var(--border);}
+.ph-bread{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:2px;margin-bottom:10px;}
+.ph-bread span{color:var(--text2);cursor:pointer;}
+.ph-bread span:hover{color:var(--neon);}
+.ph-title{font-family:var(--display);font-size:clamp(1.3rem,2.5vw,2rem);font-weight:900;color:var(--white);letter-spacing:2px;margin-bottom:6px;}
+.ph-title .cat{color:var(--neon);text-shadow:0 0 12px rgba(0,245,255,.4);}
+.ph-meta{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:1px;display:flex;gap:16px;flex-wrap:wrap;}
 
-.page-content{
-  font-size:14px;color:var(--text2);line-height:1.85;
-  white-space:pre-wrap;word-wrap:break-word;
-}
-.page-content h2{font-family:var(--display);font-size:14px;font-weight:700;color:var(--neon);letter-spacing:2px;margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border);}
-.page-content h3{font-family:var(--display);font-size:12px;color:var(--white);letter-spacing:2px;margin:18px 0 8px;}
+/* ADD BTN */
+.add-btn{display:flex;align-items:center;gap:10px;padding:12px 18px;background:rgba(0,245,255,.04);border:1px dashed rgba(0,245,255,.2);cursor:pointer;transition:var(--tr);font-family:var(--mono);font-size:11px;color:var(--text2);letter-spacing:2px;margin-bottom:16px;}
+.add-btn:hover{border-color:var(--neon);color:var(--neon);background:rgba(0,245,255,.07);}
+
+/* CARDS GRID */
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;}
+.icard{background:var(--panel);border:1px solid var(--border);padding:18px;cursor:pointer;transition:var(--tr);position:relative;overflow:hidden;}
+.icard:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 10px 36px rgba(0,0,0,.4);}
+.icard::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--ic,var(--neon));opacity:0;transition:opacity .2s;}
+.icard:hover::before{opacity:1;}
+.ic-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
+.ic-badge{font-family:var(--display);font-size:9px;font-weight:700;letter-spacing:2px;padding:3px 10px;border:1px solid var(--ic,rgba(0,245,255,.3));color:var(--ic,var(--neon));}
+.ic-id{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:1px;}
+.ic-name{font-family:var(--display);font-size:12px;font-weight:700;color:var(--white);letter-spacing:1px;margin-bottom:5px;}
+.ic-desc{font-size:12px;color:var(--text2);line-height:1.6;font-weight:300;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.ic-foot{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:8px;border-top:1px solid var(--border);}
+.ic-status{font-family:var(--mono);font-size:9px;padding:2px 8px;letter-spacing:1px;}
+.ic-arr{font-family:var(--mono);font-size:11px;color:var(--text3);transition:color .2s;}
+.icard:hover .ic-arr{color:var(--neon);}
+.s-ok{color:var(--green);border:1px solid rgba(0,255,204,.3);}
+.s-warn{color:var(--warn2);border:1px solid rgba(255,140,0,.3);}
+.s-danger{color:var(--red);border:1px solid rgba(255,34,68,.3);animation:blink 1s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+.no-content{font-family:var(--mono);font-size:11px;color:var(--text3);letter-spacing:2px;padding:24px;border:1px dashed var(--border);text-align:center;}
+
+/* PAGE CONTENT */
+.page-actions{display:flex;gap:8px;margin-bottom:18px;}
+.btn-edit{padding:7px 16px;font-family:var(--mono);font-size:10px;letter-spacing:2px;background:rgba(0,245,255,.06);border:1px solid var(--border2);color:var(--neon);cursor:pointer;transition:var(--tr);}
+.btn-edit:hover{background:rgba(0,245,255,.12);}
+.btn-del{padding:7px 16px;font-family:var(--mono);font-size:10px;letter-spacing:2px;background:rgba(255,34,68,.06);border:1px solid rgba(255,34,68,.25);color:var(--red);cursor:pointer;transition:var(--tr);}
+.btn-del:hover{background:rgba(255,34,68,.12);}
+.page-content{font-size:14px;color:var(--text2);line-height:1.85;white-space:pre-wrap;word-wrap:break-word;}
+.page-content h2{font-family:var(--display);font-size:13px;font-weight:700;color:var(--neon);letter-spacing:2px;margin:22px 0 8px;padding-bottom:5px;border-bottom:1px solid var(--border);}
+.page-content h3{font-family:var(--display);font-size:11px;color:var(--white);letter-spacing:2px;margin:16px 0 6px;}
 .page-content strong{color:var(--white);font-weight:700;}
 .page-content em{color:var(--neon);font-style:normal;}
 
-/* PAGE ACTIONS */
-.page-actions{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
-.btn-edit{padding:8px 18px;font-family:var(--mono);font-size:10px;letter-spacing:2px;background:rgba(0,245,255,0.06);border:1px solid var(--border2);color:var(--neon);cursor:pointer;transition:var(--transition);}
-.btn-edit:hover{background:rgba(0,245,255,0.12);box-shadow:var(--glow-sm);}
-.btn-delete{padding:8px 18px;font-family:var(--mono);font-size:10px;letter-spacing:2px;background:rgba(255,34,68,0.06);border:1px solid rgba(255,34,68,0.25);color:var(--red);cursor:pointer;transition:var(--transition);}
-.btn-delete:hover{background:rgba(255,34,68,0.12);}
-
-/* ===========================
-   CARDS GRID (anomalies/perso)
-   =========================== */
-.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;}
-.item-card{
-  background:var(--panel);border:1px solid var(--border);padding:20px;
-  cursor:pointer;transition:var(--transition);position:relative;overflow:hidden;
-}
-.item-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,0,0,0.4);}
-.item-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--ic,var(--neon));opacity:0;transition:opacity 0.2s;}
-.item-card:hover::before{opacity:1;}
-.ic-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;}
-.ic-badge{font-family:var(--display);font-size:9px;font-weight:700;letter-spacing:2px;padding:3px 10px;border:1px solid var(--ic,rgba(0,245,255,0.3));color:var(--ic,var(--neon));text-shadow:0 0 8px var(--ic,var(--neon));}
-.ic-id{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:1px;}
-.ic-name{font-family:var(--display);font-size:12px;font-weight:700;color:var(--white);letter-spacing:1px;margin-bottom:6px;}
-.ic-desc{font-size:12px;color:var(--text2);line-height:1.6;font-weight:300;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.ic-footer{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:10px;border-top:1px solid var(--border);}
-.ic-status{font-family:var(--mono);font-size:9px;padding:2px 8px;letter-spacing:1px;}
-.ic-arrow{font-family:var(--mono);font-size:11px;color:var(--text3);transition:color 0.2s;}
-.item-card:hover .ic-arrow{color:var(--neon);}
-.s-ok{color:var(--green);border:1px solid rgba(0,255,204,0.3);}
-.s-warn{color:var(--warn2);border:1px solid rgba(255,140,0,0.3);}
-.s-danger{color:var(--red);border:1px solid rgba(255,34,68,0.3);animation:blink 1s infinite;}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0.4}}
-
-/* ADD BTN */
-.add-btn{
-  display:flex;align-items:center;gap:10px;
-  padding:14px 20px;background:rgba(0,245,255,0.04);border:1px dashed rgba(0,245,255,0.2);
-  cursor:pointer;transition:var(--transition);font-family:var(--mono);font-size:11px;color:var(--text2);letter-spacing:2px;
-  margin-bottom:20px;
-}
-.add-btn:hover{border-color:var(--neon);color:var(--neon);background:rgba(0,245,255,0.08);}
-
-/* ===========================
-   MODAL
-   =========================== */
-.modal-overlay{
-  position:fixed;inset:0;background:rgba(2,6,8,0.94);z-index:2000;
-  display:flex;align-items:flex-start;justify-content:center;
-  padding:40px 1.5rem;overflow-y:auto;
-  opacity:0;pointer-events:none;transition:opacity 0.25s;backdrop-filter:blur(12px);
-}
-.modal-overlay.open{opacity:1;pointer-events:all;}
-.modal{
-  width:100%;max-width:680px;background:var(--panel);border:1px solid var(--border2);
-  position:relative;box-shadow:0 0 60px rgba(0,245,255,0.08),0 40px 80px rgba(0,0,0,0.8);
-  animation:modalIn 0.3s cubic-bezier(0.16,1,0.3,1);
-}
-.modal.wide{max-width:880px;}
-@keyframes modalIn{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
-.modal::before{content:'';position:absolute;top:-1px;left:-1px;width:16px;height:16px;border-top:2px solid var(--neon);border-left:2px solid var(--neon);}
-.modal::after{content:'';position:absolute;bottom:-1px;right:-1px;width:16px;height:16px;border-bottom:2px solid var(--neon);border-right:2px solid var(--neon);}
-.modal-tr{position:absolute;top:-1px;right:-1px;width:16px;height:16px;border-top:2px solid var(--neon);border-right:2px solid var(--neon);}
-.modal-bl{position:absolute;bottom:-1px;left:-1px;width:16px;height:16px;border-bottom:2px solid var(--neon);border-left:2px solid var(--neon);}
-
-.modal-head{
-  padding:24px 28px 20px;border-bottom:1px solid var(--border);
-  display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
-}
-.modal-title{font-family:var(--display);font-size:16px;font-weight:900;color:var(--white);letter-spacing:2px;}
-.modal-sub{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:2px;margin-top:4px;}
-.modal-close{width:32px;height:32px;background:none;border:1px solid var(--border);color:var(--text2);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:var(--transition);flex-shrink:0;}
-.modal-close:hover{border-color:var(--red);color:var(--red);}
-.modal-body{padding:24px 28px;}
-.modal-footer{padding:16px 28px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;}
-
-.form-row{margin-bottom:18px;}
-.form-label{font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--text3);text-transform:uppercase;margin-bottom:7px;display:block;}
-.form-input,.form-select,.form-textarea{
-  width:100%;background:rgba(0,245,255,0.03);border:1px solid rgba(0,245,255,0.12);
-  padding:10px 14px;font-family:var(--mono);font-size:12px;color:var(--white);outline:none;
-  transition:var(--transition);letter-spacing:1px;resize:vertical;
-}
-.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--neon);background:rgba(0,245,255,0.05);}
-.form-select option{background:var(--bg3);color:var(--white);}
-.form-textarea{min-height:120px;font-size:12px;line-height:1.7;}
-.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-
-.btn-save{padding:10px 24px;font-family:var(--mono);font-size:11px;letter-spacing:2px;background:rgba(0,245,255,0.08);border:1px solid var(--neon);color:var(--neon);cursor:pointer;transition:var(--transition);}
-.btn-save:hover{background:var(--neon);color:var(--bg);box-shadow:var(--glow);}
-.btn-cancel{padding:10px 24px;font-family:var(--mono);font-size:11px;letter-spacing:2px;background:transparent;border:1px solid var(--border);color:var(--text2);cursor:pointer;transition:var(--transition);}
-.btn-cancel:hover{border-color:var(--text2);}
-.btn-danger-sm{padding:10px 24px;font-family:var(--mono);font-size:11px;letter-spacing:2px;background:rgba(255,34,68,0.06);border:1px solid rgba(255,34,68,0.3);color:var(--red);cursor:pointer;transition:var(--transition);}
-.btn-danger-sm:hover{background:rgba(255,34,68,0.15);}
-
-/* ===========================
-   DETAIL VIEW (fiche)
-   =========================== */
-.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
-.data-block{background:var(--bg3);border:1px solid var(--border);padding:18px;}
-.db-title{font-family:var(--mono);font-size:9px;letter-spacing:4px;color:var(--neon);text-transform:uppercase;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
-.db-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(0,245,255,0.04);font-family:var(--mono);font-size:11px;}
+/* DETAIL BLOCKS */
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
+.db{background:var(--bg3);border:1px solid var(--border);padding:16px;}
+.db-title{font-family:var(--mono);font-size:9px;letter-spacing:4px;color:var(--neon);text-transform:uppercase;margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid var(--border);}
+.db-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(0,245,255,.03);font-family:var(--mono);font-size:11px;}
 .db-row:last-child{border:none;}
 .db-k{color:var(--text3);}
 .db-v{color:var(--text);}
-.detail-section-title{font-family:var(--display);font-size:10px;font-weight:700;color:var(--neon);letter-spacing:3px;margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid var(--border);}
-.detail-text{font-size:13px;color:var(--text2);line-height:1.85;font-weight:300;white-space:pre-wrap;}
-.warning-box{background:rgba(255,79,0,0.05);border:1px solid rgba(255,79,0,0.25);border-left:3px solid var(--warn);padding:14px 18px;font-family:var(--mono);font-size:11px;color:var(--warn2);letter-spacing:1px;line-height:1.7;margin-bottom:20px;}
-.keter-box{background:rgba(255,34,68,0.05);border:1px solid rgba(255,34,68,0.25);border-left:3px solid var(--red);padding:14px 18px;font-family:var(--mono);font-size:11px;color:var(--red);letter-spacing:1px;line-height:1.7;margin-bottom:20px;}
+.det-sec{font-family:var(--display);font-size:10px;font-weight:700;color:var(--neon);letter-spacing:3px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.det-text{font-size:13px;color:var(--text2);line-height:1.85;font-weight:300;white-space:pre-wrap;}
+.warn-box{background:rgba(255,79,0,.05);border:1px solid rgba(255,79,0,.25);border-left:3px solid var(--warn);padding:12px 16px;font-family:var(--mono);font-size:11px;color:var(--warn2);letter-spacing:1px;line-height:1.7;margin-bottom:18px;}
+.keter-box{background:rgba(255,34,68,.05);border:1px solid rgba(255,34,68,.25);border-left:3px solid var(--red);padding:12px 16px;font-family:var(--mono);font-size:11px;color:var(--red);letter-spacing:1px;line-height:1.7;margin-bottom:18px;}
 
-/* ===========================
-   ADMIN PANEL
-   =========================== */
-#view-admin{display:none;}
-#view-admin.active{display:block;min-height:100vh;}
-.admin-wrap{max-width:1200px;margin:0 auto;padding:32px 1.5rem 80px;}
-.admin-header{margin-bottom:36px;padding-bottom:20px;border-bottom:1px solid var(--border);}
-.admin-title{font-family:var(--display);font-size:clamp(1.5rem,3vw,2rem);font-weight:900;color:var(--white);letter-spacing:3px;margin-bottom:6px;}
+/* ===== SCREEN: ADMIN ===== */
+#s-admin{flex-direction:column;}
+.admin-body{flex:1;overflow-y:auto;min-height:0;padding:28px 2rem 60px;}
+.admin-body::-webkit-scrollbar{width:4px;}
+.admin-body::-webkit-scrollbar-thumb{background:rgba(0,245,255,.15);}
+.admin-title{font-family:var(--display);font-size:clamp(1.3rem,2.5vw,1.8rem);font-weight:900;color:var(--white);letter-spacing:3px;margin-bottom:4px;}
 .admin-title span{color:var(--neon);}
-.admin-sub{font-family:var(--mono);font-size:11px;color:var(--text2);letter-spacing:3px;}
-
-.admin-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:32px;overflow-x:auto;}
-.admin-tab{
-  padding:12px 22px;font-family:var(--mono);font-size:10px;letter-spacing:3px;
-  text-transform:uppercase;color:var(--text3);cursor:pointer;
-  border-bottom:2px solid transparent;transition:var(--transition);background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap;
-}
-.admin-tab:hover{color:var(--text2);}
-.admin-tab.active{color:var(--neon);border-bottom-color:var(--neon);}
-
-.admin-section{display:none;}
-.admin-section.active{display:block;}
-
-/* Users table */
-.users-table{width:100%;border-collapse:collapse;border:1px solid var(--border);}
-.users-table th{background:rgba(0,245,255,0.05);padding:10px 16px;font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--text3);text-align:left;border-bottom:1px solid var(--border);text-transform:uppercase;}
-.users-table td{padding:12px 16px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:11px;color:var(--text2);}
-.users-table tr:last-child td{border:none;}
-.users-table tr:hover td{background:rgba(0,245,255,0.02);color:var(--text);}
-.user-role-badge{font-family:var(--mono);font-size:9px;padding:2px 8px;letter-spacing:1px;border:1px solid;}
-
-/* Admin stat cards */
-.admin-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:32px;}
-.astat{background:var(--panel);border:1px solid var(--border);padding:20px;position:relative;overflow:hidden;}
+.admin-sub2{font-family:var(--mono);font-size:11px;color:var(--text2);letter-spacing:3px;}
+.admin-header2{margin-bottom:28px;padding-bottom:16px;border-bottom:1px solid var(--border);}
+.adm-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:24px;overflow-x:auto;}
+.adm-tab{padding:10px 20px;font-family:var(--mono);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;transition:var(--tr);background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap;}
+.adm-tab:hover{color:var(--text2);}
+.adm-tab.active{color:var(--neon);border-bottom-color:var(--neon);}
+.adm-sec{display:none;}
+.adm-sec.active{display:block;}
+.astats{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:24px;}
+.astat{background:var(--panel);border:1px solid var(--border);padding:18px;position:relative;overflow:hidden;}
 .astat::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--as,var(--neon));box-shadow:0 0 8px var(--as,var(--neon));}
-.astat-num{font-family:var(--display);font-size:28px;font-weight:900;color:var(--as,var(--neon));display:block;text-shadow:0 0 12px var(--as,rgba(0,245,255,0.4));}
-.astat-label{font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;}
+.astat-n{font-family:var(--display);font-size:26px;font-weight:900;color:var(--as,var(--neon));display:block;}
+.astat-l{font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:2px;}
+.users-tbl{width:100%;border-collapse:collapse;border:1px solid var(--border);}
+.users-tbl th{background:rgba(0,245,255,.05);padding:9px 14px;font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--text3);text-align:left;border-bottom:1px solid var(--border);text-transform:uppercase;}
+.users-tbl td{padding:11px 14px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:11px;color:var(--text2);}
+.users-tbl tr:last-child td{border:none;}
+.users-tbl tr:hover td{background:rgba(0,245,255,.02);}
+.role-badge{font-family:var(--mono);font-size:9px;padding:2px 8px;letter-spacing:1px;border:1px solid;}
+.adm-item{background:var(--panel);border:1px solid var(--border);padding:14px 18px;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.adm-item-l{flex:1;min-width:0;}
+.adm-item-actions{display:flex;gap:6px;flex-shrink:0;}
+.max-w{max-width:900px;}
 
-/* Danger zone */
-.danger-zone{background:rgba(255,34,68,0.04);border:1px solid rgba(255,34,68,0.2);padding:24px;margin-top:32px;}
-.dz-title{font-family:var(--display);font-size:12px;font-weight:700;color:var(--red);letter-spacing:3px;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
-
-/* Form msg */
-.form-msg{font-family:var(--mono);font-size:11px;margin-top:10px;letter-spacing:1px;}
+/* ===== MODAL ===== */
+.modal-ov{position:fixed;inset:0;background:rgba(2,6,8,.94);z-index:2000;display:flex;align-items:flex-start;justify-content:center;padding:40px 1.5rem;overflow-y:auto;opacity:0;pointer-events:none;transition:opacity .25s;backdrop-filter:blur(12px);}
+.modal-ov.open{opacity:1;pointer-events:all;}
+.modal{width:100%;max-width:680px;background:var(--panel);border:1px solid var(--border2);position:relative;box-shadow:0 0 60px rgba(0,245,255,.08),0 40px 80px rgba(0,0,0,.8);animation:mIn .3s cubic-bezier(.16,1,.3,1);}
+.modal.wide{max-width:860px;}
+@keyframes mIn{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal::before{content:'';position:absolute;top:-1px;left:-1px;width:14px;height:14px;border-top:2px solid var(--neon);border-left:2px solid var(--neon);}
+.modal::after{content:'';position:absolute;bottom:-1px;right:-1px;width:14px;height:14px;border-bottom:2px solid var(--neon);border-right:2px solid var(--neon);}
+.m-tr{position:absolute;top:-1px;right:-1px;width:14px;height:14px;border-top:2px solid var(--neon);border-right:2px solid var(--neon);}
+.m-bl{position:absolute;bottom:-1px;left:-1px;width:14px;height:14px;border-bottom:2px solid var(--neon);border-left:2px solid var(--neon);}
+.m-head{padding:22px 26px 18px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:14px;}
+.m-title{font-family:var(--display);font-size:15px;font-weight:900;color:var(--white);letter-spacing:2px;}
+.m-sub{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:2px;margin-top:3px;}
+.m-close{width:30px;height:30px;background:none;border:1px solid var(--border);color:var(--text2);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:var(--tr);flex-shrink:0;}
+.m-close:hover{border-color:var(--red);color:var(--red);}
+.m-body{padding:22px 26px;}
+.m-foot{padding:14px 26px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;}
+.form-row{margin-bottom:16px;}
+.form-label{font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--text3);text-transform:uppercase;margin-bottom:6px;display:block;}
+.form-input,.form-select,.form-textarea{width:100%;background:rgba(0,245,255,.03);border:1px solid rgba(0,245,255,.12);padding:9px 12px;font-family:var(--mono);font-size:12px;color:var(--white);outline:none;transition:var(--tr);letter-spacing:1px;resize:vertical;}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--neon);background:rgba(0,245,255,.05);}
+.form-select option{background:var(--bg3);color:var(--white);}
+.form-textarea{min-height:100px;font-size:12px;line-height:1.7;}
+.form-row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.btn-save{padding:9px 22px;font-family:var(--mono);font-size:11px;letter-spacing:2px;background:rgba(0,245,255,.08);border:1px solid var(--neon);color:var(--neon);cursor:pointer;transition:var(--tr);}
+.btn-save:hover{background:var(--neon);color:var(--bg);}
+.btn-cancel{padding:9px 22px;font-family:var(--mono);font-size:11px;letter-spacing:2px;background:transparent;border:1px solid var(--border);color:var(--text2);cursor:pointer;transition:var(--tr);}
+.btn-cancel:hover{border-color:var(--text2);}
+.btn-danger2{padding:9px 22px;font-family:var(--mono);font-size:11px;letter-spacing:2px;background:rgba(255,34,68,.06);border:1px solid rgba(255,34,68,.3);color:var(--red);cursor:pointer;transition:var(--tr);}
+.btn-danger2:hover{background:rgba(255,34,68,.14);}
+.form-msg{font-family:var(--mono);font-size:11px;margin-top:8px;letter-spacing:1px;}
 .form-msg.ok{color:var(--neon3);}
 .form-msg.err{color:var(--red);}
+
+/* LOADING overlay */
+.loading-overlay{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .4s;}
+.loading-overlay.done{opacity:0;pointer-events:none;}
+.lo-diamond{width:60px;height:60px;position:relative;display:flex;align-items:center;justify-content:center;}
+.lo-diamond::before{content:'';position:absolute;inset:0;border:2px solid var(--neon);transform:rotate(45deg);animation:gPulse 1.5s ease-in-out infinite;}
+.lo-t{font-family:var(--display);font-size:14px;font-weight:900;color:var(--neon);position:relative;z-index:1;}
+.lo-text{font-family:var(--mono);font-size:11px;color:var(--text2);letter-spacing:3px;}
+.lo-bar{width:200px;height:2px;background:rgba(0,245,255,.1);overflow:hidden;}
+.lo-fill{height:100%;background:var(--neon);box-shadow:0 0 8px var(--neon);width:0;transition:width .4s ease;}
 </style>
 </head>
 <body>
 
-<div id="cursor"></div>
-<div id="cursorDot"></div>
+<div id="cur"></div>
+<div id="curD"></div>
 
-<!-- ==================== LOGIN (page d'accueil publique) ==================== -->
-<div id="view-login" class="view active">
+<!-- LOADING -->
+<div class="loading-overlay" id="loader">
+  <div class="lo-diamond"><span class="lo-t">ZT</span></div>
+  <div class="lo-text" id="loaderText">CONNEXION À LA BASE DE DONNÉES...</div>
+  <div class="lo-bar"><div class="lo-fill" id="loaderFill"></div></div>
+</div>
+
+<!-- ===== SCREEN: LOGIN ===== -->
+<div class="screen active" id="s-login">
   <canvas id="loginCanvas"></canvas>
-  <div class="login-box">
+  <div class="login-wrap">
     <div class="login-logo">
-      <div class="login-diamond"><span class="login-diamond-text">ZT</span></div>
-      <div class="login-title">ZONE TSADE</div>
-      <div class="login-sub">WIKI INTRANET · INSTALLATION-95</div>
+      <div class="l-diamond"><span class="l-diamond-t">ZT</span></div>
+      <div class="l-title">ZONE TSADE</div>
+      <div class="l-sub">WIKI INTRANET · INSTALLATION-95</div>
     </div>
-    <div class="login-card">
-      <div style="text-align:center;margin-bottom:24px;">
-        <div style="font-family:var(--mono);font-size:11px;color:var(--text2);letter-spacing:2px;line-height:1.9;">
-          Système de documentation officiel<br>de l'Installation-95 — Zone Tsade.<br>
-          <span style="color:var(--text3);">Lecture publique autorisée.</span>
-        </div>
-      </div>
-      <button class="btn-primary" onclick="enterPublic()"><span>↳ Accéder au Wiki</span></button>
-      <div class="login-loading" id="loginLoading"><div class="login-loading-bar"></div></div>
+    <div class="l-card">
+      <div class="l-desc">Système de documentation officiel<br>de l'Installation-95 — Zone Tsade.<br><span>Lecture publique autorisée.</span></div>
+      <button class="btn-main" onclick="enterPublic()"><span>↳ Accéder au Wiki</span></button>
+      <div class="l-loader" id="loginLoader"><div class="l-loader-bar"></div></div>
     </div>
-    <!-- Bouton admin discret en bas -->
-    <div style="text-align:center;margin-top:20px;">
-      <span onclick="toggleAdminLogin()" style="font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:2px;cursor:pointer;opacity:0.4;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='0.4'">[ ACCÈS ADMIN ]</span>
+    <div class="admin-toggle">
+      <button class="admin-toggle-btn" onclick="toggleAdminForm()">[ ACCÈS ADMIN ]</button>
     </div>
-    <!-- Formulaire admin caché -->
-    <div id="adminLoginForm" style="display:none;margin-top:12px;">
-      <div class="login-card" style="padding:24px;">
+    <div class="admin-form" id="adminForm">
+      <div class="l-card">
         <div class="field">
-          <div class="field-label">Identifiant Admin</div>
+          <div class="field-label">Identifiant</div>
           <div class="field-wrap">
-            <input class="field-input" type="text" placeholder="identifiant" id="loginUser" autocomplete="off">
+            <input class="field-input" type="text" id="loginUser" placeholder="identifiant" autocomplete="off">
             <span class="field-ico">◈</span>
             <div class="field-bar"></div>
           </div>
         </div>
-        <div class="field" style="margin-bottom:16px;">
+        <div class="field" style="margin-bottom:14px;">
           <div class="field-label">Mot de passe</div>
           <div class="field-wrap">
-            <input class="field-input" type="password" placeholder="••••••••" id="loginPass" autocomplete="off">
+            <input class="field-input" type="password" id="loginPass" placeholder="••••••••" autocomplete="off">
             <span class="field-ico">◉</span>
             <div class="field-bar"></div>
           </div>
         </div>
-        <button class="btn-primary" onclick="doLogin()"><span>↳ Connexion Admin</span></button>
+        <button class="btn-main" onclick="doLogin()"><span>↳ Connexion Admin</span></button>
         <div class="login-msg" id="loginMsg"></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ==================== WIKI ==================== -->
-<div id="view-wiki" class="view">
-
-  <!-- TICKER -->
-  <div class="alert-ticker" id="alertTicker">
-    <div class="ticker-track anim" id="tickerTrack"><!-- dynamic --></div>
+<!-- ===== SCREEN: WIKI ===== -->
+<div class="screen" id="s-wiki">
+  <div class="ticker-bar off" id="tickerBar">
+    <div class="ticker-track" id="tickerTrack"></div>
   </div>
-
-  <!-- HEADER -->
-  <div id="main-header">
-    <div class="hdr-inner">
-      <div class="hdr-logo" onclick="showWikiPage('home')">
-        <div class="hdr-diamond"><span class="hdr-diamond-t">ZT</span></div>
-        <div class="hdr-logo-text">
-          <span class="hdr-logo-name">ZONE TSADE</span>
-          <span class="hdr-logo-sub">WIKI INTRANET</span>
+  <div class="wiki-header">
+    <div class="hdr">
+      <div class="hdr-logo" onclick="goPage('home')">
+        <div class="hdr-dia"><span class="hdr-dia-t">ZT</span></div>
+        <div>
+          <div class="hdr-name">ZONE TSADE</div>
+          <div class="hdr-sub">WIKI INTRANET</div>
         </div>
       </div>
       <nav class="hdr-nav">
-        <button class="nav-btn active" id="nav-home" onclick="showWikiPage('home')">Accueil</button>
-        <button class="nav-btn" id="nav-anomalies" onclick="showWikiPage('anomalies')">Anomalies</button>
-        <button class="nav-btn" id="nav-personnel" onclick="showWikiPage('personnel')">Personnel</button>
-        <button class="nav-btn" id="nav-pages" onclick="showWikiPage('pages')">Pages</button>
+        <button class="nav-btn active" id="nb-home" onclick="goPage('home')">Accueil</button>
+        <button class="nav-btn" id="nb-anomalies" onclick="goPage('anomalies')">Anomalies</button>
+        <button class="nav-btn" id="nb-personnel" onclick="goPage('personnel')">Personnel</button>
+        <button class="nav-btn" id="nb-pages" onclick="goPage('pages')">Pages</button>
       </nav>
       <div class="hdr-right">
-        <span class="hdr-user" id="hdrUser" style="display:none">—</span>
-        <span class="hdr-badge" id="hdrBadge" style="display:none">—</span>
-        <button class="btn-sm" id="adminPanelBtn" onclick="showAdmin()" style="display:none">⚙ Admin</button>
-        <button class="btn-sm danger" id="logoutBtn" onclick="doLogout()" style="display:none">Déconnexion</button>
-        <button class="btn-sm" id="loginWikiBtn" onclick="showView('login')" style="font-size:9px;opacity:0.35;border-color:var(--border);" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='0.35'">Admin</button>
+        <span class="hdr-user" id="hdrUser" style="display:none"></span>
+        <span class="hdr-badge" id="hdrBadge" style="display:none"></span>
+        <button class="btn-sm" id="btnAdmin" onclick="goAdmin()" style="display:none">⚙ Admin</button>
+        <button class="btn-sm red" id="btnLogout" onclick="doLogout()" style="display:none">Déco.</button>
+        <button class="btn-sm ghost" id="btnLoginBtn" onclick="goScreen('s-login')">Admin</button>
       </div>
     </div>
   </div>
-
-  <!-- WIKI BODY -->
   <div class="wiki-body">
-    <!-- SIDEBAR -->
     <aside class="wiki-sidebar" id="wikiSidebar"></aside>
-
-    <!-- MAIN -->
     <main class="wiki-main" id="wikiMain"></main>
   </div>
 </div>
 
-<!-- ==================== ADMIN ==================== -->
-<div id="view-admin" class="view">
-  <div id="main-header" style="position:sticky;top:0;z-index:1000;background:rgba(2,6,8,0.95);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);">
-    <div class="hdr-inner">
-      <div class="hdr-logo" onclick="backToWiki()">
-        <div class="hdr-diamond"><span class="hdr-diamond-t">ZT</span></div>
-        <div class="hdr-logo-text">
-          <span class="hdr-logo-name">ZONE TSADE</span>
-          <span class="hdr-logo-sub">PANEL ADMIN</span>
+<!-- ===== SCREEN: ADMIN ===== -->
+<div class="screen" id="s-admin">
+  <div class="wiki-header">
+    <div class="hdr">
+      <div class="hdr-logo" onclick="goWiki()">
+        <div class="hdr-dia"><span class="hdr-dia-t">ZT</span></div>
+        <div>
+          <div class="hdr-name">ZONE TSADE</div>
+          <div class="hdr-sub">PANEL ADMIN</div>
         </div>
       </div>
       <div class="hdr-right">
-        <span class="hdr-user" id="hdrUser2">—</span>
-        <span class="hdr-badge" id="hdrBadge2">—</span>
-        <button class="btn-sm" onclick="backToWiki()">← Wiki</button>
-        <button class="btn-sm danger" onclick="doLogout()">Déconnexion</button>
+        <span class="hdr-user" id="hdrUser2"></span>
+        <span class="hdr-badge" id="hdrBadge2"></span>
+        <button class="btn-sm" onclick="goWiki()">← Wiki</button>
+        <button class="btn-sm red" onclick="doLogout()">Déco.</button>
       </div>
     </div>
   </div>
-
-  <div class="admin-wrap">
-    <div class="admin-header">
-      <div class="admin-title">Panel <span>Administration</span></div>
-      <div class="admin-sub">GESTION COMPLÈTE DU WIKI · INSTALLATION-95</div>
-    </div>
-
-    <div class="admin-tabs">
-      <button class="admin-tab active" onclick="adminTab(this,'overview')">Vue d'ensemble</button>
-      <button class="admin-tab" onclick="adminTab(this,'users')">Utilisateurs</button>
-      <button class="admin-tab" onclick="adminTab(this,'announcements')">Annonces</button>
-      <button class="admin-tab" onclick="adminTab(this,'anomalies')">Anomalies</button>
-      <button class="admin-tab" onclick="adminTab(this,'personnel')">Personnel</button>
-      <button class="admin-tab" onclick="adminTab(this,'pages')">Pages libres</button>
-    </div>
-
-    <!-- OVERVIEW -->
-    <div class="admin-section active" id="asec-overview">
-      <div class="admin-stats" id="adminStats"></div>
-      <div class="section-title"><span class="st-num">01</span>Accès rapide<div class="st-line"></div></div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;">
-        <button class="btn-edit" onclick="adminTab(document.querySelector('[onclick*=users]'),'users')">Gérer les utilisateurs</button>
-        <button class="btn-edit" onclick="adminTab(document.querySelector('[onclick*=announcements]'),'announcements')">Gérer les annonces</button>
-        <button class="btn-edit" onclick="adminTab(document.querySelector('[onclick*=anomalies]'),'anomalies')">Gérer les anomalies</button>
-        <button class="btn-edit" onclick="adminTab(document.querySelector('[onclick*=personnel]'),'personnel')">Gérer le personnel</button>
-        <button class="btn-edit" onclick="adminTab(document.querySelector('[onclick*=pages]'),'pages')">Gérer les pages</button>
+  <div class="admin-body">
+    <div class="max-w">
+      <div class="admin-header2">
+        <div class="admin-title">Panel <span>Administration</span></div>
+        <div class="admin-sub2">GESTION COMPLÈTE · INSTALLATION-95</div>
+      </div>
+      <div class="adm-tabs">
+        <button class="adm-tab active" onclick="admTab(this,'overview')">Vue d'ensemble</button>
+        <button class="adm-tab" onclick="admTab(this,'users')">Utilisateurs</button>
+        <button class="adm-tab" onclick="admTab(this,'announces')">Annonces</button>
+        <button class="adm-tab" onclick="admTab(this,'anomalies')">Anomalies</button>
+        <button class="adm-tab" onclick="admTab(this,'personnel')">Personnel</button>
+        <button class="adm-tab" onclick="admTab(this,'pages')">Pages</button>
+      </div>
+      <div class="adm-sec active" id="as-overview"><div id="adminStats"></div></div>
+      <div class="adm-sec" id="as-users">
+        <div class="sec-title"><span class="sn">02</span>Utilisateurs<div class="sec-line"></div></div>
+        <div class="add-btn" id="addUserBtn" onclick="openModal('addUser')">+ Ajouter un administrateur</div>
+        <div id="usersList"></div>
+      </div>
+      <div class="adm-sec" id="as-announces">
+        <div class="sec-title"><span class="sn">03</span>Annonces<div class="sec-line"></div></div>
+        <div class="add-btn" onclick="openModal('addAnnounce')">+ Nouvelle annonce</div>
+        <div id="announcesList"></div>
+      </div>
+      <div class="adm-sec" id="as-anomalies">
+        <div class="sec-title"><span class="sn">04</span>Anomalies<div class="sec-line"></div></div>
+        <div class="add-btn" onclick="openModal('addAno')">+ Nouvelle fiche anomalie</div>
+        <div id="anoList"></div>
+      </div>
+      <div class="adm-sec" id="as-personnel">
+        <div class="sec-title"><span class="sn">05</span>Personnel<div class="sec-line"></div></div>
+        <div class="add-btn" onclick="openModal('addPerso')">+ Nouvelle fiche personnel</div>
+        <div id="persoList"></div>
+      </div>
+      <div class="adm-sec" id="as-pages">
+        <div class="sec-title"><span class="sn">06</span>Pages libres<div class="sec-line"></div></div>
+        <div class="add-btn" onclick="openModal('addPage')">+ Nouvelle page</div>
+        <div id="pagesList"></div>
       </div>
     </div>
-
-    <!-- USERS -->
-    <div class="admin-section" id="asec-users">
-      <div class="section-title"><span class="st-num">02</span>Gestion des Utilisateurs<div class="st-line"></div></div>
-      <div class="add-btn" onclick="openModal('addUser')" id="addUserBtn">+ Ajouter un administrateur</div>
-      <div id="usersTableWrap"></div>
-    </div>
-
-    <!-- ANNOUNCEMENTS -->
-    <div class="admin-section" id="asec-announcements">
-      <div class="section-title"><span class="st-num">03</span>Annonces & Alertes<div class="st-line"></div></div>
-      <div class="add-btn" onclick="openModal('addAnnounce')">+ Nouvelle annonce</div>
-      <div id="announceListAdmin"></div>
-    </div>
-
-    <!-- ANOMALIES ADMIN -->
-    <div class="admin-section" id="asec-anomalies">
-      <div class="section-title"><span class="st-num">04</span>Anomalies<div class="st-line"></div></div>
-      <div class="add-btn" onclick="openModal('addAno')">+ Nouvelle fiche anomalie</div>
-      <div id="anoListAdmin"></div>
-    </div>
-
-    <!-- PERSONNEL ADMIN -->
-    <div class="admin-section" id="asec-personnel">
-      <div class="section-title"><span class="st-num">05</span>Personnel<div class="st-line"></div></div>
-      <div class="add-btn" onclick="openModal('addPerso')">+ Nouvelle fiche personnel</div>
-      <div id="persoListAdmin"></div>
-    </div>
-
-    <!-- PAGES ADMIN -->
-    <div class="admin-section" id="asec-pages">
-      <div class="section-title"><span class="st-num">06</span>Pages Libres<div class="st-line"></div></div>
-      <div class="add-btn" onclick="openModal('addPage')">+ Nouvelle page</div>
-      <div id="pagesListAdmin"></div>
-    </div>
-
   </div>
 </div>
 
-<!-- ==================== MODALS ==================== -->
-<div class="modal-overlay" id="modalOverlay" onclick="closeAllModals()">
+<!-- ===== MODAL ===== -->
+<div class="modal-ov" id="modalOv" onclick="closeModal()">
   <div class="modal" id="modalBox" onclick="event.stopPropagation()">
-    <div class="modal-tr"></div><div class="modal-bl"></div>
-    <div class="modal-head">
-      <div>
-        <div class="modal-title" id="modalTitle">Titre</div>
-        <div class="modal-sub" id="modalSub"></div>
-      </div>
-      <button class="modal-close" onclick="closeAllModals()">✕</button>
+    <div class="m-tr"></div><div class="m-bl"></div>
+    <div class="m-head">
+      <div><div class="m-title" id="mTitle"></div><div class="m-sub" id="mSub"></div></div>
+      <button class="m-close" onclick="closeModal()">✕</button>
     </div>
-    <div class="modal-body" id="modalBody"></div>
-    <div class="modal-footer" id="modalFooter"></div>
+    <div class="m-body" id="mBody"></div>
+    <div class="m-foot" id="mFoot"></div>
   </div>
 </div>
 
-<!-- Wide modal for page reading -->
-<div class="modal-overlay" id="detailOverlay" onclick="closeDetail()">
+<!-- DETAIL MODAL -->
+<div class="modal-ov" id="detailOv" onclick="closeDetail()">
   <div class="modal wide" id="detailBox" onclick="event.stopPropagation()">
-    <div class="modal-tr"></div><div class="modal-bl"></div>
-    <div class="modal-head">
-      <div>
-        <div class="modal-title" id="detailTitle">—</div>
-        <div class="modal-sub" id="detailSub"></div>
-      </div>
-      <button class="modal-close" onclick="closeDetail()">✕</button>
+    <div class="m-tr"></div><div class="m-bl"></div>
+    <div class="m-head">
+      <div><div class="m-title" id="dTitle"></div><div class="m-sub" id="dSub"></div></div>
+      <button class="m-close" onclick="closeDetail()">✕</button>
     </div>
-    <div class="modal-body" id="detailBody"></div>
-    <div class="modal-footer" id="detailFooter"></div>
+    <div class="m-body" id="dBody"></div>
+    <div class="m-foot" id="dFoot"></div>
   </div>
 </div>
 
 <script>
-/* ===================================================
-   DATA LAYER — localStorage persistence
-   =================================================== */
-const STORE = {
-  get(k) { try { return JSON.parse(localStorage.getItem('zt_'+k)) } catch { return null } },
-  set(k,v) { localStorage.setItem('zt_'+k, JSON.stringify(v)) },
-  del(k) { localStorage.removeItem('zt_'+k) }
+/* =====================================================
+   SUPABASE CONFIG
+   ===================================================== */
+const SB_URL = 'https://jubscjttchhqryxogspv.supabase.co';
+const SB_KEY = 'sb_publishable_I2zrfVPHL5CLe9uNOOW1nA_V1dRZfcK';
+
+const SB = {
+  async req(method, table, body=null, params='') {
+    const url = `${SB_URL}/rest/v1/${table}${params}`;
+    const headers = {
+      'apikey': SB_KEY,
+      'Authorization': `Bearer ${SB_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': method==='POST' ? 'return=representation' : method==='PATCH'||method==='DELETE' ? 'return=representation' : ''
+    };
+    const opts = { method, headers };
+    if (body) opts.body = JSON.stringify(body);
+    const r = await fetch(url, opts);
+    if (!r.ok) { const e = await r.json().catch(()=>({message:r.statusText})); throw new Error(e.message||r.statusText); }
+    if (r.status===204) return [];
+    return r.json();
+  },
+  async get(table, params='') { return this.req('GET', table, null, params||'?order=created_at.asc'); },
+  async insert(table, data) { return this.req('POST', table, data); },
+  async update(table, id, data) { return this.req('PATCH', table, data, `?id=eq.${id}`); },
+  async delete(table, id) { return this.req('DELETE', table, null, `?id=eq.${id}`); },
+  async find(table, col, val) { return this.req('GET', table, null, `?${col}=eq.${encodeURIComponent(val)}`); }
 };
 
-function initData() {
-  // Force update creator/co-creator credentials
-  const users = STORE.get('users') || [];
-  const hasTheNocturnis = users.find(u => u.id === 'creator');
-  const hasIEffexe = users.find(u => u.id === 'cocreator');
+/* =====================================================
+   STATE
+   ===================================================== */
+let currentUser = null;
+let cache = { announcements:[], anomalies:[], personnel:[], pages:[], users:[] };
 
-  if (!hasTheNocturnis || hasTheNocturnis.pseudo !== 'TheNocturnis') {
-    const filtered = users.filter(u => u.id !== 'creator');
-    filtered.unshift({ id:'creator', pseudo:'TheNocturnis', password:'byTheNocturnis', role:'creator', createdAt: new Date().toISOString() });
-    STORE.set('users', filtered);
+function uid() { return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmtDate(iso){ try{return new Date(iso).toLocaleDateString('fr-FR');}catch{return '—';} }
+function isAdmin(){ return currentUser?.role==='creator'||currentUser?.role==='cocreator'||currentUser?.role==='admin'; }
+
+/* =====================================================
+   INIT — seed default data if empty
+   ===================================================== */
+async function init() {
+  setLoader('CONNEXION AU SERVEUR...', 10);
+  try {
+    // Ensure creator accounts exist
+    await ensureCreators();
+    setLoader('CHARGEMENT DES DONNÉES...', 40);
+    await loadAll();
+    setLoader('INITIALISATION DU WIKI...', 80);
+    await seedDefaults();
+    setLoader('PRÊT', 100);
+    setTimeout(() => {
+      document.getElementById('loader').classList.add('done');
+    }, 400);
+  } catch(e) {
+    document.getElementById('loaderText').textContent = 'ERREUR: '+e.message;
+    document.getElementById('loaderText').style.color = 'var(--red)';
   }
-  if (!hasIEffexe || hasIEffexe.pseudo !== 'iEffexe') {
-    const filtered = (STORE.get('users')||[]).filter(u => u.id !== 'cocreator');
-    filtered.splice(1, 0, { id:'cocreator', pseudo:'iEffexe', password:'byEnz0nyx', role:'creator', createdAt: new Date().toISOString() });
-    STORE.set('users', filtered);
-  }
-  if (!STORE.get('announcements')) STORE.set('announcements', [
-    { id: uid(), title: 'Bienvenue sur le Wiki Intranet', body: 'Ce wiki est le système de documentation officiel de l\'Installation-95. Toutes les informations sont classifiées.', level: 'info', color: '#00f5ff', createdAt: new Date().toISOString(), author: 'Créateur' },
-    { id: uid(), title: '⚠ Alerte Niveau 3 — Secteur 7', body: 'Un incident de confinement est en cours dans le Secteur 7. Personnel non-essentiel priés d\'évacuer. MTF Epsilon-12 déployée.', level: 'danger', color: '#ff2244', createdAt: new Date().toISOString(), author: 'Créateur' }
-  ]);
-  if (!STORE.get('anomalies')) STORE.set('anomalies', [
-    { id: uid(), ident: 'ANO-95-001', name: 'Le Veilleur', classe: 'Sécurisé', status: 'Confiné', sector: 'Secteur 4-B', responsible: 'Dr. Vance', desc: 'Entité humanoïde de 2,3m aux traits gommés. Maintient un contact visuel permanent avec tous les observateurs présents.', confinement: 'Chambre 5×5×6m renforcée, surveillance 24/7.', color: '#00f5ff', createdAt: new Date().toISOString() },
-    { id: uid(), ident: 'ANO-95-007', name: 'Artefact Acoustique Δ-7', classe: 'Euclide', status: 'Confiné', sector: 'Secteur 2-A', responsible: 'Dr. Vance', desc: 'Objet émettant des résonances memétiques à 40Hz. Exposition prolongée génère des hallucinations auditives.', confinement: 'Caisson phonique triple couche. Bouchons classe IV obligatoires.', color: '#ffd700', createdAt: new Date().toISOString() },
-    { id: uid(), ident: 'ANO-95-031', name: 'Phénomène Δ Temporel', classe: 'Keter', status: 'Incident actif', sector: 'Secteur 7', responsible: 'Classifié', desc: 'Dégradation de la continuité temporelle localisée. Boucles temporelles et anomalies de causalité.', confinement: 'SECTEUR ISOLÉ — Protocole Omega en veille.', color: '#ff2244', createdAt: new Date().toISOString() }
-  ]);
-  if (!STORE.get('personnel')) STORE.set('personnel', [
-    { id: uid(), name: 'Oukama Chimaldav', role: 'Directeur Délégué — Section A', dept: 'Administratif', clearance: '4', status: 'Actif', initials: 'OC', color: '#00f5ff', bio: 'Responsable de la Sécurité des Informations et des Archives. Supervise la gestion des données et la distribution des accréditations.', createdAt: new Date().toISOString() },
-    { id: uid(), name: 'Dr. Isadora Vance', role: 'Chercheuse Principale', dept: 'Scientifique', clearance: '3', status: 'Actif', initials: 'IV', color: '#00ffcc', bio: 'Responsable principale des recherches sur les anomalies. Actuellement en charge de l\'analyse de ANO-95-012.', createdAt: new Date().toISOString() },
-    { id: uid(), name: 'Cmdt. Arès Volkov', role: 'Commandant Sécurité', dept: 'Sécurité', clearance: '4', status: 'Actif', initials: 'AV', color: '#ff2244', bio: 'Commande l\'ensemble des forces de sécurité. Coordonne les déploiements MTF.', createdAt: new Date().toISOString() }
-  ]);
-  if (!STORE.get('pages')) STORE.set('pages', [
-    { id: uid(), title: 'À propos de l\'Installation-95', category: 'Général', content: '## Installation-95\n\nL\'Installation-95, connue sous le nom de **Zone Tsade**, est une installation opérationnelle de taille moyenne.\n\n## Histoire\n\nFondée il y a plusieurs décennies, la Zone Tsade fut établie suite à la découverte de phénomènes anomaliques dans la région.\n\n## Objectifs\n\nSécuriser, Contenir, Protéger.', createdAt: new Date().toISOString(), author: 'Créateur' },
-    { id: uid(), title: 'Protocoles d\'urgence', category: 'Procédures', content: '## Protocole Alpha\nÉvacuation standard du personnel.\n\n## Protocole Beta\nConfinement renforcé — anomalies de classe Euclide.\n\n## Protocole Omega\nConfinement d\'urgence — anomalies de classe Keter.', createdAt: new Date().toISOString(), author: 'Créateur' }
-  ]);
 }
 
-function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+function setLoader(txt, pct) {
+  document.getElementById('loaderText').textContent = txt;
+  document.getElementById('loaderFill').style.width = pct+'%';
+}
 
-/* ===================================================
-   SESSION
-   =================================================== */
-let currentUser = null;
+async function ensureCreators() {
+  const users = await SB.get('users');
+  const creators = [
+    { id:'creator-thenocturnis', pseudo:'TheNocturnis', password:'byTheNocturnis', role:'creator' },
+    { id:'cocreator-ieffexe',    pseudo:'iEffexe',       password:'byEnz0nyx',      role:'cocreator' }
+  ];
+  for (const c of creators) {
+    const exists = users.find(u => u.id === c.id);
+    if (!exists) {
+      await SB.insert('users', { ...c, created_at: new Date().toISOString() });
+    } else if (exists.password !== c.password || exists.pseudo !== c.pseudo) {
+      await SB.update('users', c.id, { pseudo: c.pseudo, password: c.password, role: c.role });
+    }
+  }
+}
+
+async function loadAll() {
+  const [ann, ano, per, pgs, usrs] = await Promise.all([
+    SB.get('announcements','?order=created_at.desc'),
+    SB.get('anomalies'),
+    SB.get('personnel'),
+    SB.get('pages'),
+    SB.get('users')
+  ]);
+  cache.announcements = ann;
+  cache.anomalies = ano;
+  cache.personnel = per;
+  cache.pages = pgs;
+  cache.users = usrs;
+}
+
+async function seedDefaults() {
+  if (!cache.announcements.length) {
+    await SB.insert('announcements', { id:uid(), title:'Bienvenue sur le Wiki Intranet', body:'Système de documentation officiel de l\'Installation-95. Toutes les informations sont classifiées.', level:'info', color:'#00f5ff', author:'TheNocturnis', created_at:new Date().toISOString() });
+    await SB.insert('announcements', { id:uid(), title:'⚠ Alerte Niveau 3 — Secteur 7', body:'Un incident de confinement est en cours dans le Secteur 7. MTF Epsilon-12 déployée.', level:'danger', color:'#ff2244', author:'TheNocturnis', created_at:new Date().toISOString() });
+  }
+  if (!cache.anomalies.length) {
+    await SB.insert('anomalies', { id:uid(), ident:'ANO-95-001', name:'Le Veilleur', classe:'Sécurisé', status:'Confiné', sector:'Secteur 4-B', responsible:'Dr. Vance', description:'Entité humanoïde de 2,3m aux traits gommés. Maintient un contact visuel permanent.', confinement:'Chambre 5×5×6m renforcée, surveillance 24/7.', color:'#00f5ff', created_at:new Date().toISOString() });
+    await SB.insert('anomalies', { id:uid(), ident:'ANO-95-031', name:'Phénomène Δ Temporel', classe:'Keter', status:'Incident actif', sector:'Secteur 7', responsible:'Classifié', description:'Dégradation de la continuité temporelle localisée. Boucles temporelles et anomalies de causalité.', confinement:'SECTEUR ISOLÉ — Protocole Omega en veille.', color:'#ff2244', created_at:new Date().toISOString() });
+  }
+  if (!cache.personnel.length) {
+    await SB.insert('personnel', { id:uid(), name:'Oukama Chimaldav', initials:'OC', role:'Directeur Délégué — Section A', dept:'Administratif', clearance:'4', status:'Actif', color:'#00f5ff', bio:'Responsable de la Sécurité des Informations et des Archives.', created_at:new Date().toISOString() });
+    await SB.insert('personnel', { id:uid(), name:'Dr. Isadora Vance', initials:'IV', role:'Chercheuse Principale', dept:'Scientifique', clearance:'3', status:'Actif', color:'#00ffcc', bio:'Responsable des recherches sur les anomalies.', created_at:new Date().toISOString() });
+  }
+  if (!cache.pages.length) {
+    await SB.insert('pages', { id:uid(), title:"À propos de l'Installation-95", category:'Général', content:"## Installation-95\n\nL'Installation-95, connue sous le nom de **Zone Tsade**, est une installation opérationnelle.\n\n## Objectifs\n\nSécuriser, Contenir, Protéger.", author:'TheNocturnis', created_at:new Date().toISOString() });
+  }
+  await loadAll();
+}
+
+/* =====================================================
+   NAVIGATION — teleport, NO scroll
+   ===================================================== */
+function goScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => { s.classList.remove('active'); });
+  document.getElementById(id)?.classList.add('active');
+  window.scrollTo(0,0);
+}
 
 function enterPublic() {
-  // Accès public sans compte
-  const loading = document.getElementById('loginLoading');
-  loading.classList.add('on');
-  setTimeout(() => {
-    loading.classList.remove('on');
-    currentUser = null;
-    showWikiPublic();
-  }, 600);
+  const loader = document.getElementById('loginLoader');
+  loader.classList.add('on');
+  setTimeout(() => { loader.classList.remove('on'); goWiki(); }, 500);
 }
 
-function toggleAdminLogin() {
-  const form = document.getElementById('adminLoginForm');
-  form.style.display = form.style.display === 'none' ? 'block' : 'none';
-  if (form.style.display === 'block') {
-    setTimeout(() => document.getElementById('loginUser')?.focus(), 100);
-  }
+function goWiki() {
+  goScreen('s-wiki');
+  updateWikiHeader();
+  renderTicker();
+  buildSidebar();
+  goPage('home');
 }
 
-function doLogin() {
-  const pseudo = document.getElementById('loginUser').value.trim();
-  const pass = document.getElementById('loginPass').value;
-  const msg = document.getElementById('loginMsg');
-
-  if (!pseudo || !pass) { msg.textContent = '⚠ CHAMPS VIDES'; msg.className = 'login-msg err'; return; }
-  msg.textContent = 'VÉRIFICATION...'; msg.className = 'login-msg info';
-
-  setTimeout(() => {
-    const users = STORE.get('users') || [];
-    const user = users.find(u => u.pseudo.toLowerCase() === pseudo.toLowerCase() && u.password === pass);
-    if (user) {
-      currentUser = user;
-      msg.textContent = 'ACCÈS ACCORDÉ ✓'; msg.className = 'login-msg ok';
-      setTimeout(() => showWikiAdmin(), 500);
-    } else {
-      msg.textContent = '✕ IDENTIFIANTS INCORRECTS'; msg.className = 'login-msg err';
-    }
-  }, 800);
+function goAdmin() {
+  if (!isAdmin()) return;
+  goScreen('s-admin');
+  document.getElementById('hdrUser2').textContent = currentUser.pseudo.toUpperCase();
+  const b = document.getElementById('hdrBadge2');
+  setRoleBadge(b, currentUser.role);
+  renderAdminAll();
 }
-
-document.addEventListener('keydown', e => {
-  if (e.key==='Enter' && isView('login') && document.getElementById('adminLoginForm')?.style.display!=='none') doLogin();
-});
 
 function doLogout() {
   currentUser = null;
-  showWikiPublic();
+  goScreen('s-login');
 }
 
-function isView(v) { return document.getElementById('view-'+v)?.classList.contains('active'); }
-
-/* ===================================================
-   VIEWS
-   =================================================== */
-function showView(name) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.getElementById('view-'+name)?.classList.add('active');
-}
-
-function showWikiPublic() {
-  showView('wiki');
-  // Header: bouton admin discret visible, pas d'user connecté
-  document.getElementById('hdrUser').style.display = 'none';
-  document.getElementById('hdrBadge').style.display = 'none';
-  document.getElementById('adminPanelBtn').style.display = 'none';
-  document.getElementById('logoutBtn').style.display = 'none';
-  document.getElementById('loginWikiBtn').style.display = '';
-  renderTicker();
-  buildSidebar();
-  showWikiPage('home');
-}
-
-function showWikiAdmin() {
-  if (!currentUser) return;
-  showView('wiki');
-  // Header: affiche user connecté + boutons admin
-  document.getElementById('hdrUser').textContent = currentUser.pseudo.toUpperCase();
-  document.getElementById('hdrUser').style.display = '';
-  const b = document.getElementById('hdrBadge');
-  if (currentUser.role==='creator') { b.textContent='CRÉATEUR'; b.className='hdr-badge badge-creator'; }
-  else { b.textContent='ADMIN'; b.className='hdr-badge badge-admin'; }
-  b.style.display = '';
-  document.getElementById('adminPanelBtn').style.display = '';
-  document.getElementById('logoutBtn').style.display = '';
-  document.getElementById('loginWikiBtn').style.display = 'none';
-  renderTicker();
-  buildSidebar();
-  showWikiPage('home');
-}
-
-// Compat alias
-function showWiki() { if (currentUser) showWikiAdmin(); else showWikiPublic(); }
-
-function showAdmin() {
-  if (!currentUser || (currentUser.role!=='creator'&&currentUser.role!=='admin')) return;
-  showView('admin');
-  document.getElementById('hdrUser2').textContent = currentUser.pseudo.toUpperCase();
-  const b2 = document.getElementById('hdrBadge2');
-  if (currentUser.role==='creator') { b2.textContent='CRÉATEUR'; b2.className='hdr-badge badge-creator'; }
-  else { b2.textContent='ADMIN'; b2.className='hdr-badge badge-admin'; }
-  renderAdminOverview();
-  renderUsersTable();
-  renderAnnounceAdmin();
-  renderAnoAdmin();
-  renderPersoAdmin();
-  renderPagesAdmin();
-  document.getElementById('addUserBtn').style.display = currentUser.role==='creator' ? '' : 'none';
-}
-
-function backToWiki() { if (currentUser) showWikiAdmin(); else showWikiPublic(); }
-
-/* ===================================================
-   TICKER
-   =================================================== */
-function renderTicker() {
-  const announces = STORE.get('announcements') || [];
-  const ticker = document.getElementById('alertTicker');
-  const track = document.getElementById('tickerTrack');
-  if (!announces.length) { ticker.classList.add('hidden'); return; }
-  ticker.classList.remove('hidden');
-  const items = announces.map(a => `<span>${a.title}</span><span class="t-sep">◆</span>`).join('');
-  track.innerHTML = items + items; // double pour loop
-}
-
-/* ===================================================
-   SIDEBAR
-   =================================================== */
-function buildSidebar() {
-  const pages = STORE.get('pages') || [];
-  const cats = [...new Set(pages.map(p=>p.category))];
-  let html = `
-    <div class="sidebar-section">
-      <div class="sidebar-cat">Navigation</div>
-      <div class="sidebar-link active" id="sl-home" onclick="showWikiPage('home')"><div class="sidebar-link-dot"></div>Accueil</div>
-      <div class="sidebar-link" id="sl-anomalies" onclick="showWikiPage('anomalies')"><div class="sidebar-link-dot"></div>Anomalies</div>
-      <div class="sidebar-link" id="sl-personnel" onclick="showWikiPage('personnel')"><div class="sidebar-link-dot"></div>Personnel</div>
-    </div>`;
-
-  if (pages.length) {
-    cats.forEach(cat => {
-      html += `<div class="sidebar-section"><div class="sidebar-cat">${cat}</div>`;
-      pages.filter(p=>p.category===cat).forEach(p => {
-        html += `<div class="sidebar-link" id="sl-page-${p.id}" onclick="showWikiPage('page','${p.id}')"><div class="sidebar-link-dot"></div>${p.title}</div>`;
-      });
-      html += '</div>';
-    });
+function updateWikiHeader() {
+  if (currentUser) {
+    document.getElementById('hdrUser').textContent = currentUser.pseudo.toUpperCase();
+    document.getElementById('hdrUser').style.display = '';
+    setRoleBadge(document.getElementById('hdrBadge'), currentUser.role);
+    document.getElementById('hdrBadge').style.display = '';
+    document.getElementById('btnAdmin').style.display = '';
+    document.getElementById('btnLogout').style.display = '';
+    document.getElementById('btnLoginBtn').style.display = 'none';
+  } else {
+    document.getElementById('hdrUser').style.display = 'none';
+    document.getElementById('hdrBadge').style.display = 'none';
+    document.getElementById('btnAdmin').style.display = 'none';
+    document.getElementById('btnLogout').style.display = 'none';
+    document.getElementById('btnLoginBtn').style.display = '';
   }
-  document.getElementById('wikiSidebar').innerHTML = html;
 }
 
-function setActiveSidebar(id) {
-  document.querySelectorAll('.sidebar-link').forEach(el=>el.classList.remove('active'));
+function setRoleBadge(el, role) {
+  const map = { creator:['CRÉATEUR','badge-creator'], cocreator:['CO-CRÉATEUR','badge-cocreator'], admin:['ADMIN','badge-admin'] };
+  const [txt, cls] = map[role] || ['VISITEUR',''];
+  el.textContent = txt; el.className = 'hdr-badge '+cls;
+}
+
+/* =====================================================
+   LOGIN
+   ===================================================== */
+function toggleAdminForm() {
+  const f = document.getElementById('adminForm');
+  f.style.display = f.style.display==='none'||!f.style.display ? 'block' : 'none';
+  if (f.style.display==='block') setTimeout(()=>document.getElementById('loginUser')?.focus(),100);
+}
+
+async function doLogin() {
+  const pseudo = (document.getElementById('loginUser')?.value||'').trim();
+  const pass = document.getElementById('loginPass')?.value||'';
+  const msg = document.getElementById('loginMsg');
+  if (!pseudo||!pass) { msg.textContent='⚠ CHAMPS VIDES'; msg.className='login-msg err'; return; }
+  msg.textContent='VÉRIFICATION...'; msg.className='login-msg info';
+  try {
+    const rows = await SB.find('users','pseudo',pseudo);
+    const user = rows.find(u => u.pseudo===pseudo && u.password===pass);
+    if (user) {
+      currentUser = user;
+      msg.textContent='ACCÈS ACCORDÉ ✓'; msg.className='login-msg ok';
+      setTimeout(()=>goWiki(), 600);
+    } else {
+      msg.textContent='✕ IDENTIFIANTS INCORRECTS'; msg.className='login-msg err';
+    }
+  } catch(e) { msg.textContent='ERREUR: '+e.message; msg.className='login-msg err'; }
+}
+document.addEventListener('keydown', e => {
+  if (e.key==='Enter' && document.getElementById('adminForm')?.style.display==='block') doLogin();
+});
+
+/* =====================================================
+   WIKI PAGES — instant switch, no scroll
+   ===================================================== */
+function goPage(page, id) {
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('nb-'+page)?.classList.add('active');
+  const main = document.getElementById('wikiMain');
+  main.scrollTop = 0; // reset scroll position of the content area
+
+  if (page==='home') { setSidebarActive('home'); main.innerHTML = renderHome(); }
+  else if (page==='anomalies') { setSidebarActive('anomalies'); main.innerHTML = renderAnomaliesPage(); }
+  else if (page==='personnel') { setSidebarActive('personnel'); main.innerHTML = renderPersonnelPage(); }
+  else if (page==='pages') { document.getElementById('nb-pages').classList.add('active'); main.innerHTML = renderPagesIndex(); }
+  else if (page==='page') { setSidebarActive('page-'+id); main.innerHTML = renderPageContent(id); }
+}
+
+function setSidebarActive(id) {
+  document.querySelectorAll('.sb-link').forEach(el=>el.classList.remove('active'));
   document.getElementById('sl-'+id)?.classList.add('active');
 }
 
-/* ===================================================
-   WIKI PAGES
-   =================================================== */
-function showWikiPage(page, id) {
-  // nav highlight
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  const nb = document.getElementById('nav-'+page);
-  if (nb) nb.classList.add('active');
-
-  const main = document.getElementById('wikiMain');
-  const isAdmin = currentUser?.role==='creator'||currentUser?.role==='admin';
-
-  if (page==='home') {
-    setActiveSidebar('home');
-    main.innerHTML = renderHome();
-  } else if (page==='anomalies') {
-    setActiveSidebar('anomalies');
-    main.innerHTML = renderAnomaliesPage(isAdmin);
-  } else if (page==='personnel') {
-    setActiveSidebar('personnel');
-    main.innerHTML = renderPersonnelPage(isAdmin);
-  } else if (page==='pages') {
-    document.getElementById('nav-pages').classList.add('active');
-    main.innerHTML = renderPagesIndex(isAdmin);
-  } else if (page==='page') {
-    setActiveSidebar('page-'+id);
-    main.innerHTML = renderPageContent(id, isAdmin);
-  }
+function renderTicker() {
+  const bar = document.getElementById('tickerBar');
+  const track = document.getElementById('tickerTrack');
+  if (!cache.announcements.length) { bar.classList.add('off'); return; }
+  bar.classList.remove('off');
+  const items = cache.announcements.map(a=>`<span>${esc(a.title)}</span><span class="t-sep">◆</span>`).join('');
+  track.innerHTML = items+items;
 }
 
-/* HOME */
-function renderHome() {
-  const announces = STORE.get('announcements') || [];
-  const anos = STORE.get('anomalies') || [];
-  const perso = STORE.get('personnel') || [];
-  const pages = STORE.get('pages') || [];
-  const isAdmin = currentUser?.role==='creator'||currentUser?.role==='admin';
+function buildSidebar() {
+  const pages = cache.pages;
+  const cats = [...new Set(pages.map(p=>p.category))];
+  let h = `<div class="sb-section">
+    <div class="sb-cat">Navigation</div>
+    <div class="sb-link active" id="sl-home" onclick="goPage('home')"><div class="sb-dot"></div>Accueil</div>
+    <div class="sb-link" id="sl-anomalies" onclick="goPage('anomalies')"><div class="sb-dot"></div>Anomalies</div>
+    <div class="sb-link" id="sl-personnel" onclick="goPage('personnel')"><div class="sb-dot"></div>Personnel</div>
+  </div>`;
+  cats.forEach(cat => {
+    h += `<div class="sb-section"><div class="sb-cat">${esc(cat)}</div>`;
+    pages.filter(p=>p.category===cat).forEach(p => {
+      h += `<div class="sb-link" id="sl-page-${p.id}" onclick="goPage('page','${p.id}')"><div class="sb-dot"></div>${esc(p.title)}</div>`;
+    });
+    h += '</div>';
+  });
+  document.getElementById('wikiSidebar').innerHTML = h;
+}
 
-  let annoHtml = announces.length ? announces.map(a => {
-    const lvlClass = a.level==='danger'?'level-danger':a.level==='warn'?'level-warn':'level-info';
-    const lvlLabel = a.level==='danger'?'ALERTE':a.level==='warn'?'ATTENTION':'INFO';
-    return `<div class="announce-card" style="--ac:${a.color||'var(--neon)'}">
-      <div class="ac-header">
-        <div class="ac-title">${esc(a.title)}</div>
-        <span class="ac-level ${lvlClass}">${lvlLabel}</span>
-      </div>
+/* =====================================================
+   RENDER — HOME
+   ===================================================== */
+function renderHome() {
+  const ann = cache.announcements;
+  const annHtml = ann.length ? ann.map(a=>{
+    const cls = a.level==='danger'?'lvl-danger':a.level==='warn'?'lvl-warn':'lvl-info';
+    const lbl = a.level==='danger'?'ALERTE':a.level==='warn'?'ATTENTION':'INFO';
+    return `<div class="ac" style="--aclr:${a.color||'var(--neon)'}">
+      <div class="ac-head"><div class="ac-title">${esc(a.title)}</div><span class="ac-lvl ${cls}">${lbl}</span></div>
       <div class="ac-body">${esc(a.body)}</div>
-      <div class="ac-footer">Publié par ${esc(a.author)} · ${fmtDate(a.createdAt)}</div>
+      <div class="ac-foot">Par ${esc(a.author)} · ${fmtDate(a.created_at)}</div>
     </div>`;
-  }).join('') : `<div class="no-content">AUCUNE ANNONCE ACTIVE</div>`;
+  }).join('') : '<div class="no-content">AUCUNE ANNONCE ACTIVE</div>';
 
   return `
   <div class="home-hero">
-    <div class="home-eyebrow">WIKI OFFICIEL · INTRANET CLASSIFIÉ</div>
-    <h1 class="home-title">INSTALLATION<span class="ht-accent"> — 95</span></h1>
-    <p class="home-desc">Système de documentation officiel de la Zone Tsade. Toutes les informations sont classifiées et soumises aux protocoles de confidentialité.</p>
+    <div class="eyebrow">WIKI OFFICIEL · INTRANET CLASSIFIÉ</div>
+    <h1 class="home-title">INSTALLATION<span class="acc"> — 95</span></h1>
+    <p class="home-desc">Système de documentation officiel de la Zone Tsade. Données synchronisées en temps réel.</p>
     <div class="home-stats">
-      <div class="home-stat"><span class="hs-num">${anos.length}</span><span class="hs-label">Anomalies</span></div>
-      <div class="home-stat"><span class="hs-num">${perso.length}</span><span class="hs-label">Personnel</span></div>
-      <div class="home-stat"><span class="hs-num">${pages.length}</span><span class="hs-label">Pages</span></div>
-      <div class="home-stat"><span class="hs-num">${announces.length}</span><span class="hs-label">Annonces</span></div>
+      <div class="hs"><span class="hs-n">${cache.anomalies.length}</span><span class="hs-l">Anomalies</span></div>
+      <div class="hs"><span class="hs-n">${cache.personnel.length}</span><span class="hs-l">Personnel</span></div>
+      <div class="hs"><span class="hs-n">${cache.pages.length}</span><span class="hs-l">Pages</span></div>
+      <div class="hs"><span class="hs-n">${cache.announcements.length}</span><span class="hs-l">Annonces</span></div>
     </div>
   </div>
-
-  <div class="quick-grid" style="margin-bottom:32px;">
-    <div class="quick-card" onclick="showWikiPage('anomalies')"><span class="qc-icon">⚠</span><div class="qc-title">Anomalies</div><div class="qc-desc">${anos.length} entrées</div></div>
-    <div class="quick-card" onclick="showWikiPage('personnel')"><span class="qc-icon">◈</span><div class="qc-title">Personnel</div><div class="qc-desc">${perso.length} membres</div></div>
-    <div class="quick-card" onclick="showWikiPage('pages')"><span class="qc-icon">▣</span><div class="qc-title">Pages</div><div class="qc-desc">${pages.length} articles</div></div>
-    ${isAdmin?`<div class="quick-card" onclick="showAdmin()"><span class="qc-icon">⚙</span><div class="qc-title">Admin</div><div class="qc-desc">Panel de gestion</div></div>`:''}
+  <div class="qgrid">
+    <div class="qcard" onclick="goPage('anomalies')"><span class="qc-icon">⚠</span><div class="qc-title">Anomalies</div><div class="qc-desc">${cache.anomalies.length} entrées</div></div>
+    <div class="qcard" onclick="goPage('personnel')"><span class="qc-icon">◈</span><div class="qc-title">Personnel</div><div class="qc-desc">${cache.personnel.length} membres</div></div>
+    <div class="qcard" onclick="goPage('pages')"><span class="qc-icon">▣</span><div class="qc-title">Pages</div><div class="qc-desc">${cache.pages.length} articles</div></div>
+    ${isAdmin()?`<div class="qcard" onclick="goAdmin()"><span class="qc-icon">⚙</span><div class="qc-title">Admin</div><div class="qc-desc">Panel de gestion</div></div>`:''}
   </div>
-
-  <div class="announcements">
-    <div class="section-title"><span class="st-num">▶</span> Annonces & Alertes <div class="st-line"></div></div>
-    ${annoHtml}
-  </div>`;
+  <div class="sec-title"><span class="sn">▶</span>Annonces & Alertes<div class="sec-line"></div></div>
+  ${annHtml}`;
 }
 
-/* ANOMALIES PAGE */
-function renderAnomaliesPage(isAdmin) {
-  const anos = STORE.get('anomalies') || [];
-  let cards = anos.map(a => {
-    const c = a.color||'var(--neon)';
-    const sClass = a.status==='Incident actif'?'s-danger':a.status==='Confiné'?'s-ok':'s-warn';
-    return `<div class="item-card" style="--ic:${c}" onclick="openDetailAno('${a.id}')">
-      <div class="ic-top">
-        <span class="ic-badge" style="--ic:${c}">${esc(a.classe.toUpperCase())}</span>
-        <span class="ic-id">${esc(a.ident)}</span>
-      </div>
+function renderAnomaliesPage() {
+  const anos = cache.anomalies;
+  let cards = anos.map(a=>{
+    const c=a.color||'var(--neon)';
+    const sc=a.status==='Incident actif'?'s-danger':a.status==='Confiné'?'s-ok':'s-warn';
+    return `<div class="icard" style="--ic:${c}" onclick="openDetailAno('${a.id}')">
+      <div class="ic-top"><span class="ic-badge" style="--ic:${c}">${esc((a.classe||'').toUpperCase())}</span><span class="ic-id">${esc(a.ident)}</span></div>
       <div class="ic-name">${esc(a.name)}</div>
-      <div class="ic-desc">${esc(a.desc)}</div>
-      <div class="ic-footer">
-        <span class="ic-status ${sClass}">${esc(a.status)}</span>
-        <span class="ic-arrow">→</span>
-      </div>
+      <div class="ic-desc">${esc(a.description)}</div>
+      <div class="ic-foot"><span class="ic-status ${sc}">${esc(a.status)}</span><span class="ic-arr">→</span></div>
     </div>`;
   }).join('');
-  if (!cards) cards = '<div class="no-content">AUCUNE ANOMALIE RÉPERTORIÉE</div>';
-
-  return `<div class="page-header">
-    <div class="page-breadcrumb"><span>Accueil</span> / Anomalies</div>
-    <div class="page-title"><span class="pt-cat">Anomalies</span> Répertoriées</div>
-    <div class="page-meta"><span>${anos.length} entrée(s)</span><span>INSTALLATION-95</span></div>
+  return `<div class="ph">
+    <div class="ph-bread"><span onclick="goPage('home')">Accueil</span> / Anomalies</div>
+    <div class="ph-title"><span class="cat">Anomalies</span> Répertoriées</div>
+    <div class="ph-meta"><span>${anos.length} entrée(s)</span></div>
   </div>
-  ${isAdmin?`<div class="add-btn" onclick="openModal('addAno')">+ Ajouter une anomalie</div>`:''}
-  <div class="cards-grid">${cards}</div>`;
+  ${isAdmin()?`<div class="add-btn" onclick="openModal('addAno')">+ Ajouter une anomalie</div>`:''}
+  <div class="cgrid">${cards||'<div class="no-content">AUCUNE ANOMALIE</div>'}</div>`;
 }
 
-/* PERSONNEL PAGE */
-function renderPersonnelPage(isAdmin) {
-  const perso = STORE.get('personnel') || [];
-  let cards = perso.map(p => {
-    const c = p.color||'var(--neon)';
-    const sClass = p.status==='Actif'?'s-ok':'s-warn';
-    return `<div class="item-card" style="--ic:${c}" onclick="openDetailPerso('${p.id}')">
-      <div class="ic-top">
-        <span class="ic-badge" style="--ic:${c};font-size:16px;padding:8px 10px;">${esc(p.initials||'??')}</span>
-        <span class="ic-id">NIV. ${esc(p.clearance||'?')}</span>
-      </div>
+function renderPersonnelPage() {
+  const per = cache.personnel;
+  let cards = per.map(p=>{
+    const c=p.color||'var(--neon)';
+    const sc=p.status==='Actif'?'s-ok':'s-warn';
+    return `<div class="icard" style="--ic:${c}" onclick="openDetailPerso('${p.id}')">
+      <div class="ic-top"><span class="ic-badge" style="--ic:${c};font-size:15px;padding:6px 8px">${esc(p.initials||'?')}</span><span class="ic-id">NIV. ${esc(p.clearance||'?')}</span></div>
       <div class="ic-name">${esc(p.name)}</div>
       <div class="ic-desc">${esc(p.role)} — ${esc(p.dept)}</div>
-      <div class="ic-footer">
-        <span class="ic-status ${sClass}">${esc(p.status)}</span>
-        <span class="ic-arrow">→</span>
-      </div>
+      <div class="ic-foot"><span class="ic-status ${sc}">${esc(p.status)}</span><span class="ic-arr">→</span></div>
     </div>`;
   }).join('');
-  if (!cards) cards = '<div class="no-content">AUCUN MEMBRE RÉPERTORIÉ</div>';
-
-  return `<div class="page-header">
-    <div class="page-breadcrumb"><span>Accueil</span> / Personnel</div>
-    <div class="page-title"><span class="pt-cat">Registre du</span> Personnel</div>
-    <div class="page-meta"><span>${perso.length} membre(s)</span><span>INSTALLATION-95</span></div>
+  return `<div class="ph">
+    <div class="ph-bread"><span onclick="goPage('home')">Accueil</span> / Personnel</div>
+    <div class="ph-title"><span class="cat">Registre du</span> Personnel</div>
+    <div class="ph-meta"><span>${per.length} membre(s)</span></div>
   </div>
-  ${isAdmin?`<div class="add-btn" onclick="openModal('addPerso')">+ Ajouter un membre</div>`:''}
-  <div class="cards-grid">${cards}</div>`;
+  ${isAdmin()?`<div class="add-btn" onclick="openModal('addPerso')">+ Ajouter un membre</div>`:''}
+  <div class="cgrid">${cards||'<div class="no-content">AUCUN MEMBRE</div>'}</div>`;
 }
 
-/* PAGES INDEX */
-function renderPagesIndex(isAdmin) {
-  const pages = STORE.get('pages') || [];
-  let list = pages.map(p => `
-    <div class="item-card" style="--ic:var(--neon)" onclick="showWikiPage('page','${p.id}')">
-      <div class="ic-top"><span class="ic-badge">${esc(p.category)}</span><span class="ic-id">${fmtDate(p.createdAt)}</span></div>
-      <div class="ic-name">${esc(p.title)}</div>
-      <div class="ic-desc">Par ${esc(p.author||'—')}</div>
-      <div class="ic-footer"><span></span><span class="ic-arrow">→</span></div>
-    </div>`).join('');
-  if (!list) list = '<div class="no-content">AUCUNE PAGE DISPONIBLE</div>';
-
-  return `<div class="page-header">
-    <div class="page-breadcrumb"><span>Accueil</span> / Pages</div>
-    <div class="page-title"><span class="pt-cat">Pages</span> & Articles</div>
+function renderPagesIndex() {
+  const pgs = cache.pages;
+  let list = pgs.map(p=>`<div class="icard" style="--ic:var(--neon)" onclick="goPage('page','${p.id}')">
+    <div class="ic-top"><span class="ic-badge">${esc(p.category)}</span><span class="ic-id">${fmtDate(p.created_at)}</span></div>
+    <div class="ic-name">${esc(p.title)}</div>
+    <div class="ic-desc">Par ${esc(p.author||'—')}</div>
+    <div class="ic-foot"><span></span><span class="ic-arr">→</span></div>
+  </div>`).join('');
+  return `<div class="ph">
+    <div class="ph-bread"><span onclick="goPage('home')">Accueil</span> / Pages</div>
+    <div class="ph-title"><span class="cat">Pages</span> & Articles</div>
   </div>
-  ${isAdmin?`<div class="add-btn" onclick="openModal('addPage')">+ Nouvelle page</div>`:''}
-  <div class="cards-grid">${list}</div>`;
+  ${isAdmin()?`<div class="add-btn" onclick="openModal('addPage')">+ Nouvelle page</div>`:''}
+  <div class="cgrid">${list||'<div class="no-content">AUCUNE PAGE</div>'}</div>`;
 }
 
-/* PAGE CONTENT */
-function renderPageContent(id, isAdmin) {
-  const pages = STORE.get('pages') || [];
-  const p = pages.find(x=>x.id===id);
+function renderPageContent(id) {
+  const p = cache.pages.find(x=>x.id===id);
   if (!p) return '<div class="no-content">PAGE INTROUVABLE</div>';
-  const html = renderMarkdown(p.content||'');
-  return `<div class="page-header">
-    <div class="page-breadcrumb"><span>Accueil</span> / <span onclick="showWikiPage('pages')" style="cursor:pointer">Pages</span> / ${esc(p.category)}</div>
-    <div class="page-title"><span class="pt-cat">${esc(p.category)}</span> ${esc(p.title)}</div>
-    <div class="page-meta"><span>Par ${esc(p.author||'—')}</span><span>${fmtDate(p.createdAt)}</span></div>
+  const html = renderMd(p.content||'');
+  return `<div class="ph">
+    <div class="ph-bread"><span onclick="goPage('home')">Accueil</span> / <span onclick="goPage('pages')">Pages</span> / ${esc(p.category)}</div>
+    <div class="ph-title"><span class="cat">${esc(p.category)}</span> ${esc(p.title)}</div>
+    <div class="ph-meta"><span>Par ${esc(p.author||'—')}</span><span>${fmtDate(p.created_at)}</span></div>
   </div>
-  ${isAdmin?`<div class="page-actions">
+  ${isAdmin()?`<div class="page-actions">
     <button class="btn-edit" onclick="openModal('editPage','${p.id}')">✎ Modifier</button>
-    <button class="btn-delete" onclick="deletePage('${p.id}')">✕ Supprimer</button>
+    <button class="btn-del" onclick="delPage('${p.id}')">✕ Supprimer</button>
   </div>`:''}
   <div class="page-content">${html}</div>`;
 }
 
-/* Markdown renderer (simple) */
-function renderMarkdown(txt) {
+function renderMd(txt) {
   return esc(txt)
-    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g, '<em>$1</em>');
+    .replace(/^## (.+)$/gm,'<h2>$1</h2>')
+    .replace(/^### (.+)$/gm,'<h3>$1</h3>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>');
 }
 
-/* ===================================================
+/* =====================================================
    DETAIL MODALS
-   =================================================== */
+   ===================================================== */
 function openDetailAno(id) {
-  const anos = STORE.get('anomalies') || [];
-  const a = anos.find(x=>x.id===id);
+  const a = cache.anomalies.find(x=>x.id===id);
   if (!a) return;
   const c = a.color||'var(--neon)';
-  const isAdmin = currentUser?.role==='creator'||currentUser?.role==='admin';
-  const sClass = a.status==='Incident actif'?'keter-box':a.classe==='Keter'?'keter-box':'warning-box';
-
-  document.getElementById('detailTitle').textContent = a.name;
-  document.getElementById('detailSub').textContent = `${a.ident} · ${a.classe.toUpperCase()}`;
-  document.getElementById('detailTitle').style.color = c;
-  document.getElementById('detailBody').innerHTML = `
+  document.getElementById('dTitle').textContent = a.name;
+  document.getElementById('dTitle').style.color = c;
+  document.getElementById('dSub').textContent = `${a.ident} · ${(a.classe||'').toUpperCase()}`;
+  document.getElementById('dBody').innerHTML = `
     <div class="detail-grid">
-      <div class="data-block">
-        <div class="db-title">Données Générales</div>
+      <div class="db"><div class="db-title">Données</div>
         <div class="db-row"><span class="db-k">CLASSE</span><span class="db-v" style="color:${c}">${esc(a.classe)}</span></div>
         <div class="db-row"><span class="db-k">IDENTIFIANT</span><span class="db-v">${esc(a.ident)}</span></div>
         <div class="db-row"><span class="db-k">SECTEUR</span><span class="db-v">${esc(a.sector||'—')}</span></div>
         <div class="db-row"><span class="db-k">RESPONSABLE</span><span class="db-v">${esc(a.responsible||'—')}</span></div>
         <div class="db-row"><span class="db-k">STATUT</span><span class="db-v">${esc(a.status)}</span></div>
       </div>
-      <div class="data-block">
-        <div class="db-title">Confinement</div>
-        <div style="font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.7;">${esc(a.confinement||'—')}</div>
+      <div class="db"><div class="db-title">Confinement</div>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.7">${esc(a.confinement||'—')}</div>
       </div>
     </div>
-    <div class="detail-section-title">Description</div>
-    <div class="detail-text">${esc(a.desc)}</div>
-  `;
-  const footer = document.getElementById('detailFooter');
-  footer.innerHTML = isAdmin
+    <div class="det-sec">Description</div>
+    <div class="det-text">${esc(a.description)}</div>`;
+  document.getElementById('dFoot').innerHTML = isAdmin()
     ? `<button class="btn-edit" onclick="closeDetail();openModal('editAno','${id}')">✎ Modifier</button>
-       <button class="btn-danger-sm" onclick="closeDetail();deleteAno('${id}')">✕ Supprimer</button>`
-    : '';
-  document.getElementById('detailOverlay').classList.add('open');
+       <button class="btn-danger2" onclick="closeDetail();delAno('${id}')">✕ Supprimer</button>` : '';
+  document.getElementById('detailOv').classList.add('open');
 }
 
 function openDetailPerso(id) {
-  const perso = STORE.get('personnel') || [];
-  const p = perso.find(x=>x.id===id);
+  const p = cache.personnel.find(x=>x.id===id);
   if (!p) return;
   const c = p.color||'var(--neon)';
-  const isAdmin = currentUser?.role==='creator'||currentUser?.role==='admin';
-  const clrClass = {'5':'lvl5','4':'lvl4','3':'lvl3','2':'lvl2','1':'lvl1'}[p.clearance]||'lvl1';
-
-  document.getElementById('detailTitle').textContent = p.name;
-  document.getElementById('detailSub').textContent = `${p.role} · ${p.dept}`;
-  document.getElementById('detailTitle').style.color = 'var(--white)';
-  document.getElementById('detailBody').innerHTML = `
-    <div style="display:flex;gap:20px;align-items:flex-start;margin-bottom:24px;">
-      <div style="width:80px;height:80px;border:2px solid ${c};display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:24px;font-weight:900;color:${c};background:rgba(0,245,255,0.04);flex-shrink:0;">${esc(p.initials||'??')}</div>
-      <div class="data-block" style="flex:1">
-        <div class="db-title">Données</div>
+  document.getElementById('dTitle').textContent = p.name;
+  document.getElementById('dTitle').style.color = 'var(--white)';
+  document.getElementById('dSub').textContent = `${p.role} · ${p.dept}`;
+  document.getElementById('dBody').innerHTML = `
+    <div style="display:flex;gap:18px;align-items:flex-start;margin-bottom:20px;">
+      <div style="width:72px;height:72px;border:2px solid ${c};display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:22px;font-weight:900;color:${c};flex-shrink:0">${esc(p.initials||'?')}</div>
+      <div class="db" style="flex:1"><div class="db-title">Données</div>
         <div class="db-row"><span class="db-k">NOM</span><span class="db-v">${esc(p.name)}</span></div>
         <div class="db-row"><span class="db-k">POSTE</span><span class="db-v">${esc(p.role)}</span></div>
         <div class="db-row"><span class="db-k">DÉPARTEMENT</span><span class="db-v">${esc(p.dept)}</span></div>
-        <div class="db-row"><span class="db-k">HABILITATION</span><span class="db-v"><span class="person-clearance ${clrClass}">NIV. ${esc(p.clearance)}</span></span></div>
+        <div class="db-row"><span class="db-k">HABILITATION</span><span class="db-v">NIV. ${esc(p.clearance)}</span></div>
         <div class="db-row"><span class="db-k">STATUT</span><span class="db-v" style="color:${p.status==='Actif'?'var(--green)':'var(--text2)'}">${esc(p.status)}</span></div>
       </div>
     </div>
-    <div class="detail-section-title">Biographie</div>
-    <div class="detail-text">${esc(p.bio||'—')}</div>
-  `;
-  const footer = document.getElementById('detailFooter');
-  footer.innerHTML = isAdmin
+    <div class="det-sec">Biographie</div>
+    <div class="det-text">${esc(p.bio||'—')}</div>`;
+  document.getElementById('dFoot').innerHTML = isAdmin()
     ? `<button class="btn-edit" onclick="closeDetail();openModal('editPerso','${id}')">✎ Modifier</button>
-       <button class="btn-danger-sm" onclick="closeDetail();deletePerso('${id}')">✕ Supprimer</button>`
-    : '';
-  document.getElementById('detailOverlay').classList.add('open');
+       <button class="btn-danger2" onclick="closeDetail();delPerso('${id}')">✕ Supprimer</button>` : '';
+  document.getElementById('detailOv').classList.add('open');
 }
 
-function closeDetail() { document.getElementById('detailOverlay').classList.remove('open'); }
+function closeDetail() { document.getElementById('detailOv').classList.remove('open'); }
 
-/* ===================================================
+/* =====================================================
    MODAL SYSTEM
-   =================================================== */
+   ===================================================== */
 function openModal(type, id) {
-  const overlay = document.getElementById('modalOverlay');
-  const box = document.getElementById('modalBox');
-  const t = document.getElementById('modalTitle');
-  const s = document.getElementById('modalSub');
-  const body = document.getElementById('modalBody');
-  const footer = document.getElementById('modalFooter');
-  box.style.maxWidth = '680px';
+  const t=document.getElementById('mTitle'), s=document.getElementById('mSub');
+  const b=document.getElementById('mBody'), f=document.getElementById('mFoot');
 
-  if (type==='addUser') {
-    t.textContent = 'Ajouter un Administrateur'; s.textContent = 'CRÉER UN NOUVEAU COMPTE ADMIN';
-    body.innerHTML = `
-      <div class="form-row"><label class="form-label">Pseudo</label><input class="form-input" id="nu-pseudo" placeholder="pseudo-unique" autocomplete="off"></div>
-      <div class="form-row"><label class="form-label">Mot de passe</label><input class="form-input" type="password" id="nu-pass" placeholder="••••••••" autocomplete="off"></div>
-      <div id="nu-msg" class="form-msg"></div>`;
-    footer.innerHTML = `<button class="btn-cancel" onclick="closeAllModals()">Annuler</button><button class="btn-save" onclick="saveNewUser()">Créer le compte</button>`;
-
-  } else if (type==='addAnnounce') {
-    t.textContent = 'Nouvelle Annonce'; s.textContent = 'PUBLICATION SUR L\'ACCUEIL';
-    body.innerHTML = `
-      <div class="form-row"><label class="form-label">Titre</label><input class="form-input" id="na-title" placeholder="Titre de l'annonce"></div>
-      <div class="form-row"><label class="form-label">Contenu</label><textarea class="form-textarea" id="na-body" placeholder="Contenu de l'annonce..."></textarea></div>
-      <div class="form-row-2">
-        <div class="form-row"><label class="form-label">Niveau</label>
-          <select class="form-select" id="na-level">
-            <option value="info">Info</option>
-            <option value="warn">Attention</option>
-            <option value="danger">Alerte danger</option>
-          </select>
+  const tpls = {
+    addUser: () => {
+      t.textContent='Ajouter un Admin'; s.textContent='NOUVEAU COMPTE ADMINISTRATEUR';
+      b.innerHTML=`<div class="form-row"><label class="form-label">Pseudo</label><input class="form-input" id="nu-p" placeholder="pseudo" autocomplete="off"></div>
+        <div class="form-row"><label class="form-label">Mot de passe</label><input class="form-input" type="password" id="nu-pw" placeholder="••••••••" autocomplete="off"></div>
+        <div id="nu-msg" class="form-msg"></div>`;
+      f.innerHTML=`<button class="btn-cancel" onclick="closeModal()">Annuler</button><button class="btn-save" onclick="saveUser()">Créer</button>`;
+    },
+    addAnnounce: () => {
+      t.textContent='Nouvelle Annonce'; s.textContent='PUBLICATION SUR L\'ACCUEIL';
+      b.innerHTML=`<div class="form-row"><label class="form-label">Titre</label><input class="form-input" id="na-t" placeholder="Titre..."></div>
+        <div class="form-row"><label class="form-label">Contenu</label><textarea class="form-textarea" id="na-b" placeholder="Contenu..."></textarea></div>
+        <div class="form-row2">
+          <div class="form-row"><label class="form-label">Niveau</label><select class="form-select" id="na-l"><option value="info">Info</option><option value="warn">Attention</option><option value="danger">Alerte</option></select></div>
+          <div class="form-row"><label class="form-label">Couleur</label><input class="form-input" id="na-c" value="#00f5ff"></div>
+        </div>`;
+      f.innerHTML=`<button class="btn-cancel" onclick="closeModal()">Annuler</button><button class="btn-save" onclick="saveAnnounce()">Publier</button>`;
+    },
+    editAnnounce: () => {
+      const a=cache.announcements.find(x=>x.id===id);if(!a)return;
+      t.textContent='Modifier Annonce'; s.textContent=a.id;
+      b.innerHTML=`<input type="hidden" id="ea-id" value="${id}">
+        <div class="form-row"><label class="form-label">Titre</label><input class="form-input" id="ea-t" value="${esc(a.title)}"></div>
+        <div class="form-row"><label class="form-label">Contenu</label><textarea class="form-textarea" id="ea-b">${esc(a.body)}</textarea></div>
+        <div class="form-row2">
+          <div class="form-row"><label class="form-label">Niveau</label><select class="form-select" id="ea-l"><option value="info" ${a.level==='info'?'selected':''}>Info</option><option value="warn" ${a.level==='warn'?'selected':''}>Attention</option><option value="danger" ${a.level==='danger'?'selected':''}>Alerte</option></select></div>
+          <div class="form-row"><label class="form-label">Couleur</label><input class="form-input" id="ea-c" value="${esc(a.color||'#00f5ff')}"></div>
+        </div>`;
+      f.innerHTML=`<button class="btn-cancel" onclick="closeModal()">Annuler</button><button class="btn-save" onclick="updateAnnounce()">Enregistrer</button>`;
+    },
+    addAno: () => {
+      t.textContent='Nouvelle Anomalie'; s.textContent='FICHE ANOMALIQUE';
+      b.innerHTML=`<div class="form-row2">
+          <div class="form-row"><label class="form-label">Identifiant</label><input class="form-input" id="aa-id" placeholder="ANO-95-XXX"></div>
+          <div class="form-row"><label class="form-label">Classe</label><select class="form-select" id="aa-cl"><option>Sécurisé</option><option>Euclide</option><option>Keter</option><option>Thaumiel</option></select></div>
         </div>
-        <div class="form-row"><label class="form-label">Couleur accent</label><input class="form-input" id="na-color" value="#00f5ff" placeholder="#00f5ff"></div>
-      </div>`;
-    footer.innerHTML = `<button class="btn-cancel" onclick="closeAllModals()">Annuler</button><button class="btn-save" onclick="saveAnnounce()">Publier</button>`;
-
-  } else if (type==='editAnnounce') {
-    const announces = STORE.get('announcements') || [];
-    const a = announces.find(x=>x.id===id);
-    if (!a) return;
-    t.textContent = 'Modifier l\'Annonce'; s.textContent = a.id;
-    body.innerHTML = `
-      <input type="hidden" id="ea-id" value="${id}">
-      <div class="form-row"><label class="form-label">Titre</label><input class="form-input" id="ea-title" value="${esc(a.title)}"></div>
-      <div class="form-row"><label class="form-label">Contenu</label><textarea class="form-textarea" id="ea-body">${esc(a.body)}</textarea></div>
-      <div class="form-row-2">
-        <div class="form-row"><label class="form-label">Niveau</label>
-          <select class="form-select" id="ea-level">
-            <option value="info" ${a.level==='info'?'selected':''}>Info</option>
-            <option value="warn" ${a.level==='warn'?'selected':''}>Attention</option>
-            <option value="danger" ${a.level==='danger'?'selected':''}>Alerte danger</option>
-          </select>
+        <div class="form-row"><label class="form-label">Nom</label><input class="form-input" id="aa-n" placeholder="Nom de l'anomalie"></div>
+        <div class="form-row2">
+          <div class="form-row"><label class="form-label">Secteur</label><input class="form-input" id="aa-s" placeholder="Secteur X"></div>
+          <div class="form-row"><label class="form-label">Responsable</label><input class="form-input" id="aa-r" placeholder="Dr. Nom"></div>
         </div>
-        <div class="form-row"><label class="form-label">Couleur</label><input class="form-input" id="ea-color" value="${esc(a.color||'#00f5ff')}"></div>
-      </div>`;
-    footer.innerHTML = `<button class="btn-cancel" onclick="closeAllModals()">Annuler</button><button class="btn-save" onclick="updateAnnounce()">Enregistrer</button>`;
-
-  } else if (type==='addAno') {
-    t.textContent = 'Nouvelle Fiche Anomalie'; s.textContent = 'CRÉER UNE ENTRÉE ANOMALIQUE';
-    body.innerHTML = `
-      <div class="form-row-2">
-        <div class="form-row"><label class="form-label">Identifiant (ex: ANO-95-XXX)</label><input class="form-input" id="aa-ident" placeholder="ANO-95-"></div>
-        <div class="form-row"><label class="form-label">Classe</label>
-          <select class="form-select" id="aa-classe">
-            <option>Sécurisé</option><option>Euclide</option><option>Keter</option><option>Thaumiel</option>
-          </select>
+        <div class="form-row2">
+          <div class="form-row"><label class="form-label">Statut</label><select class="form-select" id="aa-st"><option>Confiné</option><option>Sous étude</option><option>Incident actif</option><option>Neutralisé</option></select></div>
+          <div class="form-row"><label class="form-label">Couleur badge</label><input class="form-input" id="aa-c" value="#00f5ff"></div>
         </div>
-      </div>
-      <div class="form-row"><label class="form-label">Nom / Désignation</label><input class="form-input" id="aa-name" placeholder="Nom de l'anomalie"></div>
-      <div class="form-row-2">
-        <div class="form-row"><label class="form-label">Secteur</label><input class="form-input" id="aa-sector" placeholder="Secteur X"></div>
-        <div class="form-row"><label class="form-label">Responsable</label><input class="form-input" id="aa-resp" placeholder="Dr. Nom"></div>
-      </div>
-      <div class="form-row-2">
-        <div class="form-row"><label class="form-label">Statut</label>
-          <select class="form-select" id="aa-status">
-            <option>Confiné</option><option>Sous étude</option><option>Incident actif</option><option>Neutralisé</option>
-          </select>
+        <div class="form-row"><label class="form-label">Description</label><textarea class="form-textarea" id="aa-d" placeholder="Description..."></textarea></div>
+        <div class="form-row"><label class="form-label">Protocole de confinement</label><textarea class="form-textarea" id="aa-cf" placeholder="Instructions..." style="min-height:70px"></textarea></div>`;
+      f.innerHTML=`<button class="btn-cancel" onclick="closeModal()">Annuler</button><button class="btn-save" onclick="saveAno()">Créer</button>`;
+    },
+    editAno: () => {
+      const a=cache.anomalies.find(x=>x.id===id);if(!a)return;
+      t.textContent='Modifier Anomalie'; s.textContent=a.ident;
+      b.innerHTML=`<input type="hidden" id="ea2-id" value="${id}">
+        <div class="form-row2">
+          <div class="form-row"><label class="form-label">Identifiant</label><input class="form-input" id="ea2-id2" value="${esc(a.ident)}"></div>
+          <div class="form-row"><label class="form-label">Classe</label><select class="form-select" id="ea2-cl"><option ${a.classe==='Sécurisé'?'selected':''}>Sécurisé</option><option ${a.classe==='Euclide'?'selected':''}>Euclide</option><option ${a.classe==='Keter'?'selected':''}>Keter</option><option ${a.classe==='Thaumiel'?'selected':''}>Thaumiel</option></select></div>
         </div>
-        <div class="form-row"><label class="form-label">Couleur badge</label><input class="form-input" id="aa-color" value="#00f5ff"></div>
-      </div>
-      <div class="form-row"><label class="form-label">Description</label><textarea class="form-textarea" id="aa-desc" placeholder="Description de l'anomalie..."></textarea></div>
-      <div class="form-row"><label class="form-label">Protocole de confinement</label><textarea class="form-textarea" id="aa-conf" placeholder="Instructions de confinement..." style="min-height:80px"></textarea></div>`;
-    footer.innerHTML = `<button class="btn-cancel" onclick="closeAllModals()">Annuler</button><button class="btn-save" onclick="saveAno()">Créer la fiche</button>`;
-
-  } else if (type==='editAno') {
-    const anos = STORE.get('anomalies') || [];
-    const a = anos.find(x=>x.id===id);
-    if (!a) return;
-    t.textContent = 'Modifier la Fiche'; s.textContent = a.ident;
-    body.innerHTML = `
-      <input type="hidden" id="ea2-id" value="${id}">
-      <div class="form-row-2">
-        <div class="form-row"><label class="form-label">Identifiant</label><input class="form-input" id="ea2-ident" value="${esc(a.ident)}"></div>
-        <div class="form-row"><label class="form-label">Classe</label>
-          <select class="form-select" id="ea2-classe">
-            <option ${a.classe==='Sécurisé'?'selected':''}>Sécurisé</option><option ${a.classe==='Euclide'?'selected':''}>Euclide</option><option ${a.classe==='Keter'?'selected':''}>Keter</option><option ${a.classe==='Thaumiel'?'selected':''}>Thaumiel</option>
-          </select>
+        <div class="form-row"><label class="form-label">Nom</label><input class="form-input" id="ea2-n" value="${esc(a.name)}"></div>
+        <div class="form-row2">
+          <div class="form-row"><label class="form-label">Secteur</label><input class="form-input" id="ea2-s" value="${esc(a.sector||'')}"></div>
+          <div class="form-row"><label class="form-label">Responsable</label><input class="form-input" id="ea2-r" value="${esc(a.responsible||'')}"></div>
         </div>
-      </div>
-      <div class="form-row"><label class="form-label">Nom</label><input class="form-input" id="ea2-name" value="${esc(a.name)}"></div>
-      <div class="form-row-2">
-        <div class="form-row"><label class="form-label">Secteur</label><input class="form-input" id="ea2-sector" value="${esc(a.sector||'')}"></div>
-        <div class="form-row"><label class="form-label">Responsable</label><input class="form-input" id="ea2-resp" value="${esc(a.responsible||'')}"></div>
-      </div>
-      <div class="form-row-2">
-        <div class="form-row"><label class="form-label">Statut</label>
-          <select class="form-select" id="ea2-status">
-            <option ${a.status==='Confiné'?'selected':''}>Confiné</option><option ${a.status==='Sous étude'?'selected':''}>Sous étude</option><option ${a.status==='Incident actif'?'selected':''}>Incident actif</option><option ${a.status==='Neutralisé'?'selected':''}>Neutralisé</option>
-          </select>
+        <div class="form-row2">
+          <div class="form-row"><label class="form-label">Statut</label><select class="form-select" id="ea2-st"><option ${a.status==='Confiné'?'selected':''}>Confiné</option><option ${a.status==='Sous étude'?'selected':''}>Sous étude</option><option ${a.status==='Incident actif'?'selected':''}>Incident actif</option><option ${a.status==='Neutralisé'?'selected':''}>Neutralisé</option></select></div>
+          <div class="form-row"><label class="form-label">Couleur</label><input class="form-input" id="ea2-c" value="${esc(a.color||'#00f5ff')}"></div>
         </div>
-        <div class="form-row"><label class="form-label">Couleur</label><input class="form-input" id="ea2-color" value="${esc(a.color||'#00f5ff')}"></div>
-      </div>
-      <div class="form-row"><label class="form-label">Description</label><textarea class="form-textarea" id="ea2-desc">${esc(a.desc)}</textarea></div>
-      <div class="form-row"><label class="form-label">Confinement</label><textarea class="form-textarea" id="ea2-conf" style="min-height:80px">${esc(a.confinement||'')}</textarea></div>`;
-    footer.innerHTML = `<button class="btn-cancel" onclick="closeAllModals()">Annuler</button><button class="btn-save" onclick="updateAno()">Enregistrer</button>`;
-
-  } else if (type==='addPerso') {
-    t.textContent = 'Nouvelle Fiche Personnel'; s.textContent = 'AJOUTER UN MEMBRE';
-    body.innerHTML = `
-      <div class="form-row-2">
-        <div class="form-row"><label class="form-label">Nom complet</label><input class="form-input" id="ap-name" placeholder="Prénom Nom"></div>
-        <div class="form-row"><label class="form-label">Initiales (ex: OC)</label><input class="form-input" id="ap-init" placeholder="XX" maxlength="3"></div>
-      </div>
-      <div class="form-row"><label class="form-label">Poste / Rôle</label><input class="form-input" id="ap-role" placeholder="Directeur, Chercheur..."></div>
-      <div class="form-row-2">
-        <div class="form-row"><label class="form-label">Département</label><input class="form-input" id="ap-dept" placeholder="Administratif, Sécurité..."></div>
-        <div class="form-row"><label class="form-label">Niveau d'habilitation</label>
-          <select class="form-select" id="ap-clr"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
+        <div class="form-row"><label class="form-label">Description</label><textarea class="form-textarea" id="ea2-d">${esc(a.description)}</textarea></div>
+        <div class="form-row"><label class="form-label">Confinement</label><textarea class="form-textarea" id="ea2-cf" style="min-height:70px">${esc(a.confinement||'')}</textarea></div>`;
+      f.innerHTML=`<button class="btn-cancel" onclick="closeModal()">Annuler</button><button class="btn-save" onclick="updateAno()">Enregistrer</button>`;
+    },
+    addPerso: () => {
+      t.textContent='Nouveau Membre'; s.textContent='FICHE PERSONNEL';
+      b.innerHTML=`<div class="form-row2">
+          <div class="form-row"><label class="form-label">Nom complet</label><input class="form-input" id="ap-n" placeholder="Prénom Nom"></div>
+          <div class="form-row"><label class="form-label">Initiales</label><input class="form-input" id="ap-i" placeholder="XX" maxlength="3"></div>
         </div>
-      </div>
-      <div class="form-row-2">
-        <div class="form-row"><label class="form-label">Statut</label>
-          <select class="form-select" id="ap-status"><option>Actif</option><option>Inactif</option><option>Classifié</option></select>
+        <div class="form-row"><label class="form-label">Poste</label><input class="form-input" id="ap-r" placeholder="Directeur, Chercheur..."></div>
+        <div class="form-row2">
+          <div class="form-row"><label class="form-label">Département</label><input class="form-input" id="ap-d" placeholder="Administratif..."></div>
+          <div class="form-row"><label class="form-label">Habilitation</label><select class="form-select" id="ap-cl"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></div>
         </div>
-        <div class="form-row"><label class="form-label">Couleur avatar</label><input class="form-input" id="ap-color" value="#00f5ff"></div>
-      </div>
-      <div class="form-row"><label class="form-label">Biographie</label><textarea class="form-textarea" id="ap-bio" placeholder="Description du membre..."></textarea></div>`;
-    footer.innerHTML = `<button class="btn-cancel" onclick="closeAllModals()">Annuler</button><button class="btn-save" onclick="savePerso()">Créer la fiche</button>`;
-
-  } else if (type==='editPerso') {
-    const perso = STORE.get('personnel') || [];
-    const p = perso.find(x=>x.id===id);
-    if (!p) return;
-    t.textContent = 'Modifier le Personnel'; s.textContent = p.name;
-    body.innerHTML = `
-      <input type="hidden" id="ep-id" value="${id}">
-      <div class="form-row-2">
-        <div class="form-row"><label class="form-label">Nom</label><input class="form-input" id="ep-name" value="${esc(p.name)}"></div>
-        <div class="form-row"><label class="form-label">Initiales</label><input class="form-input" id="ep-init" value="${esc(p.initials||'')}" maxlength="3"></div>
-      </div>
-      <div class="form-row"><label class="form-label">Poste</label><input class="form-input" id="ep-role" value="${esc(p.role)}"></div>
-      <div class="form-row-2">
-        <div class="form-row"><label class="form-label">Département</label><input class="form-input" id="ep-dept" value="${esc(p.dept)}"></div>
-        <div class="form-row"><label class="form-label">Habilitation</label>
-          <select class="form-select" id="ep-clr">
-            ${['1','2','3','4','5'].map(v=>`<option value="${v}" ${p.clearance===v?'selected':''}>${v}</option>`).join('')}
-          </select>
+        <div class="form-row2">
+          <div class="form-row"><label class="form-label">Statut</label><select class="form-select" id="ap-st"><option>Actif</option><option>Inactif</option><option>Classifié</option></select></div>
+          <div class="form-row"><label class="form-label">Couleur</label><input class="form-input" id="ap-c" value="#00f5ff"></div>
         </div>
-      </div>
-      <div class="form-row-2">
-        <div class="form-row"><label class="form-label">Statut</label>
-          <select class="form-select" id="ep-status">
-            <option ${p.status==='Actif'?'selected':''}>Actif</option><option ${p.status==='Inactif'?'selected':''}>Inactif</option><option ${p.status==='Classifié'?'selected':''}>Classifié</option>
-          </select>
+        <div class="form-row"><label class="form-label">Biographie</label><textarea class="form-textarea" id="ap-b" placeholder="Description..."></textarea></div>`;
+      f.innerHTML=`<button class="btn-cancel" onclick="closeModal()">Annuler</button><button class="btn-save" onclick="savePerso()">Créer</button>`;
+    },
+    editPerso: () => {
+      const p=cache.personnel.find(x=>x.id===id);if(!p)return;
+      t.textContent='Modifier Personnel'; s.textContent=p.name;
+      b.innerHTML=`<input type="hidden" id="ep-id" value="${id}">
+        <div class="form-row2">
+          <div class="form-row"><label class="form-label">Nom</label><input class="form-input" id="ep-n" value="${esc(p.name)}"></div>
+          <div class="form-row"><label class="form-label">Initiales</label><input class="form-input" id="ep-i" value="${esc(p.initials||'')}" maxlength="3"></div>
         </div>
-        <div class="form-row"><label class="form-label">Couleur</label><input class="form-input" id="ep-color" value="${esc(p.color||'#00f5ff')}"></div>
-      </div>
-      <div class="form-row"><label class="form-label">Biographie</label><textarea class="form-textarea" id="ep-bio">${esc(p.bio||'')}</textarea></div>`;
-    footer.innerHTML = `<button class="btn-cancel" onclick="closeAllModals()">Annuler</button><button class="btn-save" onclick="updatePerso()">Enregistrer</button>`;
-
-  } else if (type==='addPage') {
-    t.textContent = 'Nouvelle Page'; s.textContent = 'ARTICLE WIKI';
-    body.innerHTML = `
-      <div class="form-row-2">
-        <div class="form-row"><label class="form-label">Titre</label><input class="form-input" id="np-title" placeholder="Titre de la page"></div>
-        <div class="form-row"><label class="form-label">Catégorie</label><input class="form-input" id="np-cat" placeholder="Général, Procédures..."></div>
-      </div>
-      <div class="form-row"><label class="form-label">Contenu (markdown simple : ## Titre, **gras**, *italique*)</label><textarea class="form-textarea" id="np-content" style="min-height:200px" placeholder="## Titre\n\nContenu de la page..."></textarea></div>`;
-    footer.innerHTML = `<button class="btn-cancel" onclick="closeAllModals()">Annuler</button><button class="btn-save" onclick="savePage()">Créer la page</button>`;
-
-  } else if (type==='editPage') {
-    const pages = STORE.get('pages') || [];
-    const p = pages.find(x=>x.id===id);
-    if (!p) return;
-    t.textContent = 'Modifier la Page'; s.textContent = p.title;
-    body.innerHTML = `
-      <input type="hidden" id="ep2-id" value="${id}">
-      <div class="form-row-2">
-        <div class="form-row"><label class="form-label">Titre</label><input class="form-input" id="ep2-title" value="${esc(p.title)}"></div>
-        <div class="form-row"><label class="form-label">Catégorie</label><input class="form-input" id="ep2-cat" value="${esc(p.category)}"></div>
-      </div>
-      <div class="form-row"><label class="form-label">Contenu</label><textarea class="form-textarea" id="ep2-content" style="min-height:200px">${esc(p.content||'')}</textarea></div>`;
-    footer.innerHTML = `<button class="btn-cancel" onclick="closeAllModals()">Annuler</button><button class="btn-save" onclick="updatePage()">Enregistrer</button>`;
-  }
-
-  overlay.classList.add('open');
+        <div class="form-row"><label class="form-label">Poste</label><input class="form-input" id="ep-r" value="${esc(p.role)}"></div>
+        <div class="form-row2">
+          <div class="form-row"><label class="form-label">Département</label><input class="form-input" id="ep-d" value="${esc(p.dept)}"></div>
+          <div class="form-row"><label class="form-label">Habilitation</label><select class="form-select" id="ep-cl">${['1','2','3','4','5'].map(v=>`<option value="${v}" ${p.clearance===v?'selected':''}>${v}</option>`).join('')}</select></div>
+        </div>
+        <div class="form-row2">
+          <div class="form-row"><label class="form-label">Statut</label><select class="form-select" id="ep-st"><option ${p.status==='Actif'?'selected':''}>Actif</option><option ${p.status==='Inactif'?'selected':''}>Inactif</option><option ${p.status==='Classifié'?'selected':''}>Classifié</option></select></div>
+          <div class="form-row"><label class="form-label">Couleur</label><input class="form-input" id="ep-c" value="${esc(p.color||'#00f5ff')}"></div>
+        </div>
+        <div class="form-row"><label class="form-label">Biographie</label><textarea class="form-textarea" id="ep-b">${esc(p.bio||'')}</textarea></div>`;
+      f.innerHTML=`<button class="btn-cancel" onclick="closeModal()">Annuler</button><button class="btn-save" onclick="updatePerso()">Enregistrer</button>`;
+    },
+    addPage: () => {
+      t.textContent='Nouvelle Page'; s.textContent='ARTICLE WIKI';
+      b.innerHTML=`<div class="form-row2">
+          <div class="form-row"><label class="form-label">Titre</label><input class="form-input" id="np-t" placeholder="Titre..."></div>
+          <div class="form-row"><label class="form-label">Catégorie</label><input class="form-input" id="np-c" placeholder="Général, Procédures..."></div>
+        </div>
+        <div class="form-row"><label class="form-label">Contenu (## Titre, **gras**, *italique*)</label><textarea class="form-textarea" id="np-content" style="min-height:180px" placeholder="## Titre\n\nContenu..."></textarea></div>`;
+      f.innerHTML=`<button class="btn-cancel" onclick="closeModal()">Annuler</button><button class="btn-save" onclick="savePage()">Créer</button>`;
+    },
+    editPage: () => {
+      const p=cache.pages.find(x=>x.id===id);if(!p)return;
+      t.textContent='Modifier Page'; s.textContent=p.title;
+      b.innerHTML=`<input type="hidden" id="ep2-id" value="${id}">
+        <div class="form-row2">
+          <div class="form-row"><label class="form-label">Titre</label><input class="form-input" id="ep2-t" value="${esc(p.title)}"></div>
+          <div class="form-row"><label class="form-label">Catégorie</label><input class="form-input" id="ep2-c" value="${esc(p.category)}"></div>
+        </div>
+        <div class="form-row"><label class="form-label">Contenu</label><textarea class="form-textarea" id="ep2-content" style="min-height:180px">${esc(p.content||'')}</textarea></div>`;
+      f.innerHTML=`<button class="btn-cancel" onclick="closeModal()">Annuler</button><button class="btn-save" onclick="updatePage()">Enregistrer</button>`;
+    }
+  };
+  tpls[type]?.();
+  document.getElementById('modalOv').classList.add('open');
 }
 
-function closeAllModals() { document.getElementById('modalOverlay').classList.remove('open'); }
+function closeModal() { document.getElementById('modalOv').classList.remove('open'); }
+document.addEventListener('keydown', e => { if(e.key==='Escape'){closeModal();closeDetail();} });
 
-/* ===================================================
-   CRUD OPERATIONS
-   =================================================== */
+/* =====================================================
+   CRUD — with Supabase sync
+   ===================================================== */
+async function withRefresh(fn, refreshFn, adminFn) {
+  try { await fn(); await loadAll(); refreshFn?.(); adminFn?.(); closeModal(); }
+  catch(e) { alert('Erreur: '+e.message); }
+}
 
 // USERS
-function saveNewUser() {
-  const pseudo = (document.getElementById('nu-pseudo')?.value||'').trim();
-  const pass = (document.getElementById('nu-pass')?.value||'').trim();
-  const msg = document.getElementById('nu-msg');
-  if (!pseudo||!pass) { msg.textContent='Champs obligatoires'; msg.className='form-msg err'; return; }
-  const users = STORE.get('users')||[];
-  if (users.find(u=>u.pseudo.toLowerCase()===pseudo.toLowerCase())) { msg.textContent='Ce pseudo est déjà utilisé'; msg.className='form-msg err'; return; }
-  users.push({ id: uid(), pseudo, password: pass, role: 'admin', createdAt: new Date().toISOString() });
-  STORE.set('users', users);
-  closeAllModals();
-  renderUsersTable();
-  renderAdminOverview();
+async function saveUser() {
+  const pseudo=(document.getElementById('nu-p')?.value||'').trim();
+  const pass=(document.getElementById('nu-pw')?.value||'').trim();
+  const msg=document.getElementById('nu-msg');
+  if(!pseudo||!pass){msg.textContent='Champs requis';msg.className='form-msg err';return;}
+  if(cache.users.find(u=>u.pseudo.toLowerCase()===pseudo.toLowerCase())){msg.textContent='Pseudo déjà utilisé';msg.className='form-msg err';return;}
+  try {
+    await SB.insert('users',{id:uid(),pseudo,password:pass,role:'admin',created_at:new Date().toISOString()});
+    await loadAll(); renderUsersList(); renderAdminStats(); closeModal();
+  } catch(e){msg.textContent='Erreur: '+e.message;msg.className='form-msg err';}
 }
 
-function deleteUser(id) {
-  if (id==='creator') return;
-  if (!confirm('Supprimer cet utilisateur ?')) return;
-  const users = (STORE.get('users')||[]).filter(u=>u.id!==id);
-  STORE.set('users', users);
-  renderUsersTable();
-  renderAdminOverview();
+async function delUser(id) {
+  if(!confirm('Supprimer cet utilisateur ?'))return;
+  await withRefresh(()=>SB.delete('users',id), renderUsersList, renderAdminStats);
 }
 
 // ANNOUNCEMENTS
-function saveAnnounce() {
-  const title = (document.getElementById('na-title')?.value||'').trim();
-  const body2 = (document.getElementById('na-body')?.value||'').trim();
-  if (!title) return;
-  const announces = STORE.get('announcements')||[];
-  announces.unshift({ id: uid(), title, body: body2, level: document.getElementById('na-level').value, color: document.getElementById('na-color').value||'#00f5ff', createdAt: new Date().toISOString(), author: currentUser.pseudo });
-  STORE.set('announcements', announces);
-  closeAllModals();
-  renderAnnounceAdmin();
-  renderTicker();
-  if (isView('wiki')) showWikiPage('home');
+async function saveAnnounce() {
+  const title=(document.getElementById('na-t')?.value||'').trim();if(!title)return;
+  await withRefresh(()=>SB.insert('announcements',{id:uid(),title,body:document.getElementById('na-b').value,level:document.getElementById('na-l').value,color:document.getElementById('na-c').value||'#00f5ff',author:currentUser.pseudo,created_at:new Date().toISOString()}),
+    ()=>{renderAnnouncesList();renderTicker();if(document.getElementById('nb-home').classList.contains('active'))goPage('home');});
 }
-
-function updateAnnounce() {
-  const id = document.getElementById('ea-id')?.value;
-  const announces = STORE.get('announcements')||[];
-  const idx = announces.findIndex(a=>a.id===id);
-  if (idx<0) return;
-  announces[idx] = { ...announces[idx], title: document.getElementById('ea-title').value, body: document.getElementById('ea-body').value, level: document.getElementById('ea-level').value, color: document.getElementById('ea-color').value };
-  STORE.set('announcements', announces);
-  closeAllModals();
-  renderAnnounceAdmin();
-  renderTicker();
-  if (isView('wiki')) showWikiPage('home');
+async function updateAnnounce() {
+  const id=document.getElementById('ea-id')?.value;if(!id)return;
+  await withRefresh(()=>SB.update('announcements',id,{title:document.getElementById('ea-t').value,body:document.getElementById('ea-b').value,level:document.getElementById('ea-l').value,color:document.getElementById('ea-c').value}),
+    ()=>{renderAnnouncesList();renderTicker();if(document.getElementById('nb-home').classList.contains('active'))goPage('home');});
 }
-
-function deleteAnnounce(id) {
-  if (!confirm('Supprimer cette annonce ?')) return;
-  STORE.set('announcements', (STORE.get('announcements')||[]).filter(a=>a.id!==id));
-  renderAnnounceAdmin();
-  renderTicker();
-  if (isView('wiki')) showWikiPage('home');
+async function delAnnounce(id) {
+  if(!confirm('Supprimer ?'))return;
+  await withRefresh(()=>SB.delete('announcements',id),()=>{renderAnnouncesList();renderTicker();if(document.getElementById('nb-home').classList.contains('active'))goPage('home');});
 }
 
 // ANOMALIES
-function saveAno() {
-  const ident = (document.getElementById('aa-ident')?.value||'').trim();
-  const name = (document.getElementById('aa-name')?.value||'').trim();
-  if (!ident||!name) return;
-  const anos = STORE.get('anomalies')||[];
-  anos.push({ id: uid(), ident, name, classe: document.getElementById('aa-classe').value, sector: document.getElementById('aa-sector').value, responsible: document.getElementById('aa-resp').value, status: document.getElementById('aa-status').value, color: document.getElementById('aa-color').value||'#00f5ff', desc: document.getElementById('aa-desc').value, confinement: document.getElementById('aa-conf').value, createdAt: new Date().toISOString() });
-  STORE.set('anomalies', anos);
-  closeAllModals();
-  renderAnoAdmin();
-  renderAdminOverview();
-  if (isView('wiki')) showWikiPage('anomalies');
+async function saveAno() {
+  const ident=(document.getElementById('aa-id')?.value||'').trim(),name=(document.getElementById('aa-n')?.value||'').trim();if(!ident||!name)return;
+  await withRefresh(()=>SB.insert('anomalies',{id:uid(),ident,name,classe:document.getElementById('aa-cl').value,sector:document.getElementById('aa-s').value,responsible:document.getElementById('aa-r').value,status:document.getElementById('aa-st').value,color:document.getElementById('aa-c').value||'#00f5ff',description:document.getElementById('aa-d').value,confinement:document.getElementById('aa-cf').value,created_at:new Date().toISOString()}),
+    ()=>{renderAnoList();renderAdminStats();if(document.getElementById('nb-anomalies').classList.contains('active'))goPage('anomalies');});
 }
-
-function updateAno() {
-  const id = document.getElementById('ea2-id')?.value;
-  const anos = STORE.get('anomalies')||[];
-  const idx = anos.findIndex(a=>a.id===id);
-  if (idx<0) return;
-  anos[idx] = { ...anos[idx], ident: document.getElementById('ea2-ident').value, name: document.getElementById('ea2-name').value, classe: document.getElementById('ea2-classe').value, sector: document.getElementById('ea2-sector').value, responsible: document.getElementById('ea2-resp').value, status: document.getElementById('ea2-status').value, color: document.getElementById('ea2-color').value, desc: document.getElementById('ea2-desc').value, confinement: document.getElementById('ea2-conf').value };
-  STORE.set('anomalies', anos);
-  closeAllModals();
-  renderAnoAdmin();
-  if (isView('wiki')) showWikiPage('anomalies');
+async function updateAno() {
+  const id=document.getElementById('ea2-id')?.value;if(!id)return;
+  await withRefresh(()=>SB.update('anomalies',id,{ident:document.getElementById('ea2-id2').value,name:document.getElementById('ea2-n').value,classe:document.getElementById('ea2-cl').value,sector:document.getElementById('ea2-s').value,responsible:document.getElementById('ea2-r').value,status:document.getElementById('ea2-st').value,color:document.getElementById('ea2-c').value,description:document.getElementById('ea2-d').value,confinement:document.getElementById('ea2-cf').value}),
+    ()=>{renderAnoList();if(document.getElementById('nb-anomalies').classList.contains('active'))goPage('anomalies');});
 }
-
-function deleteAno(id) {
-  if (!confirm('Supprimer cette fiche ?')) return;
-  STORE.set('anomalies', (STORE.get('anomalies')||[]).filter(a=>a.id!==id));
-  renderAnoAdmin();
-  renderAdminOverview();
-  if (isView('wiki')) showWikiPage('anomalies');
+async function delAno(id) {
+  if(!confirm('Supprimer cette fiche ?'))return;
+  await withRefresh(()=>SB.delete('anomalies',id),()=>{renderAnoList();renderAdminStats();if(document.getElementById('nb-anomalies').classList.contains('active'))goPage('anomalies');});
 }
 
 // PERSONNEL
-function savePerso() {
-  const name = (document.getElementById('ap-name')?.value||'').trim();
-  if (!name) return;
-  const perso = STORE.get('personnel')||[];
-  perso.push({ id: uid(), name, initials: document.getElementById('ap-init').value.toUpperCase(), role: document.getElementById('ap-role').value, dept: document.getElementById('ap-dept').value, clearance: document.getElementById('ap-clr').value, status: document.getElementById('ap-status').value, color: document.getElementById('ap-color').value||'#00f5ff', bio: document.getElementById('ap-bio').value, createdAt: new Date().toISOString() });
-  STORE.set('personnel', perso);
-  closeAllModals();
-  renderPersoAdmin();
-  renderAdminOverview();
-  if (isView('wiki')) showWikiPage('personnel');
+async function savePerso() {
+  const name=(document.getElementById('ap-n')?.value||'').trim();if(!name)return;
+  await withRefresh(()=>SB.insert('personnel',{id:uid(),name,initials:document.getElementById('ap-i').value.toUpperCase(),role:document.getElementById('ap-r').value,dept:document.getElementById('ap-d').value,clearance:document.getElementById('ap-cl').value,status:document.getElementById('ap-st').value,color:document.getElementById('ap-c').value||'#00f5ff',bio:document.getElementById('ap-b').value,created_at:new Date().toISOString()}),
+    ()=>{renderPersoList();renderAdminStats();if(document.getElementById('nb-personnel').classList.contains('active'))goPage('personnel');});
 }
-
-function updatePerso() {
-  const id = document.getElementById('ep-id')?.value;
-  const perso = STORE.get('personnel')||[];
-  const idx = perso.findIndex(p=>p.id===id);
-  if (idx<0) return;
-  perso[idx] = { ...perso[idx], name: document.getElementById('ep-name').value, initials: document.getElementById('ep-init').value.toUpperCase(), role: document.getElementById('ep-role').value, dept: document.getElementById('ep-dept').value, clearance: document.getElementById('ep-clr').value, status: document.getElementById('ep-status').value, color: document.getElementById('ep-color').value, bio: document.getElementById('ep-bio').value };
-  STORE.set('personnel', perso);
-  closeAllModals();
-  renderPersoAdmin();
-  if (isView('wiki')) showWikiPage('personnel');
+async function updatePerso() {
+  const id=document.getElementById('ep-id')?.value;if(!id)return;
+  await withRefresh(()=>SB.update('personnel',id,{name:document.getElementById('ep-n').value,initials:document.getElementById('ep-i').value.toUpperCase(),role:document.getElementById('ep-r').value,dept:document.getElementById('ep-d').value,clearance:document.getElementById('ep-cl').value,status:document.getElementById('ep-st').value,color:document.getElementById('ep-c').value,bio:document.getElementById('ep-b').value}),
+    ()=>{renderPersoList();if(document.getElementById('nb-personnel').classList.contains('active'))goPage('personnel');});
 }
-
-function deletePerso(id) {
-  if (!confirm('Supprimer cette fiche ?')) return;
-  STORE.set('personnel', (STORE.get('personnel')||[]).filter(p=>p.id!==id));
-  renderPersoAdmin();
-  renderAdminOverview();
-  if (isView('wiki')) showWikiPage('personnel');
+async function delPerso(id) {
+  if(!confirm('Supprimer cette fiche ?'))return;
+  await withRefresh(()=>SB.delete('personnel',id),()=>{renderPersoList();renderAdminStats();if(document.getElementById('nb-personnel').classList.contains('active'))goPage('personnel');});
 }
 
 // PAGES
-function savePage() {
-  const title = (document.getElementById('np-title')?.value||'').trim();
-  const cat = (document.getElementById('np-cat')?.value||'Général').trim();
-  if (!title) return;
-  const pages = STORE.get('pages')||[];
-  pages.push({ id: uid(), title, category: cat, content: document.getElementById('np-content').value, createdAt: new Date().toISOString(), author: currentUser.pseudo });
-  STORE.set('pages', pages);
-  closeAllModals();
-  renderPagesAdmin();
-  buildSidebar();
-  renderAdminOverview();
+async function savePage() {
+  const title=(document.getElementById('np-t')?.value||'').trim(),cat=(document.getElementById('np-c')?.value||'Général').trim();if(!title)return;
+  await withRefresh(()=>SB.insert('pages',{id:uid(),title,category:cat,content:document.getElementById('np-content').value,author:currentUser.pseudo,created_at:new Date().toISOString()}),
+    ()=>{renderPagesList();renderAdminStats();buildSidebar();});
+}
+async function updatePage() {
+  const id=document.getElementById('ep2-id')?.value;if(!id)return;
+  await withRefresh(()=>SB.update('pages',id,{title:document.getElementById('ep2-t').value,category:document.getElementById('ep2-c').value,content:document.getElementById('ep2-content').value}),
+    ()=>{renderPagesList();buildSidebar();goPage('page',id);});
+}
+async function delPage(id) {
+  if(!confirm('Supprimer cette page ?'))return;
+  await withRefresh(()=>SB.delete('pages',id),()=>{renderPagesList();renderAdminStats();buildSidebar();goPage('pages');});
 }
 
-function updatePage() {
-  const id = document.getElementById('ep2-id')?.value;
-  const pages = STORE.get('pages')||[];
-  const idx = pages.findIndex(p=>p.id===id);
-  if (idx<0) return;
-  pages[idx] = { ...pages[idx], title: document.getElementById('ep2-title').value, category: document.getElementById('ep2-cat').value, content: document.getElementById('ep2-content').value };
-  STORE.set('pages', pages);
-  closeAllModals();
-  renderPagesAdmin();
-  buildSidebar();
-  if (isView('wiki')) showWikiPage('page', id);
-}
-
-function deletePage(id) {
-  if (!confirm('Supprimer cette page ?')) return;
-  STORE.set('pages', (STORE.get('pages')||[]).filter(p=>p.id!==id));
-  renderPagesAdmin();
-  buildSidebar();
-  renderAdminOverview();
-  if (isView('wiki')) showWikiPage('pages');
-}
-
-/* ===================================================
+/* =====================================================
    ADMIN RENDERS
-   =================================================== */
-function adminTab(btn, sec) {
-  document.querySelectorAll('.admin-tab').forEach(b=>b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  else { document.querySelectorAll('.admin-tab').forEach(b=>{ if(b.getAttribute('onclick')?.includes(sec)) b.classList.add('active'); }); }
-  document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('active'));
-  document.getElementById('asec-'+sec)?.classList.add('active');
-}
+   ===================================================== */
+function renderAdminAll() { renderAdminStats(); renderUsersList(); renderAnnouncesList(); renderAnoList(); renderPersoList(); renderPagesList(); }
 
-function renderAdminOverview() {
-  const anos = (STORE.get('anomalies')||[]).length;
-  const perso = (STORE.get('personnel')||[]).length;
-  const pages = (STORE.get('pages')||[]).length;
-  const users = (STORE.get('users')||[]).length;
-  const announces = (STORE.get('announcements')||[]).length;
+function renderAdminStats() {
   document.getElementById('adminStats').innerHTML = `
-    <div class="astat" style="--as:var(--neon)"><span class="astat-num">${anos}</span><div class="astat-label">Anomalies</div></div>
-    <div class="astat" style="--as:var(--green)"><span class="astat-num">${perso}</span><div class="astat-label">Personnel</div></div>
-    <div class="astat" style="--as:var(--gold)"><span class="astat-num">${pages}</span><div class="astat-label">Pages</div></div>
-    <div class="astat" style="--as:var(--warn2)"><span class="astat-num">${announces}</span><div class="astat-label">Annonces</div></div>
-    <div class="astat" style="--as:var(--purple)"><span class="astat-num">${users}</span><div class="astat-label">Utilisateurs</div></div>`;
+    <div class="sec-title"><span class="sn">01</span>Vue d'ensemble<div class="sec-line"></div></div>
+    <div class="astats">
+      <div class="astat" style="--as:var(--neon)"><span class="astat-n">${cache.anomalies.length}</span><div class="astat-l">Anomalies</div></div>
+      <div class="astat" style="--as:var(--green)"><span class="astat-n">${cache.personnel.length}</span><div class="astat-l">Personnel</div></div>
+      <div class="astat" style="--as:var(--gold)"><span class="astat-n">${cache.pages.length}</span><div class="astat-l">Pages</div></div>
+      <div class="astat" style="--as:var(--warn2)"><span class="astat-n">${cache.announcements.length}</span><div class="astat-l">Annonces</div></div>
+      <div class="astat" style="--as:var(--purple)"><span class="astat-n">${cache.users.length}</span><div class="astat-l">Utilisateurs</div></div>
+    </div>`;
 }
 
-function renderUsersTable() {
-  const users = STORE.get('users')||[];
-  const isCreator = currentUser?.role==='creator';
-  let rows = users.map(u => {
-    const roleLabel = u.role==='creator'?'CRÉATEUR':'ADMIN';
-    const roleCls = u.role==='creator'?`color:var(--gold);border-color:rgba(255,215,0,0.3)`:`color:var(--warn2);border-color:rgba(255,140,0,0.3)`;
-    const delBtn = (isCreator && u.role!=='creator') ? `<button class="btn-sm danger" onclick="deleteUser('${u.id}')">Supprimer</button>` : (u.role==='creator'?'<span style="font-family:var(--mono);font-size:9px;color:var(--text3)">Compte racine</span>':'');
-    return `<tr>
-      <td>${esc(u.pseudo)}</td>
-      <td><span class="user-role-badge" style="${roleCls}">${roleLabel}</span></td>
-      <td>${fmtDate(u.createdAt)}</td>
-      <td>${delBtn}</td>
-    </tr>`;
+function renderUsersList() {
+  const isCreator = currentUser?.role==='creator'||currentUser?.role==='cocreator';
+  document.getElementById('addUserBtn').style.display = isCreator?'':'none';
+  const rows = cache.users.map(u=>{
+    const isProtected = u.id==='creator-thenocturnis'||u.id==='cocreator-ieffexe';
+    const rmap={creator:`color:var(--gold);border-color:rgba(255,215,0,.3)`,cocreator:`color:var(--purple);border-color:rgba(123,45,255,.3)`,admin:`color:var(--warn2);border-color:rgba(255,140,0,.3)`};
+    const rlbl={creator:'CRÉATEUR',cocreator:'CO-CRÉATEUR',admin:'ADMIN'}[u.role]||'ADMIN';
+    const del = (isCreator&&!isProtected&&u.id!==currentUser?.id)
+      ? `<button class="btn-sm red" onclick="delUser('${u.id}')">Supprimer</button>` : '<span style="font-family:var(--mono);font-size:9px;color:var(--text3)">—</span>';
+    return `<tr><td>${esc(u.pseudo)}</td><td><span class="role-badge" style="${rmap[u.role]||''}">${rlbl}</span></td><td>${fmtDate(u.created_at)}</td><td>${del}</td></tr>`;
   }).join('');
-  document.getElementById('usersTableWrap').innerHTML = `
-    <table class="users-table">
-      <thead><tr><th>Pseudo</th><th>Rôle</th><th>Créé le</th><th>Actions</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table>`;
+  document.getElementById('usersList').innerHTML=`<table class="users-tbl"><thead><tr><th>Pseudo</th><th>Rôle</th><th>Créé le</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 
-function renderAnnounceAdmin() {
-  const announces = STORE.get('announcements')||[];
-  if (!announces.length) { document.getElementById('announceListAdmin').innerHTML='<div class="no-content">AUCUNE ANNONCE</div>'; return; }
-  document.getElementById('announceListAdmin').innerHTML = announces.map(a => `
-    <div class="announce-card" style="--ac:${a.color||'var(--neon)'}">
-      <div class="ac-header"><div class="ac-title">${esc(a.title)}</div>
-        <div style="display:flex;gap:8px">
-          <button class="btn-sm" onclick="openModal('editAnnounce','${a.id}')">✎</button>
-          <button class="btn-sm danger" onclick="deleteAnnounce('${a.id}')">✕</button>
-        </div>
-      </div>
-      <div class="ac-body">${esc(a.body)}</div>
-    </div>`).join('');
+function renderAnnouncesList() {
+  const el=document.getElementById('announcesList');
+  if(!cache.announcements.length){el.innerHTML='<div class="no-content">AUCUNE ANNONCE</div>';return;}
+  el.innerHTML=cache.announcements.map(a=>`<div class="adm-item"><div class="adm-item-l">
+    <div style="font-family:var(--sans);font-size:13px;color:var(--white);margin-bottom:2px">${esc(a.title)}</div>
+    <div style="font-family:var(--mono);font-size:10px;color:var(--text3)">${a.level} · Par ${esc(a.author)}</div>
+  </div><div class="adm-item-actions"><button class="btn-sm" onclick="openModal('editAnnounce','${a.id}')">✎</button><button class="btn-sm red" onclick="delAnnounce('${a.id}')">✕</button></div></div>`).join('');
 }
 
-function renderAnoAdmin() {
-  const anos = STORE.get('anomalies')||[];
-  if (!anos.length) { document.getElementById('anoListAdmin').innerHTML='<div class="no-content">AUCUNE ANOMALIE</div>'; return; }
-  document.getElementById('anoListAdmin').innerHTML = anos.map(a => `
-    <div style="background:var(--panel);border:1px solid var(--border);padding:16px 20px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
-      <div>
-        <span style="font-family:var(--display);font-size:11px;color:${a.color||'var(--neon)'};letter-spacing:1px;">${esc(a.ident)}</span>
-        <span style="font-family:var(--sans);font-size:13px;color:var(--white);margin-left:12px;">${esc(a.name)}</span>
-        <span style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-left:8px;">${esc(a.classe)}</span>
-      </div>
-      <div style="display:flex;gap:8px;flex-shrink:0">
-        <button class="btn-sm" onclick="openModal('editAno','${a.id}')">✎ Modifier</button>
-        <button class="btn-sm danger" onclick="deleteAno('${a.id}')">✕</button>
-      </div>
-    </div>`).join('');
+function renderAnoList() {
+  const el=document.getElementById('anoList');
+  if(!cache.anomalies.length){el.innerHTML='<div class="no-content">AUCUNE ANOMALIE</div>';return;}
+  el.innerHTML=cache.anomalies.map(a=>`<div class="adm-item"><div class="adm-item-l">
+    <span style="font-family:var(--display);font-size:11px;color:${a.color||'var(--neon)'}">${esc(a.ident)}</span>
+    <span style="font-family:var(--sans);font-size:13px;color:var(--white);margin-left:10px">${esc(a.name)}</span>
+    <span style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-left:8px">${esc(a.classe)}</span>
+  </div><div class="adm-item-actions"><button class="btn-sm" onclick="openModal('editAno','${a.id}')">✎</button><button class="btn-sm red" onclick="delAno('${a.id}')">✕</button></div></div>`).join('');
 }
 
-function renderPersoAdmin() {
-  const perso = STORE.get('personnel')||[];
-  if (!perso.length) { document.getElementById('persoListAdmin').innerHTML='<div class="no-content">AUCUN MEMBRE</div>'; return; }
-  document.getElementById('persoListAdmin').innerHTML = perso.map(p => `
-    <div style="background:var(--panel);border:1px solid var(--border);padding:16px 20px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
-      <div style="display:flex;align-items:center;gap:14px;">
-        <div style="width:36px;height:36px;border:1px solid ${p.color||'var(--neon)'};display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:12px;font-weight:700;color:${p.color||'var(--neon)'};">${esc(p.initials||'?')}</div>
-        <div>
-          <div style="font-family:var(--sans);font-size:13px;color:var(--white);">${esc(p.name)}</div>
-          <div style="font-family:var(--mono);font-size:10px;color:var(--text3);">${esc(p.role)} · ${esc(p.dept)}</div>
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;flex-shrink:0">
-        <button class="btn-sm" onclick="openModal('editPerso','${p.id}')">✎ Modifier</button>
-        <button class="btn-sm danger" onclick="deletePerso('${p.id}')">✕</button>
-      </div>
-    </div>`).join('');
+function renderPersoList() {
+  const el=document.getElementById('persoList');
+  if(!cache.personnel.length){el.innerHTML='<div class="no-content">AUCUN MEMBRE</div>';return;}
+  el.innerHTML=cache.personnel.map(p=>`<div class="adm-item"><div class="adm-item-l" style="display:flex;align-items:center;gap:12px">
+    <div style="width:32px;height:32px;border:1px solid ${p.color||'var(--neon)'};display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:11px;font-weight:900;color:${p.color||'var(--neon)'};">${esc(p.initials||'?')}</div>
+    <div><div style="font-family:var(--sans);font-size:13px;color:var(--white)">${esc(p.name)}</div><div style="font-family:var(--mono);font-size:10px;color:var(--text3)">${esc(p.role)} · ${esc(p.dept)}</div></div>
+  </div><div class="adm-item-actions"><button class="btn-sm" onclick="openModal('editPerso','${p.id}')">✎</button><button class="btn-sm red" onclick="delPerso('${p.id}')">✕</button></div></div>`).join('');
 }
 
-function renderPagesAdmin() {
-  const pages = STORE.get('pages')||[];
-  if (!pages.length) { document.getElementById('pagesListAdmin').innerHTML='<div class="no-content">AUCUNE PAGE</div>'; return; }
-  document.getElementById('pagesListAdmin').innerHTML = pages.map(p => `
-    <div style="background:var(--panel);border:1px solid var(--border);padding:16px 20px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
-      <div>
-        <span style="font-family:var(--mono);font-size:9px;color:var(--neon);letter-spacing:2px;padding:2px 8px;border:1px solid var(--border2);">${esc(p.category)}</span>
-        <span style="font-family:var(--sans);font-size:13px;color:var(--white);margin-left:12px;">${esc(p.title)}</span>
-        <span style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-left:8px;">Par ${esc(p.author||'—')}</span>
-      </div>
-      <div style="display:flex;gap:8px;flex-shrink:0">
-        <button class="btn-sm" onclick="openModal('editPage','${p.id}')">✎ Modifier</button>
-        <button class="btn-sm danger" onclick="deletePage('${p.id}')">✕</button>
-      </div>
-    </div>`).join('');
+function renderPagesList() {
+  const el=document.getElementById('pagesList');
+  if(!cache.pages.length){el.innerHTML='<div class="no-content">AUCUNE PAGE</div>';return;}
+  el.innerHTML=cache.pages.map(p=>`<div class="adm-item"><div class="adm-item-l">
+    <span style="font-family:var(--mono);font-size:9px;color:var(--neon);border:1px solid var(--border2);padding:1px 7px;margin-right:10px">${esc(p.category)}</span>
+    <span style="font-family:var(--sans);font-size:13px;color:var(--white)">${esc(p.title)}</span>
+    <span style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-left:8px">Par ${esc(p.author||'—')}</span>
+  </div><div class="adm-item-actions"><button class="btn-sm" onclick="openModal('editPage','${p.id}')">✎</button><button class="btn-sm red" onclick="delPage('${p.id}')">✕</button></div></div>`).join('');
 }
 
-/* ===================================================
-   UTILS
-   =================================================== */
-function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function fmtDate(iso) { try { return new Date(iso).toLocaleDateString('fr-FR'); } catch { return '—'; } }
+function admTab(btn, sec) {
+  document.querySelectorAll('.adm-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.adm-sec').forEach(s=>s.classList.remove('active'));
+  document.getElementById('as-'+sec)?.classList.add('active');
+}
 
-/* ===================================================
+/* =====================================================
    LOGIN CANVAS
-   =================================================== */
-(function() {
-  const canvas = document.getElementById('loginCanvas');
-  const ctx = canvas.getContext('2d');
-  function resize() { canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
-  resize(); window.addEventListener('resize', resize);
-  const pts = Array.from({length:60},()=>({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.2+.4,a:Math.random()*.35+.05}));
+   ===================================================== */
+(function(){
+  const c=document.getElementById('loginCanvas'),ctx=c.getContext('2d');
+  function resize(){c.width=window.innerWidth;c.height=window.innerHeight;}
+  resize();window.addEventListener('resize',resize);
+  const pts=Array.from({length:60},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.2+.4,a:Math.random()*.3+.05}));
   (function draw(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.clearRect(0,0,c.width,c.height);
     for(let i=0;i<pts.length;i++){
       for(let j=i+1;j<pts.length;j++){const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<110){ctx.beginPath();ctx.strokeStyle=`rgba(0,245,255,${.05*(1-d/110)})`;ctx.lineWidth=.5;ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.stroke();}}
       ctx.beginPath();ctx.arc(pts[i].x,pts[i].y,pts[i].r,0,Math.PI*2);ctx.fillStyle=`rgba(0,245,255,${pts[i].a})`;ctx.fill();
       pts[i].x+=pts[i].vx;pts[i].y+=pts[i].vy;
-      if(pts[i].x<0||pts[i].x>canvas.width)pts[i].vx*=-1;if(pts[i].y<0||pts[i].y>canvas.height)pts[i].vy*=-1;
+      if(pts[i].x<0||pts[i].x>c.width)pts[i].vx*=-1;if(pts[i].y<0||pts[i].y>c.height)pts[i].vy*=-1;
     }
     requestAnimationFrame(draw);
   })();
 })();
 
-/* ===================================================
-   CURSOR
-   =================================================== */
-const cur=document.getElementById('cursor'),cDot=document.getElementById('cursorDot');
-document.addEventListener('mousemove',e=>{cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';cDot.style.left=e.clientX+'px';cDot.style.top=e.clientY+'px';});
-document.addEventListener('mousedown',()=>{cur.style.width='12px';cur.style.height='12px';});
-document.addEventListener('mouseup',()=>{cur.style.width='18px';cur.style.height='18px';});
+/* ===== CURSOR ===== */
+const cur2=document.getElementById('cur'),cD=document.getElementById('curD');
+document.addEventListener('mousemove',e=>{cur2.style.left=e.clientX+'px';cur2.style.top=e.clientY+'px';cD.style.left=e.clientX+'px';cD.style.top=e.clientY+'px';});
+document.addEventListener('mousedown',()=>{cur2.style.width='12px';cur2.style.height='12px';});
+document.addEventListener('mouseup',()=>{cur2.style.width='18px';cur2.style.height='18px';});
 
-/* ===================================================
-   INIT
-   =================================================== */
-initData();
-// Page d'accueil = login (accès public), pas de hint visible
+/* ===== BOOT ===== */
+init();
 </script>
 </body>
 </html>
