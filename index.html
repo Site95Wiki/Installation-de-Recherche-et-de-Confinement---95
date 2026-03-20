@@ -42,7 +42,7 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
    LOGIN VIEW
    =========================== */
 #view-login{
-  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center;
   background:radial-gradient(ellipse at 30% 40%,rgba(0,128,255,0.05) 0%,transparent 60%),
              radial-gradient(ellipse at 70% 60%,rgba(0,245,255,0.04) 0%,transparent 60%);
   position:relative;
@@ -443,35 +443,51 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
 <div id="cursor"></div>
 <div id="cursorDot"></div>
 
-<!-- ==================== LOGIN ==================== -->
+<!-- ==================== LOGIN (page d'accueil publique) ==================== -->
 <div id="view-login" class="view active">
   <canvas id="loginCanvas"></canvas>
   <div class="login-box">
     <div class="login-logo">
       <div class="login-diamond"><span class="login-diamond-text">ZT</span></div>
       <div class="login-title">ZONE TSADE</div>
-      <div class="login-sub">WIKI INTRANET · ACCÈS RESTREINT</div>
+      <div class="login-sub">WIKI INTRANET · INSTALLATION-95</div>
     </div>
     <div class="login-card">
-      <div class="field">
-        <div class="field-label">Identifiant</div>
-        <div class="field-wrap">
-          <input class="field-input" type="text" placeholder="votre-pseudo" id="loginUser" autocomplete="off">
-          <span class="field-ico">◈</span>
-          <div class="field-bar"></div>
+      <div style="text-align:center;margin-bottom:24px;">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--text2);letter-spacing:2px;line-height:1.9;">
+          Système de documentation officiel<br>de l'Installation-95 — Zone Tsade.<br>
+          <span style="color:var(--text3);">Lecture publique autorisée.</span>
         </div>
       </div>
-      <div class="field">
-        <div class="field-label">Mot de passe</div>
-        <div class="field-wrap">
-          <input class="field-input" type="password" placeholder="••••••••" id="loginPass" autocomplete="off">
-          <span class="field-ico">◉</span>
-          <div class="field-bar"></div>
-        </div>
-      </div>
-      <button class="btn-primary" onclick="doLogin()"><span>↳ Connexion</span></button>
+      <button class="btn-primary" onclick="enterPublic()"><span>↳ Accéder au Wiki</span></button>
       <div class="login-loading" id="loginLoading"><div class="login-loading-bar"></div></div>
-      <div class="login-msg info" id="loginMsg">SYSTÈME EN ATTENTE D'AUTHENTIFICATION</div>
+    </div>
+    <!-- Bouton admin discret en bas -->
+    <div style="text-align:center;margin-top:20px;">
+      <span onclick="toggleAdminLogin()" style="font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:2px;cursor:pointer;opacity:0.4;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='0.4'">[ ACCÈS ADMIN ]</span>
+    </div>
+    <!-- Formulaire admin caché -->
+    <div id="adminLoginForm" style="display:none;margin-top:12px;">
+      <div class="login-card" style="padding:24px;">
+        <div class="field">
+          <div class="field-label">Identifiant Admin</div>
+          <div class="field-wrap">
+            <input class="field-input" type="text" placeholder="identifiant" id="loginUser" autocomplete="off">
+            <span class="field-ico">◈</span>
+            <div class="field-bar"></div>
+          </div>
+        </div>
+        <div class="field" style="margin-bottom:16px;">
+          <div class="field-label">Mot de passe</div>
+          <div class="field-wrap">
+            <input class="field-input" type="password" placeholder="••••••••" id="loginPass" autocomplete="off">
+            <span class="field-ico">◉</span>
+            <div class="field-bar"></div>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="doLogin()"><span>↳ Connexion Admin</span></button>
+        <div class="login-msg" id="loginMsg"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -501,10 +517,11 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
         <button class="nav-btn" id="nav-pages" onclick="showWikiPage('pages')">Pages</button>
       </nav>
       <div class="hdr-right">
-        <span class="hdr-user" id="hdrUser">—</span>
-        <span class="hdr-badge" id="hdrBadge">—</span>
+        <span class="hdr-user" id="hdrUser" style="display:none">—</span>
+        <span class="hdr-badge" id="hdrBadge" style="display:none">—</span>
         <button class="btn-sm" id="adminPanelBtn" onclick="showAdmin()" style="display:none">⚙ Admin</button>
-        <button class="btn-sm danger" onclick="doLogout()">Déconnexion</button>
+        <button class="btn-sm danger" id="logoutBtn" onclick="doLogout()" style="display:none">Déconnexion</button>
+        <button class="btn-sm" id="loginWikiBtn" onclick="showView('login')" style="font-size:9px;opacity:0.35;border-color:var(--border);" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='0.35'">Admin</button>
       </div>
     </div>
   </div>
@@ -523,7 +540,7 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
 <div id="view-admin" class="view">
   <div id="main-header" style="position:sticky;top:0;z-index:1000;background:rgba(2,6,8,0.95);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);">
     <div class="hdr-inner">
-      <div class="hdr-logo" onclick="showWiki()">
+      <div class="hdr-logo" onclick="backToWiki()">
         <div class="hdr-diamond"><span class="hdr-diamond-t">ZT</span></div>
         <div class="hdr-logo-text">
           <span class="hdr-logo-name">ZONE TSADE</span>
@@ -533,7 +550,7 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
       <div class="hdr-right">
         <span class="hdr-user" id="hdrUser2">—</span>
         <span class="hdr-badge" id="hdrBadge2">—</span>
-        <button class="btn-sm" onclick="showWiki()">← Wiki</button>
+        <button class="btn-sm" onclick="backToWiki()">← Wiki</button>
         <button class="btn-sm danger" onclick="doLogout()">Déconnexion</button>
       </div>
     </div>
@@ -648,15 +665,20 @@ const STORE = {
 };
 
 function initData() {
-  // Creator account — set once
-  if (!STORE.get('users')) {
-    STORE.set('users', [{
-      id: 'creator',
-      pseudo: 'Créateur',
-      password: 'admin1995',
-      role: 'creator',
-      createdAt: new Date().toISOString()
-    }]);
+  // Force update creator/co-creator credentials
+  const users = STORE.get('users') || [];
+  const hasTheNocturnis = users.find(u => u.id === 'creator');
+  const hasIEffexe = users.find(u => u.id === 'cocreator');
+
+  if (!hasTheNocturnis || hasTheNocturnis.pseudo !== 'TheNocturnis') {
+    const filtered = users.filter(u => u.id !== 'creator');
+    filtered.unshift({ id:'creator', pseudo:'TheNocturnis', password:'byTheNocturnis', role:'creator', createdAt: new Date().toISOString() });
+    STORE.set('users', filtered);
+  }
+  if (!hasIEffexe || hasIEffexe.pseudo !== 'iEffexe') {
+    const filtered = (STORE.get('users')||[]).filter(u => u.id !== 'cocreator');
+    filtered.splice(1, 0, { id:'cocreator', pseudo:'iEffexe', password:'byEnz0nyx', role:'creator', createdAt: new Date().toISOString() });
+    STORE.set('users', filtered);
   }
   if (!STORE.get('announcements')) STORE.set('announcements', [
     { id: uid(), title: 'Bienvenue sur le Wiki Intranet', body: 'Ce wiki est le système de documentation officiel de l\'Installation-95. Toutes les informations sont classifiées.', level: 'info', color: '#00f5ff', createdAt: new Date().toISOString(), author: 'Créateur' },
@@ -685,33 +707,54 @@ function uid() { return Date.now().toString(36) + Math.random().toString(36).sli
    =================================================== */
 let currentUser = null;
 
+function enterPublic() {
+  // Accès public sans compte
+  const loading = document.getElementById('loginLoading');
+  loading.classList.add('on');
+  setTimeout(() => {
+    loading.classList.remove('on');
+    currentUser = null;
+    showWikiPublic();
+  }, 600);
+}
+
+function toggleAdminLogin() {
+  const form = document.getElementById('adminLoginForm');
+  form.style.display = form.style.display === 'none' ? 'block' : 'none';
+  if (form.style.display === 'block') {
+    setTimeout(() => document.getElementById('loginUser')?.focus(), 100);
+  }
+}
+
 function doLogin() {
   const pseudo = document.getElementById('loginUser').value.trim();
   const pass = document.getElementById('loginPass').value;
   const msg = document.getElementById('loginMsg');
-  const loading = document.getElementById('loginLoading');
 
   if (!pseudo || !pass) { msg.textContent = '⚠ CHAMPS VIDES'; msg.className = 'login-msg err'; return; }
-
-  loading.classList.add('on');
   msg.textContent = 'VÉRIFICATION...'; msg.className = 'login-msg info';
 
   setTimeout(() => {
     const users = STORE.get('users') || [];
     const user = users.find(u => u.pseudo.toLowerCase() === pseudo.toLowerCase() && u.password === pass);
-    loading.classList.remove('on');
     if (user) {
       currentUser = user;
       msg.textContent = 'ACCÈS ACCORDÉ ✓'; msg.className = 'login-msg ok';
-      setTimeout(() => showWiki(), 500);
+      setTimeout(() => showWikiAdmin(), 500);
     } else {
       msg.textContent = '✕ IDENTIFIANTS INCORRECTS'; msg.className = 'login-msg err';
     }
-  }, 900);
+  }, 800);
 }
-document.addEventListener('keydown', e => { if (e.key==='Enter' && isView('login')) doLogin(); });
 
-function doLogout() { currentUser = null; showView('login'); }
+document.addEventListener('keydown', e => {
+  if (e.key==='Enter' && isView('login') && document.getElementById('adminLoginForm')?.style.display!=='none') doLogin();
+});
+
+function doLogout() {
+  currentUser = null;
+  showWikiPublic();
+}
 
 function isView(v) { return document.getElementById('view-'+v)?.classList.contains('active'); }
 
@@ -723,21 +766,39 @@ function showView(name) {
   document.getElementById('view-'+name)?.classList.add('active');
 }
 
-function showWiki() {
-  if (!currentUser) return;
+function showWikiPublic() {
   showView('wiki');
-  // Update header
-  document.getElementById('hdrUser').textContent = currentUser.pseudo.toUpperCase();
-  const b = document.getElementById('hdrBadge');
-  if (currentUser.role==='creator') { b.textContent='CRÉATEUR'; b.className='hdr-badge badge-creator'; }
-  else { b.textContent='ADMIN'; b.className='hdr-badge badge-admin'; }
-  const ab = document.getElementById('adminPanelBtn');
-  if (currentUser.role==='creator'||currentUser.role==='admin') ab.style.display='';
-  else ab.style.display='none';
+  // Header: bouton admin discret visible, pas d'user connecté
+  document.getElementById('hdrUser').style.display = 'none';
+  document.getElementById('hdrBadge').style.display = 'none';
+  document.getElementById('adminPanelBtn').style.display = 'none';
+  document.getElementById('logoutBtn').style.display = 'none';
+  document.getElementById('loginWikiBtn').style.display = '';
   renderTicker();
   buildSidebar();
   showWikiPage('home');
 }
+
+function showWikiAdmin() {
+  if (!currentUser) return;
+  showView('wiki');
+  // Header: affiche user connecté + boutons admin
+  document.getElementById('hdrUser').textContent = currentUser.pseudo.toUpperCase();
+  document.getElementById('hdrUser').style.display = '';
+  const b = document.getElementById('hdrBadge');
+  if (currentUser.role==='creator') { b.textContent='CRÉATEUR'; b.className='hdr-badge badge-creator'; }
+  else { b.textContent='ADMIN'; b.className='hdr-badge badge-admin'; }
+  b.style.display = '';
+  document.getElementById('adminPanelBtn').style.display = '';
+  document.getElementById('logoutBtn').style.display = '';
+  document.getElementById('loginWikiBtn').style.display = 'none';
+  renderTicker();
+  buildSidebar();
+  showWikiPage('home');
+}
+
+// Compat alias
+function showWiki() { if (currentUser) showWikiAdmin(); else showWikiPublic(); }
 
 function showAdmin() {
   if (!currentUser || (currentUser.role!=='creator'&&currentUser.role!=='admin')) return;
@@ -752,9 +813,10 @@ function showAdmin() {
   renderAnoAdmin();
   renderPersoAdmin();
   renderPagesAdmin();
-  // Hide add user btn for non-creator
   document.getElementById('addUserBtn').style.display = currentUser.role==='creator' ? '' : 'none';
 }
+
+function backToWiki() { if (currentUser) showWikiAdmin(); else showWikiPublic(); }
 
 /* ===================================================
    TICKER
@@ -1581,8 +1643,7 @@ document.addEventListener('mouseup',()=>{cur.style.width='18px';cur.style.height
    INIT
    =================================================== */
 initData();
-document.getElementById('loginMsg').textContent = '◈ IDENTIFIANT CRÉATEUR : Créateur · MDP : admin1995';
-document.getElementById('loginMsg').className = 'login-msg info';
+// Page d'accueil = login (accès public), pas de hint visible
 </script>
 </body>
 </html>
