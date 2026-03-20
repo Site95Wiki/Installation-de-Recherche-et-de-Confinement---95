@@ -981,6 +981,7 @@ function switchAdmTab(btn, targetId) {
   document.getElementById(targetId)?.classList.add('active');
 }
 
+function renderPagesIndex() {
   const pgs = cache.pages;
   let list = pgs.map(p=>`<div class="icard" style="--ic:var(--neon)" onclick="goPage('page','${p.id}')">
     <div class="ic-top"><span class="ic-badge">${esc(p.category)}</span><span class="ic-id">${fmtDate(p.created_at)}</span></div>
@@ -1167,7 +1168,7 @@ function pcSwitchTab(btn, targetId) {
 }
 
 function getSyntaxPlaceholder() {
-  return `## Titre de section\n### Sous-titre\n\nTexte normal avec **gras** et *italique en neon*\n\n---\n\n--- Séparateur avec titre ---\n\n> Note importante\n> warn Avertissement\n> danger Alerte critique\n\n- Élément liste\n- Autre élément\n\n| Colonne 1 | Colonne 2 | Colonne 3 |\n| --- | --- | --- |\n| Valeur | Valeur | Valeur |\n\n[tabs]\n[tab:Onglet 1]\nContenu onglet 1\n[tab:Onglet 2]\nContenu onglet 2\n[/tabs]\n\n[cards]\n[card:Nom Section|Responsable:Prénom Nom|Description:Texte...|Lien:Centre Section A|Statut:Actif|Couleur:#00f5ff]\n[/cards]`;
+  return '## Titre de section\n### Sous-titre\n\nTexte avec **gras** et *italique neon*\n\n---\n--- Séparateur titre ---\n\n> Note bleue\n>warn Avertissement orange\n>danger Alerte rouge\n\n- Liste item\n\n| Col1 | Col2 |\n| --- | --- |\n| Val | Val |\n\n[tabs]\n[tab:Onglet 1]\nContenu 1\n[tab:Onglet 2]\nContenu 2\n[/tabs]\n\n[cards]\n[card:Nom|Responsable:Prénom Nom|Description:Texte|Statut:Actif|Couleur:#00f5ff]\n[/cards]';
 }
 
 function getSyntaxGuide() {
@@ -1414,18 +1415,20 @@ function openModal(type, id) {
     },
     addPage: () => {
       t.textContent='Nouvelle Page'; s.textContent='ARTICLE WIKI';
+      const ph = getSyntaxPlaceholder();
       b.innerHTML=`<div class="form-row2">
           <div class="form-row"><label class="form-label">Titre</label><input class="form-input" id="np-t" placeholder="Titre..."></div>
           <div class="form-row"><label class="form-label">Catégorie</label><input class="form-input" id="np-c" placeholder="Général, Procédures..."></div>
         </div>
         <div class="form-row">
           <label class="form-label">Contenu</label>
-          <textarea class="form-textarea" id="np-content" style="min-height:280px;font-size:11px" placeholder="${getSyntaxPlaceholder()}"></textarea>
+          <textarea class="form-textarea" id="np-content" style="min-height:280px;font-size:11px"></textarea>
         </div>
         <div style="background:var(--bg3);border:1px solid var(--border);padding:14px;margin-top:4px;">
           <div style="font-family:var(--mono);font-size:9px;color:var(--neon);letter-spacing:3px;margin-bottom:10px">GUIDE DE SYNTAXE</div>
           ${getSyntaxGuide()}
         </div>`;
+      document.getElementById('np-content').placeholder = ph;
       f.innerHTML=`<button class="btn-cancel" onclick="closeModal()">Annuler</button><button class="btn-save" onclick="savePage()">Créer</button>`;
     },
     editPage: () => {
