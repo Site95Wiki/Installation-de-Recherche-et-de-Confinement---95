@@ -316,6 +316,28 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
 .form-msg.ok{color:var(--neon3);}
 .form-msg.err{color:var(--red);}
 
+/* ===== ADMINISTRATION PAGE ===== */
+.adm-page-tabs{display:flex;gap:0;margin-bottom:0;border-bottom:1px solid var(--border);}
+.apt-btn{padding:10px 24px;font-family:var(--mono);font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;transition:var(--tr);background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap;}
+.apt-btn:hover{color:var(--text2);}
+.apt-btn.active{color:var(--neon);border-bottom-color:var(--neon);}
+.apt-content{display:none;padding-top:24px;}
+.apt-content.active{display:block;}
+.sections-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;}
+.sect-card{background:var(--panel);border:1px solid var(--border);padding:24px;position:relative;transition:var(--tr);}
+.sect-card:hover{border-color:var(--border2);}
+.sect-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:var(--sc,var(--neon));box-shadow:0 0 8px var(--sc,var(--neon));}
+.sect-name{font-family:var(--display);font-size:13px;font-weight:900;color:var(--white);letter-spacing:1px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.sect-row{display:flex;gap:6px;margin-bottom:8px;font-size:13px;}
+.sect-row-label{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:1px;min-width:110px;padding-top:1px;}
+.sect-row-val{color:var(--text2);line-height:1.6;font-weight:300;}
+.sect-link{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;color:var(--neon);letter-spacing:1px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);cursor:pointer;transition:color .2s;}
+.sect-link:hover{color:var(--neon3);}
+.sect-status{font-family:var(--mono);font-size:9px;padding:1px 8px;letter-spacing:2px;margin-left:auto;align-self:flex-start;}
+.ss-ok{color:var(--green);border:1px solid rgba(0,255,204,.3);}
+.ss-pend{color:var(--warn2);border:1px solid rgba(255,140,0,.3);}
+.adm-page-intro{font-size:13px;color:var(--text2);line-height:1.8;font-weight:300;margin-bottom:24px;max-width:720px;}
+
 /* LOADING overlay */
 .loading-overlay{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .4s;}
 .loading-overlay.done{opacity:0;pointer-events:none;}
@@ -345,11 +367,11 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
   <div class="login-wrap">
     <div class="login-logo">
       <div class="l-diamond"><span class="l-diamond-t">ZT</span></div>
-      <div class="l-title">INSTALLATION DE RECHERCHE CONFINEMENT - 95</div>
+      <div class="l-title">INSTALLATION DE RECHERCHE ET DE CONFINEMENT - 95</div>
       <div class="l-sub">WIKI INTRANET · INSTALLATION-95</div>
     </div>
     <div class="l-card">
-      <div class="l-desc">Système de documentation officiel<br>de l'Installation-95 — Zone Tsade.<br><span>Lecture publique autorisée.</span></div>
+      <div class="l-desc">Système de documentation officiel<br>de l'Installation-95.<br><span>Lecture publique autorisée.</span></div>
       <button class="btn-main" onclick="enterPublic()"><span>↳ Accéder au Wiki</span></button>
       <div class="l-loader" id="loginLoader"><div class="l-loader-bar"></div></div>
     </div>
@@ -391,7 +413,7 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
       <div class="hdr-logo" onclick="goPage('home')">
         <div class="hdr-dia"><span class="hdr-dia-t">ZT</span></div>
         <div>
-          <div class="hdr-name">INSTALLATION DE RECHERCHE CONFINEMENT - 95</div>
+          <div class="hdr-name">INSTALLATION DE RECHERCHE ET DE CONFINEMENT - 95</div>
           <div class="hdr-sub">WIKI INTRANET</div>
         </div>
       </div>
@@ -399,6 +421,7 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
         <button class="nav-btn active" id="nb-home" onclick="goPage('home')">Accueil</button>
         <button class="nav-btn" id="nb-anomalies" onclick="goPage('anomalies')">Anomalies</button>
         <button class="nav-btn" id="nb-personnel" onclick="goPage('personnel')">Personnel</button>
+        <button class="nav-btn" id="nb-administration" onclick="goPage('administration')">Administration</button>
         <button class="nav-btn" id="nb-pages" onclick="goPage('pages')">Pages</button>
       </nav>
       <div class="hdr-right">
@@ -423,7 +446,7 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
       <div class="hdr-logo" onclick="goWiki()">
         <div class="hdr-dia"><span class="hdr-dia-t">ZT</span></div>
         <div>
-          <div class="hdr-name">INSTALLATION DE RECHERCHE CONFINEMENT - 95</div>
+          <div class="hdr-name">INSTALLATION DE RECHERCHE ET DE CONFINEMENT - 95</div>
           <div class="hdr-sub">PANEL ADMIN</div>
         </div>
       </div>
@@ -447,6 +470,7 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
         <button class="adm-tab" onclick="admTab(this,'announces')">Annonces</button>
         <button class="adm-tab" onclick="admTab(this,'anomalies')">Anomalies</button>
         <button class="adm-tab" onclick="admTab(this,'personnel')">Personnel</button>
+        <button class="adm-tab" onclick="admTab(this,'administration')">Administration</button>
         <button class="adm-tab" onclick="admTab(this,'pages')">Pages</button>
       </div>
       <div class="adm-sec active" id="as-overview"><div id="adminStats"></div></div>
@@ -464,6 +488,11 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
         <div class="sec-title"><span class="sn">04</span>Anomalies<div class="sec-line"></div></div>
         <div class="add-btn" onclick="openModal('addAno')">+ Nouvelle fiche anomalie</div>
         <div id="anoList"></div>
+      </div>
+      <div class="adm-sec" id="as-administration">
+        <div class="sec-title"><span class="sn">05b</span>Sections Administration<div class="sec-line"></div></div>
+        <div class="add-btn" onclick="openModal('addSection')">+ Nouvelle section</div>
+        <div id="sectionsList"></div>
       </div>
       <div class="adm-sec" id="as-personnel">
         <div class="sec-title"><span class="sn">05</span>Personnel<div class="sec-line"></div></div>
@@ -539,7 +568,7 @@ const SB = {
    STATE
    ===================================================== */
 let currentUser = null;
-let cache = { announcements:[], anomalies:[], personnel:[], pages:[], users:[] };
+let cache = { announcements:[], anomalies:[], personnel:[], pages:[], users:[], sections:[] };
 
 function uid() { return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -590,18 +619,20 @@ async function ensureCreators() {
 }
 
 async function loadAll() {
-  const [ann, ano, per, pgs, usrs] = await Promise.all([
+  const [ann, ano, per, pgs, usrs, secs] = await Promise.all([
     SB.get('announcements','?order=created_at.desc'),
     SB.get('anomalies'),
     SB.get('personnel'),
     SB.get('pages'),
-    SB.get('users')
+    SB.get('users'),
+    SB.get('sections')
   ]);
   cache.announcements = ann;
   cache.anomalies = ano;
   cache.personnel = per;
   cache.pages = pgs;
   cache.users = usrs;
+  cache.sections = secs;
 }
 
 async function seedDefaults() {
@@ -727,6 +758,7 @@ function goPage(page, id) {
   if (page==='home') { setSidebarActive('home'); main.innerHTML = renderHome(); }
   else if (page==='anomalies') { setSidebarActive('anomalies'); main.innerHTML = renderAnomaliesPage(); }
   else if (page==='personnel') { setSidebarActive('personnel'); main.innerHTML = renderPersonnelPage(); }
+  else if (page==='administration') { setSidebarActive('administration'); main.innerHTML = renderAdministrationPage(); }
   else if (page==='pages') { document.getElementById('nb-pages').classList.add('active'); main.innerHTML = renderPagesIndex(); }
   else if (page==='page') { setSidebarActive('page-'+id); main.innerHTML = renderPageContent(id); }
 }
@@ -753,6 +785,7 @@ function buildSidebar() {
     <div class="sb-link active" id="sl-home" onclick="goPage('home')"><div class="sb-dot"></div>Accueil</div>
     <div class="sb-link" id="sl-anomalies" onclick="goPage('anomalies')"><div class="sb-dot"></div>Anomalies</div>
     <div class="sb-link" id="sl-personnel" onclick="goPage('personnel')"><div class="sb-dot"></div>Personnel</div>
+    <div class="sb-link" id="sl-administration" onclick="goPage('administration')"><div class="sb-dot"></div>Administration</div>
   </div>`;
   cats.forEach(cat => {
     h += `<div class="sb-section"><div class="sb-cat">${esc(cat)}</div>`;
@@ -843,7 +876,70 @@ function renderPersonnelPage() {
   <div class="cgrid">${cards||'<div class="no-content">AUCUN MEMBRE</div>'}</div>`;
 }
 
-function renderPagesIndex() {
+function renderAdministrationPage() {
+  const secs = cache.sections;
+  const tabs = [...new Set(secs.map(s=>s.tab||'Services Directoriaux'))];
+  if (!tabs.length) {
+    return `<div class="ph">
+      <div class="ph-bread"><span onclick="goPage('home')">Accueil</span> / Administration</div>
+      <div class="ph-title"><span class="cat">À propos de</span> l'Administration</div>
+    </div>
+    <p class="adm-page-intro">L'administration de la Zone désigne l'ensemble des sections auxquelles le directeur de l'installation délègue son autorité. Chacune de ces sections dispose de prérogatives spéciales dans le but de mener à bien les missions qui leur sont confiées.</p>
+    ${isAdmin()?`<div class="add-btn" onclick="openModal('addSection')">+ Ajouter une section</div>`:''}
+    <div class="no-content">AUCUNE SECTION CONFIGURÉE</div>`;
+  }
+
+  // Build tab buttons
+  const tabBtns = tabs.map((tab,i) =>
+    `<button class="apt-btn${i===0?' active':''}" onclick="switchAdmTab(this,'admt-${i}')">${esc(tab)}</button>`
+  ).join('');
+
+  // Build tab contents
+  const tabContents = tabs.map((tab,i) => {
+    const tabSecs = secs.filter(s=>(s.tab||'Services Directoriaux')===tab);
+    const cards = tabSecs.map(s => {
+      const c = s.color||'var(--neon)';
+      const statusCls = s.status==='En attente'?'ss-pend':'ss-ok';
+      const statusLbl = s.status||'Actif';
+      const lienHtml = s.lien ? `<div class="sect-link" onclick="void(0)">⊕ ${esc(s.lien)}</div>` : '';
+      const editHtml = isAdmin() ? `
+        <div style="display:flex;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+          <button class="btn-edit" style="padding:5px 12px;font-size:9px" onclick="openModal('editSection','${s.id}')">✎</button>
+          <button class="btn-del" style="padding:5px 12px;font-size:9px" onclick="delSection('${s.id}')">✕</button>
+        </div>` : '';
+      return `<div class="sect-card" style="--sc:${c}">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+          <div class="sect-name">${esc(s.name)}</div>
+          <span class="sect-status ${statusCls}">${esc(statusLbl)}</span>
+        </div>
+        <div class="sect-row"><span class="sect-row-label">${esc(s.role_label||'Directeur')} :</span><span class="sect-row-val">${esc(s.director)}</span></div>
+        <div class="sect-row"><span class="sect-row-label">Description :</span><span class="sect-row-val">${esc(s.description)}</span></div>
+        ${lienHtml}${editHtml}
+      </div>`;
+    }).join('');
+    return `<div class="apt-content${i===0?' active':''}" id="admt-${i}">
+      <div class="sections-grid">${cards||'<div class="no-content">AUCUNE SECTION</div>'}</div>
+    </div>`;
+  }).join('');
+
+  return `<div class="ph">
+    <div class="ph-bread"><span onclick="goPage('home')">Accueil</span> / Administration</div>
+    <div class="ph-title"><span class="cat">À propos de</span> l'Administration</div>
+  </div>
+  <p class="adm-page-intro">L'administration de la Zone désigne l'ensemble des sections auxquelles le directeur de l'installation délègue son autorité. Chacune de ces sections dispose de prérogatives spéciales dans le but de mener à bien les missions qui leur sont confiées.</p>
+  ${isAdmin()?`<div class="add-btn" onclick="openModal('addSection')">+ Ajouter une section</div>`:''}
+  <div class="adm-page-tabs">${tabBtns}</div>
+  ${tabContents}`;
+}
+
+function switchAdmTab(btn, targetId) {
+  const parent = btn.closest('.wiki-main') || document;
+  parent.querySelectorAll('.apt-btn').forEach(b=>b.classList.remove('active'));
+  parent.querySelectorAll('.apt-content').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(targetId)?.classList.add('active');
+}
+
   const pgs = cache.pages;
   let list = pgs.map(p=>`<div class="icard" style="--ic:var(--neon)" onclick="goPage('page','${p.id}')">
     <div class="ic-top"><span class="ic-badge">${esc(p.category)}</span><span class="ic-id">${fmtDate(p.created_at)}</span></div>
@@ -950,7 +1046,45 @@ function openModal(type, id) {
   const b=document.getElementById('mBody'), f=document.getElementById('mFoot');
 
   const tpls = {
-    addUser: () => {
+    addSection: () => {
+      t.textContent='Nouvelle Section Admin'; s.textContent='SECTION D\'ADMINISTRATION';
+      b.innerHTML=`
+        <div class="form-row2">
+          <div class="form-row"><label class="form-label">Nom de la section</label><input class="form-input" id="as-name" placeholder="Sécurité des Archives..."></div>
+          <div class="form-row"><label class="form-label">Onglet (groupe)</label><input class="form-input" id="as-tab" placeholder="Services Directoriaux"></div>
+        </div>
+        <div class="form-row2">
+          <div class="form-row"><label class="form-label">Intitulé du responsable</label><input class="form-input" id="as-rl" placeholder="Directeur délégué" value="Directeur délégué"></div>
+          <div class="form-row"><label class="form-label">Nom du responsable</label><input class="form-input" id="as-dir" placeholder="Prénom Nom"></div>
+        </div>
+        <div class="form-row"><label class="form-label">Description</label><textarea class="form-textarea" id="as-desc" placeholder="Description de la section..."></textarea></div>
+        <div class="form-row2">
+          <div class="form-row"><label class="form-label">Lien (optionnel)</label><input class="form-input" id="as-lien" placeholder="Centre de la Section A"></div>
+          <div class="form-row"><label class="form-label">Statut</label><select class="form-select" id="as-st"><option value="Actif">Actif</option><option value="En attente">En attente</option></select></div>
+        </div>
+        <div class="form-row"><label class="form-label">Couleur de la barre</label><input class="form-input" id="as-color" value="#00f5ff"></div>`;
+      f.innerHTML=`<button class="btn-cancel" onclick="closeModal()">Annuler</button><button class="btn-save" onclick="saveSection()">Créer</button>`;
+    },
+    editSection: () => {
+      const sec=cache.sections.find(x=>x.id===id);if(!sec)return;
+      t.textContent='Modifier la Section'; s.textContent=sec.name;
+      b.innerHTML=`<input type="hidden" id="es-id" value="${id}">
+        <div class="form-row2">
+          <div class="form-row"><label class="form-label">Nom</label><input class="form-input" id="es-name" value="${esc(sec.name)}"></div>
+          <div class="form-row"><label class="form-label">Onglet</label><input class="form-input" id="es-tab" value="${esc(sec.tab||'Services Directoriaux')}"></div>
+        </div>
+        <div class="form-row2">
+          <div class="form-row"><label class="form-label">Intitulé responsable</label><input class="form-input" id="es-rl" value="${esc(sec.role_label||'Directeur délégué')}"></div>
+          <div class="form-row"><label class="form-label">Nom responsable</label><input class="form-input" id="es-dir" value="${esc(sec.director||'')}"></div>
+        </div>
+        <div class="form-row"><label class="form-label">Description</label><textarea class="form-textarea" id="es-desc">${esc(sec.description||'')}</textarea></div>
+        <div class="form-row2">
+          <div class="form-row"><label class="form-label">Lien</label><input class="form-input" id="es-lien" value="${esc(sec.lien||'')}"></div>
+          <div class="form-row"><label class="form-label">Statut</label><select class="form-select" id="es-st"><option value="Actif" ${sec.status==='Actif'?'selected':''}>Actif</option><option value="En attente" ${sec.status==='En attente'?'selected':''}>En attente</option></select></div>
+        </div>
+        <div class="form-row"><label class="form-label">Couleur</label><input class="form-input" id="es-color" value="${esc(sec.color||'#00f5ff')}"></div>`;
+      f.innerHTML=`<button class="btn-cancel" onclick="closeModal()">Annuler</button><button class="btn-save" onclick="updateSection()">Enregistrer</button>`;
+    },
       t.textContent='Ajouter un Admin'; s.textContent='NOUVEAU COMPTE ADMINISTRATEUR';
       b.innerHTML=`<div class="form-row"><label class="form-label">Pseudo</label><input class="form-input" id="nu-p" placeholder="pseudo" autocomplete="off"></div>
         <div class="form-row"><label class="form-label">Mot de passe</label><input class="form-input" type="password" id="nu-pw" placeholder="••••••••" autocomplete="off"></div>
@@ -1093,6 +1227,39 @@ async function withRefresh(fn, refreshFn, adminFn) {
   catch(e) { alert('Erreur: '+e.message); }
 }
 
+// SECTIONS
+async function saveSection() {
+  const name=(document.getElementById('as-name')?.value||'').trim();if(!name)return;
+  await withRefresh(
+    ()=>SB.insert('sections',{id:uid(),name,tab:document.getElementById('as-tab').value||'Services Directoriaux',role_label:document.getElementById('as-rl').value||'Directeur délégué',director:document.getElementById('as-dir').value,description:document.getElementById('as-desc').value,lien:document.getElementById('as-lien').value,status:document.getElementById('as-st').value,color:document.getElementById('as-color').value||'#00f5ff',created_at:new Date().toISOString()}),
+    ()=>{renderSectionsList();if(document.getElementById('nb-administration')?.classList.contains('active'))goPage('administration');}
+  );
+}
+async function updateSection() {
+  const id=document.getElementById('es-id')?.value;if(!id)return;
+  await withRefresh(
+    ()=>SB.update('sections',id,{name:document.getElementById('es-name').value,tab:document.getElementById('es-tab').value,role_label:document.getElementById('es-rl').value,director:document.getElementById('es-dir').value,description:document.getElementById('es-desc').value,lien:document.getElementById('es-lien').value,status:document.getElementById('es-st').value,color:document.getElementById('es-color').value}),
+    ()=>{renderSectionsList();if(document.getElementById('nb-administration')?.classList.contains('active'))goPage('administration');}
+  );
+}
+async function delSection(id) {
+  if(!confirm('Supprimer cette section ?'))return;
+  await withRefresh(()=>SB.delete('sections',id),()=>{renderSectionsList();if(document.getElementById('nb-administration')?.classList.contains('active'))goPage('administration');});
+}
+
+function renderSectionsList() {
+  const el=document.getElementById('sectionsList');if(!el)return;
+  if(!cache.sections.length){el.innerHTML='<div class="no-content">AUCUNE SECTION</div>';return;}
+  el.innerHTML=cache.sections.map(s=>`<div class="adm-item"><div class="adm-item-l">
+    <span style="font-family:var(--mono);font-size:9px;color:${s.color||'var(--neon)'};border:1px solid ${s.color||'var(--neon)'}33;padding:1px 8px;margin-right:10px">${esc(s.tab||'—')}</span>
+    <span style="font-family:var(--sans);font-size:13px;color:var(--white)">${esc(s.name)}</span>
+    <span style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-left:8px">${esc(s.director||'—')}</span>
+  </div><div class="adm-item-actions">
+    <button class="btn-sm" onclick="openModal('editSection','${s.id}')">✎</button>
+    <button class="btn-sm red" onclick="delSection('${s.id}')">✕</button>
+  </div></div>`).join('');
+}
+
 // USERS
 async function saveUser() {
   const pseudo=(document.getElementById('nu-p')?.value||'').trim();
@@ -1178,7 +1345,7 @@ async function delPage(id) {
 /* =====================================================
    ADMIN RENDERS
    ===================================================== */
-function renderAdminAll() { renderAdminStats(); renderUsersList(); renderAnnouncesList(); renderAnoList(); renderPersoList(); renderPagesList(); }
+function renderAdminAll() { renderAdminStats(); renderUsersList(); renderAnnouncesList(); renderAnoList(); renderPersoList(); renderPagesList(); renderSectionsList(); }
 
 function renderAdminStats() {
   document.getElementById('adminStats').innerHTML = `
